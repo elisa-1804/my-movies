@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой список фильмов</title>
+    <style>
+        /* Стиль для красивого внешнего вида (CSS) */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { color: #333; }
+        .form-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 250px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #218838; }
+        .movie-list {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            max-width: 400px;
+        }
+        .movie-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .delete-btn:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+
+    <h1>🎬 Мой список фильмов</h1>
+
+    <!-- Форма для добавления фильма -->
+    <div class="form-container">
+        <input type="text" id="movieInput" placeholder="Введите название фильма...">
+        <button onclick="addMovie()">Добавить</button>
+    </div>
+
+    <!-- Список, куда будут добавляться фильмы -->
+    <ul class="movie-list" id="movieList"></ul>
+
+    <script>
+        // Логика приложения (JavaScript)
+        
+        // 1. Загружаем фильмы из памяти браузера при старте страницы
+        let movies = JSON.parse(localStorage.getItem('myMovies')) || [];
+
+        // 2. Функция для обновления списка на экране
+        function renderMovies() {
+            const list = document.getElementById('movieList');
+            list.innerHTML = ''; // Очищаем старый список
+
+            movies.forEach((movie, index) => {
+                const li = document.createElement('li');
+                li.className = 'movie-item';
+                li.innerHTML = `
+                    <span>${movie}</span>
+                    <button class="delete-btn" onclick="deleteMovie(${index})">Удалить</button>
+                `;
+                list.appendChild(li);
+            });
+
+            // Сохраняем обновленный список в память браузера (LocalStorage)
+            localStorage.setItem('myMovies', JSON.stringify(movies));
+        }
+
+        // 3. Функция добавления нового фильма
+        function addMovie() {
+            const input = document.getElementById('movieInput');
+            const movieName = input.value.trim();
+
+            if (movieName !== '') {
+                movies.push(movieName); // Добавляем в массив
+                input.value = '';       // Очищаем поле ввода
+                renderMovies();         // Обновляем экран
+            }
+        }
+
+        // 4. Функция удаления фильма
+        function deleteMovie(index) {
+            movies.splice(index, 1); // Удаляем фильм из массива по его номеру
+            renderMovies();          // Обновляем экран
+        }
+
+        // Запускаем показ фильмов при первой загрузке страницы
+        renderMovies();
+    </script>
+</body>
+</html>
