@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КиноТека</title>
+    <!-- Подключаем наш внешний файл со стилями -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1 id="pageTitle">Все фильмы</h1>
+        <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">+</button>
+    </header>
+
+    <div id="homePage" class="page active"><div class="movies-grid" id="moviesGrid"></div></div>
+    <div id="favoritesPage" class="page"><div class="movies-grid" id="favoritesGrid"></div></div>
+    <div id="genresPage" class="page">
+        <div class="genre-form">
+            <input type="text" id="genreInput" placeholder="Название жанра...">
+            <button class="action-btn save-btn" onclick="addGenre()">Создать</button>
+        </div>
+        <ul class="genre-list" id="genreList"></ul>
+    </div>
+
+    <div id="detailsPage" class="page">
+        <div class="details-header-panel">
+            <button class="back-btn" onclick="switchPage('homePage', 'Все фильмы')">← Назад</button>
+            <button class="edit-icon-btn" id="movieEditBtn">✏️</button>
+        </div>
+        <div class="details-container" id="detailsContainer"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Все фильмы')"><span class="nav-icon">🏠</span><span>Главная</span></button>
+        <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')"><span class="nav-icon">⭐</span><span>Избранное</span></button>
+        <button class="nav-item" id="navGenres" onclick="switchPage('genresPage', 'Мои жанры')"><span class="nav-icon">📂</span><span>Жанры</span></button>
+    </nav>
+
+    <!-- МОДАЛЬНОЕ ОКНО ФИЛЬМА -->
+    <div class="modal" id="addMovieModal">
+        <div class="modal-content">
+            <h3 id="modalHeadline">Новый фильм</h3>
+            <input type="hidden" id="formMovieId">
+            <div class="form-group">
+                <label>Наименование фильма *</label>
+                <input type="text" id="formTitle" required>
+            </div>
+            <div class="form-group">
+                <label>Год выпуска</label>
+                <input type="number" id="formYear">
+            </div>
+            <div class="form-group">
+                <label>Жанр фильма</label>
+                <select id="formGenreSelect"><option value="">Без жанра</option></select>
+            </div>
+            <div class="form-group">
+                <label>Моя оценка</label>
+                <div class="rating-stars" id="formRatingStars">
+                    <span onclick="setFormRating(1)">★</span><span onclick="setFormRating(2)">★</span><span onclick="setFormRating(3)">★</span><span onclick="setFormRating(4)">★</span><span onclick="setFormRating(5)">★</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Ссылка на постер из интернета</label>
+                <input type="text" id="formPoster">
+            </div>
+            <div class="form-group">
+                <label>Описание фильма</label>
+                <textarea id="formDesc" rows="3"></textarea>
+            </div>
+            <div class="form-buttons">
+                <button class="del-mini-btn" id="formDeleteBtn" style="display:none;" onclick="deleteMovieFromForm()">Удалить</button>
+                <div style="display:flex; gap:10px; margin-left:auto;">
+                    <button class="action-btn cancel-btn" onclick="closeModal()">Отмена</button>
+                    <button class="action-btn save-btn" onclick="saveMovie()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ЖАНРА -->
+    <div class="modal" id="genreModal">
+        <div class="modal-content">
+            <h3>Редактировать жанр</h3>
+            <input type="hidden" id="editGenreIndex">
+            <div class="form-group">
+                <label>Название жанра</label>
+                <input type="text" id="editGenreInput">
+            </div>
+            <div class="form-buttons">
+                <button class="del-mini-btn" onclick="deleteGenreFromModal()">🗑️ Удалить</button>
+                <div style="display:flex; gap:10px; margin-left:auto;">
+                    <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+                    <button class="action-btn save-btn" onclick="saveGenreChanges()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключаем наш внешний файл с логикой скриптов -->
+    <script src="script.js"></script>
+</body>
+</html>
