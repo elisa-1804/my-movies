@@ -119,7 +119,7 @@
        <script>
     const SUPABASE_URL = "https://supabase.co";
     const SUPABASE_KEY = "sb_publishable_ChDY37tmdQzykO_xUe_kEw_D5zTO4og";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+   
     let currentUser = null, movies = [], genres = [], currentFormRating = 0, isSignUpMode = false;
     const defaultPoster = "https://unsplash.com";
 
@@ -133,20 +133,47 @@
         const email = document.getElementById('authEmail').value.trim();
         const password = document.getElementById('authPassword').value.trim();
         if(!email || !password) { alert("Заполните все поля!"); return; }
+
         if(isSignUpMode) {
-            const { error } = await supabase.auth.signUp({ email, password });
-            if(error) { alert("Ошибка: " + error.message); return; }
-            alert("Успешно! Теперь войдите."); toggleAuthMode();
+            const r = await fetch(SUPABASE_URL + "/auth/v1/signup", { method: "POST", headers: { "apikey": SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+            if(!r.ok) { alert("Ошибка регистрации"); return; }
+            alert("Успешно! Теперь войдите."); 
+            toggleAuthMode();
         } else {
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if(error) { alert("Ошибка: " + error.message); return; }
+            const r = await fetch(SUPABASE_URL + "/auth/v1/token?grant_type=password", { method: "POST", headers: { "apikey": SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+            if(!r.ok) { alert("Неверный логин или пароль"); return; }
+            const resData = await r.json();
+            localStorage.setItem("sb_token", resData.access_token);
             checkUser();
         }
     }
     async function checkUser() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if(user) { currentUser = user; document.getElementById('authPage').style.display = 'none'; document.getElementById('appContent').style.display = 'block'; loadData(); } 
-        else { document.getElementById('authPage').style.display = 'flex'; document.getElementById('appContent').style.display = 'none'; }
+        const t = localStorage.getItem("sb_token");
+        if(!t) {
+            document.getElementById('authPage').style.display = 'flex';
+            document.getElementById('appContent').style.display = 'none';
+            return;
+        }
+        
+        // Сами запрашиваем профиль у сервера по интернету
+        const response = await fetch(SUPABASE_URL + "/auth/v1/user", {
+            method: "GET",
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + t
+            }
+        });
+        
+        if(response.ok) {
+            currentUser = await response.json();
+            document.getElementById('authPage').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+            loadData();
+        } else {
+            localStorage.removeItem("sb_token");
+            document.getElementById('authPage').style.display = 'flex';
+            document.getElementById('appContent').style.display = 'none';
+        }
     }
     async function logout() { await supabase.auth.signOut(); currentUser = null; checkUser(); }
     async function loadData() {
