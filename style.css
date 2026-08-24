@@ -17,8 +17,20 @@ header h1 { font-size: 22px; font-weight: 600; color: #ffffff; }
 .card-stars { font-size: 11px; color: #fba94c; }
 
 /* Сердечко-значок на главной */
-.card-fav-badge { position: absolute; top: 8px; right: 8px; background: rgba(18, 18, 20, 0.7); padding: 4px; border-radius: 50%; font-size: 12px; display: none; }
+.card-fav-badge { 
+    position: absolute; 
+    bottom: 10px; 
+    right: 10px; 
+    font-size: 14px; 
+    display: none; 
+}
 .movie-card.is-fav .card-fav-badge { display: block; }
+
+/* Меняем цвет фона карточки, если фильм в избранном */
+.movie-card.is-fav {
+    background-color: #1a2421 !important;
+    border: 1px solid #00b37e;
+}
 
 /* Навигация внизу */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background-color: #202024; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #29292e; z-index: 100; }
