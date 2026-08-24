@@ -185,7 +185,11 @@
             document.getElementById('appContent').style.display = 'none';
         }
     }
-    async function logout() { await supabase.auth.signOut(); currentUser = null; checkUser(); }
+   async function logout() {
+    localStorage.removeItem("sb_token");
+    currentUser = null;
+    checkUser();
+}
     async function loadData() {
         if(!currentUser) return;
         let { data: gData } = await supabase.from('genres').select('*').eq('user_id', currentUser.id);
