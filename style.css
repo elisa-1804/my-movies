@@ -69,3 +69,37 @@ header h1 { font-size: 22px; font-weight: 600; color: #ffffff; }
 .heart-btn:active { transform: scale(1.4); }
 .details-tag { display: inline-block; background-color: #29292e; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px; margin-bottom: 10px; }
 .details-desc { margin-top: 15px; line-height: 1.5; color: #c4c4cc; }
+
+/* Красивое окошко авторизации по центру */
+.auth-container { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh; 
+    padding: 20px; 
+    background-color: #121214; 
+}
+.auth-card { 
+    background-color: #202024; 
+    border-radius: 12px; 
+    padding: 30px; 
+    width: 100%; 
+    max-width: 360px; 
+    border: 1px solid #29292e; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+}
+.auth-card h2 { 
+    margin-bottom: 20px; 
+    text-align: center; 
+    color: white; 
+    font-size: 24px; 
+}
+.auth-toggle { 
+    text-align: center; 
+    margin-top: 15px; 
+    font-size: 13px; 
+    color: #00b37e; 
+    cursor: pointer; 
+    text-decoration: underline; 
+}
+
