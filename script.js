@@ -1,3 +1,6 @@
+const SUPABASE_URL = "https://ppjezzfhwsartggywzyp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ChDY37tmdQzyKO_xUe_kEw_D5zTO4og";
+
 let movies = JSON.parse(localStorage.getItem('userMovies')) || [];
 let genres = JSON.parse(localStorage.getItem('userGenres')) || ['Драма', 'Комедия', 'Фантастика'];
 let currentFormRating = 0;
