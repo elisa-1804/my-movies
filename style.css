@@ -3,7 +3,7 @@
 body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background-color: #121214; z-index: 10; }
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
-.add-movie-btn { background-color: #202024; color: #0D9488; border: 2px solid #0D9488; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.add-movie-btn { background-color: #202024; color: #06B6D4; border: 2px solid #06B6D4; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
 /* Экраны и карточки */
 .page { display: none; padding: 0 20px; }
@@ -29,13 +29,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Меняем цвет фона карточки, если фильм в избранном */
 .movie-card.is-fav {
     background-color: #1a2421 !important;
-    border: 1px solid #0D9488;
+    border: 1px solid #06B6D4;
 }
 
 /* Навигация внизу */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background-color: #202024; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #29292e; z-index: 100; }
 .nav-item { color: #8d8d99; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; background: none; border: none; width: 33%; height: 100%; justify-content: center; }
-.nav-item.active { color: #0D9488; }
+.nav-item.active { color: #06B6D4; }
 .nav-icon { font-size: 20px; }
 
 /* Вкладка жанров */
@@ -53,22 +53,22 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
 .form-group label { font-size: 13px; color: #8d8d99; margin-bottom: 6px; }
 .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background-color: #121214; border: 1px solid #29292e; border-radius: 6px; color: white; font-size: 14px; outline: none; }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #0D9488; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #06B6D4; }
 .form-buttons { display: flex; gap: 10px; margin-top: 20px; width: 100%; }
 
 /* Звездочки и Кнопки */
 .rating-stars { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #29292e; }
 .rating-stars span.active { color: #fba94c; }
 .action-btn { padding: 10px 15px; border-radius: 6px; border: none; font-size: 14px; cursor: pointer; font-weight: 600; }
-.save-btn { background-color: #0D9488; color: white; }
+.save-btn { background-color: #06B6D4; color: white; }
 .cancel-btn { background-color: #29292e; color: #8d8d99; }
 .del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
 
 /* Страница просмотра фильма */
 .details-container { background-color: #202024; border-radius: 12px; padding: 20px; margin-top: 10px; transition: background-color 0.3s; }
-.details-container.is-fav { background-color: #1a2421; border: 1px solid #0D9488; }
+.details-container.is-fav { background-color: #1a2421; border: 1px solid #06B6D4; }
 .details-header-panel { display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background-color: #121214; padding: 10px 0; z-index: 5; margin-bottom: 15px; }
-.back-btn { background: none; border: none; color: #0D9488; font-size: 16px; cursor: pointer; }
+.back-btn { background: none; border: none; color: #06B6D4; font-size: 16px; cursor: pointer; }
 .edit-icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
 .details-flex { display: flex; gap: 20px; flex-wrap: wrap; }
 .details-poster { width: 140px; height: 200px; object-fit: cover; border-radius: 8px; }
@@ -110,7 +110,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     text-align: center; 
     margin-top: 15px; 
     font-size: 13px; 
-    color: #0D9488; 
+    color: #06B6D4; 
     cursor: pointer; 
     text-decoration: underline; 
 }
