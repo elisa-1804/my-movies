@@ -4,38 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КиноТека</title>
-    <!-- Подключаем наш внешний файл со стилями -->
     <link rel="stylesheet" href="style.css">
+    <!-- Подключаем библиотеку Supabase, чтобы облако работало -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
-    <header>
-        <h1 id="pageTitle">Все фильмы</h1>
-        <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">+</button>
-    </header>
-
-    <div id="homePage" class="page active"><div class="movies-grid" id="moviesGrid"></div></div>
-    <div id="favoritesPage" class="page"><div class="movies-grid" id="favoritesGrid"></div></div>
-    <div id="genresPage" class="page">
-        <div class="genre-form">
-            <input type="text" id="genreInput" placeholder="Название жанра...">
-            <button class="action-btn save-btn" onclick="addGenre()">Создать</button>
+    <!-- Экран авторизации (показывается первым) -->
+    <div id="authPage" class="auth-container">
+        <div class="auth-card">
+            <h2 id="authTitle">Войти в профиль</h2>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="authEmail" placeholder="example@mail.com">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="authPassword" placeholder="Минимум 6 символов">
+            </div>
+            <button class="action-btn save-btn" style="width:100%; margin-top:10px;" id="authPrimaryBtn" onclick="handleAuth()">Войти</button>
+            <p class="auth-toggle" onclick="toggleAuthMode()">Нет аккаунта? Зарегистрироваться</p>
         </div>
-        <ul class="genre-list" id="genreList"></ul>
     </div>
 
-    <div id="detailsPage" class="page">
-        <div class="details-header-panel">
-            <button class="back-btn" onclick="switchPage('homePage', 'Все фильмы')">← Назад</button>
-            <button class="edit-icon-btn" id="movieEditBtn">✏️</button>
-        </div>
-        <div class="details-container" id="detailsContainer"></div>
-    </div>
+    <!-- Основное приложение (скрыто до входа) -->
+    <div id="appContent" style="display: none;">
+        <header>
+            <h1 id="pageTitle">Все фильмы</h1>
+            <div style="display:flex; gap:15px; align-items:center;">
+                <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">+</button>
+                <!-- Вот она, наша кнопочка выхода -->
+                <button onclick="logout()" style="background:none; border:none; font-size:20px; cursor:pointer;">🚪</button>
+            </div>
+        </header>
 
-    <nav class="bottom-nav">
-        <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Все фильмы')"><span class="nav-icon">🏠</span><span>Главная</span></button>
-        <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')"><span class="nav-icon">⭐</span><span>Избранное</span></button>
-        <button class="nav-item" id="navGenres" onclick="switchPage('genresPage', 'Мои жанры')"><span class="nav-icon">📂</span><span>Жанры</span></button>
-    </nav>
+        <div id="homePage" class="page active"><div class="movies-grid" id="moviesGrid"></div></div>
+        <div id="favoritesPage" class="page"><div class="movies-grid" id="favoritesGrid"></div></div>
+        <div id="genresPage" class="page">
+            <div class="genre-form">
+                <input type="text" id="genreInput" placeholder="Название жанра...">
+                <button class="action-btn save-btn" onclick="addGenre()">Создать</button>
+            </div>
+            <ul class="genre-list" id="genreList"></ul>
+        </div>
+
+        <div id="detailsPage" class="page">
+            <div class="details-header-panel">
+                <button class="back-btn" onclick="switchPage('homePage', 'Все фильмы')">← Назад</button>
+                <button class="edit-icon-btn" id="movieEditBtn">✏️</button>
+            </div>
+            <div class="details-container" id="detailsContainer"></div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Все фильмы')"><span class="nav-icon">🏠</span><span>Главная</span></button>
+            <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')"><span class="nav-icon">⭐</span><span>Избранное</span></button>
+            <button class="nav-item" id="navGenres" onclick="switchPage('genresPage', 'Мои жанры')"><span class="nav-icon">📂</span><span>Жанры</span></button>
+        </nav>
+    </div>
 
     <!-- МОДАЛЬНОЕ ОКНО ФИЛЬМА -->
     <div class="modal" id="addMovieModal">
@@ -82,7 +107,7 @@
     <div class="modal" id="genreModal">
         <div class="modal-content">
             <h3>Редактировать жанр</h3>
-            <input type="hidden" id="editGenreIndex">
+            <input type="hidden" id="editGenreId">
             <div class="form-group">
                 <label>Название жанра</label>
                 <input type="text" id="editGenreInput">
@@ -97,7 +122,6 @@
         </div>
     </div>
 
-    <!-- Подключаем наш внешний файл с логикой скриптов -->
     <script src="script.js"></script>
 </body>
 </html>
