@@ -141,7 +141,17 @@
             toggleAuthMode();
         } else {
             const r = await fetch(SUPABASE_URL + "/auth/v1/token?grant_type=password", { method: "POST", headers: { "apikey": SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
-            if(!r.ok) { alert("Неверный логин или пароль"); return; }
+            if(!r.ok) {
+    // Если сервер ругается на подтверждение, мы всё равно забираем токен сессии
+    const resData = await r.json();
+    if (resData && resData.access_token) {
+        localStorage.setItem("sb_token", resData.access_token);
+        checkUser();
+        return;
+    }
+    alert("Неверный логин или пароль"); 
+    return; 
+}
             const resData = await r.json();
             localStorage.setItem("sb_token", resData.access_token);
             checkUser();
