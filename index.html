@@ -331,8 +331,27 @@ const gData = response.ok ? await response.json() : [];
         const c = document.getElementById('detailsContainer'); c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
         c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m.poster || defaultPoster) + '"><div class="details-content"><div class="details-top-row"><h2 class="details-title">' + m.title + '</h2><button class="heart-btn" onclick="toggleFav(' + m.id + ')">' + (m.favorite ? '❤️' : '🤍') + '</button></div><span class="details-tag">📅 Год: ' + (m.year || '—') + '</span><span class="details-tag">🎭 Жанр: ' + (m.genre || '—') + '</span><span class="details-tag" style="color:#fba94c">⭐ Рейтинг: ' + getStarsHtml(m.rating || 0) + '</span><p class="details-desc">' + (m.desc || 'Описание отсутствует.') + '</p></div></div>';
     }
-    async function toggleFav(id) { const m = movies.find(x => x.id == id); if(m) { await supabase.from('movies').update({ favorite: !m.favorite }).eq('id', id); await loadData(); showDetails(id); } }
-    checkUser();
+    async function toggleFav(id) { 
+        const m = movies.find(function(x) { return x.id == id; }); 
+        if(m) { 
+            const t = localStorage.getItem("sb_token");
+            const nextState = !m.favorite;
+            
+            // Напрямую обновляем статус "избранное" в облаке
+            await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, {
+                method: "PATCH",
+                headers: { 
+                    "apikey": SUPABASE_KEY, 
+                    "Authorization": "Bearer " + t, 
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify({ favorite: nextState })
+            });
+            
+            await loadData(); 
+            showDetails(id); 
+        } 
+    }
     </script>
 </body>
 </html>
