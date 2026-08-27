@@ -70,11 +70,22 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Сама PNG иконка внутри кнопки */
 .nav-icon {
+    /* Жестко задаем размер (можешь сделать 26px или 28px, если покажутся мелкими) */
     width: 24px;
     height: 24px;
+    
+    /* Секретное свойство: аккуратно вписывает картинку в этот квадрат, не растягивая её */
     object-fit: contain;
+    
     display: block;
-    background: transparent !important; /* Намертво убирает любые белые фоны */
+    background: transparent !important;
+    
+    /* Перекрашивает черные иконки в белые */
+    filter: invert(1); 
+    
+    /* Добавим небольшой внутренний отступ, чтобы у иконок «от края до края» воздух появился */
+    padding: 2px; 
+    box-sizing: border-box;
 }
 
 /* Вкладка жанров */
