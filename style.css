@@ -264,3 +264,36 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     cursor: pointer;
     accent-color: #06B6D4; /* Цвет галочки под тон твоих кнопок */
 }
+
+/* Стиль для круглых кнопок в шапке сайта */
+header button {
+    background: #29292e !important; /* Круглая темная подложка */
+    border: none !important;
+    width: 40px !important;         /* Задаем фиксированный размер круга */
+    height: 40px !important;
+    border-radius: 50% !important;  /* Делаем кнопку идеально круглой */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transition: background 0.2s;
+}
+
+/* Эффект при наведении на кнопки в шапке */
+header button:hover {
+    background: #323238 !important;
+}
+
+/* Стиль для ваших картинок-иконок внутри шапки */
+header button img {
+    width: 20px !important;         /* Размер самой иконки внутри круга */
+    height: 20px !important;
+    object-fit: contain !important;
+    display: block !important;
+    background: transparent !important;
+    
+    /* Стирает белый квадрат вокруг скачанной иконки на темном фоне */
+    mix-blend-mode: screen !important; 
+}
