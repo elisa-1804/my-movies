@@ -48,42 +48,52 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 /* Кнопка меню */
+/* Кнопка меню */
 .nav-item {
     background: none !important;
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 60px;
+    width: 70px;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    opacity: 0.4; /* Неактивные кнопки будут полупрозрачными */
+    position: relative; /* Нужно для позиционирования линии */
+    
+    /* Неактивная иконка будет тусклой (серой) */
+    opacity: 0.35; 
     transition: opacity 0.2s;
-}
-
-/* Нажатая кнопка загорается на полную */
-.nav-item.active {
-    opacity: 1 !important; 
 }
 
 /* Сама картинка-иконка */
 .nav-icon {
-    width: 32px !important;   /* Крупный размер */
-    height: 32px !important;  /* Крупный размер */
+    width: 28px !important;   /* Оптимальный крупный размер */
+    height: 28px !important;  
     object-fit: contain !important;
     display: block !important;
-    background: transparent !important; /* Убирает рамки */
+    background: transparent !important;
     
-    /* Делаем картинку белой, даже если вы скачали её чёрной */
+    /* Делаем картинку просто чистой и белой */
     filter: brightness(0) invert(1) !important; 
 }
 
-/* Магия для иконки НАЖАТОЙ кнопки: красим её в сочный голубой */
-.nav-item.active .nav-icon {
-    /* Фильтр превратит белый цвет в яркий голубой (#06B6D4) */
-    filter: invert(56%) sepia(81%) saturate(3025%) hue-rotate(156deg) brightness(97%) contrast(102%) !important;
+/* НАЖАТАЯ КНОПКА (АКТИВНАЯ) */
+.nav-item.active {
+    opacity: 1 !important; /* Картинка загорается ярко-белым цветом */
+}
+
+/* Добавляем стильную голубую линию ПОД активной иконкой */
+.nav-item.active::after {
+    content: "";
+    position: absolute;
+    bottom: 4px; /* Отступ от самого низа панели */
+    left: 15%;
+    right: 15%;
+    height: 3px; /* Толщина линии */
+    background-color: #06B6D4; /* Сюда вставь ТОЧНЫЙ цвет своих кнопок */
+    border-radius: 2px;
 }
 
 /* Вкладка жанров */
