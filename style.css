@@ -304,29 +304,35 @@ header button img {
 .swipe-item-wrapper {
     position: relative;
     width: 100%;
-    height: 50px;
+    height: 55px; /* Сделали чуть повыше, чтобы на телефоне было удобнее попадать пальцем */
     background-color: #121214;
     border-bottom: 1px solid #29292e;
-    overflow: hidden; /* Скрывает кнопки управления, пока мы не сдвинули строку */
+    overflow: hidden;
     box-sizing: border-box;
+    margin-bottom: 8px; /* Добавили отступ между пунктами, чтобы они не слипались */
+    border-radius: 8px; /* Округлим края плашек, если сайт в таком стиле */
 }
 
-/* Передняя плашка с названием жанра, которую мы двигаем */
+/* Передняя плашка с названием жанра */
 .swipe-content-front {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #1c1c1e; /* Темный фон строки */
+    background-color: #1c1c1e; /* Если этот цвет слишком светлый, замени на свой привычный фон пунктов */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 15px;
-    z-index: 2; /* Ложится поверх скрытых кнопок */
-    transition: transform 0.2s ease-out; /* Плавный возврат на место */
+    padding: 0 20px;
+    z-index: 2;
+    transition: transform 0.2s ease-out;
     box-sizing: border-box;
-    color: #ffffff;
+    
+    /* ВОЗВРАЩАЕМ СТИЛЬ ТЕКСТА: */
+    color: #ffffff !important; 
+    font-size: 16px !important;
+    font-weight: 500 !important;
 }
 
 /* Маленькая серая подсказка "свайп" */
