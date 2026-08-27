@@ -6,8 +6,8 @@
     <title>Киноман</title>
     <link rel="stylesheet" href="style.css">
    <script src="https://yastatic.net"></script>
-    <!-- Подключаем библиотеку иконок Lucide -->
-<script src="https://unpkg.com"></script>
+    <!-- Подключаем надежные иконки от Google -->
+<link href="https://googleapis.com" rel="stylesheet">
 </head>
 <body>
     <div id="authPage" class="auth-container">
@@ -53,20 +53,20 @@
             <div class="details-container" id="detailsContainer"></div>
         </div>
 
-        <div class="bottom-nav">
+<div class="bottom-nav">
     <!-- Кнопка Главная -->
     <button class="nav-item active" onclick="showPage('main', event)">
-        <i data-lucide="clapperboard" class="nav-icon"></i>
+        <span class="material-icons nav-icon">movie</span>
     </button>
     
     <!-- Кнопка Избранное -->
     <button class="nav-item" onclick="showPage('favorites', event)">
-        <i data-lucide="heart" class="nav-icon"></i>
+        <span class="material-icons nav-icon">favorite</span>
     </button>
     
     <!-- Кнопка Жанры -->
     <button class="nav-item" onclick="showPage('genres', event)">
-        <i data-lucide="folder-heart" class="nav-icon"></i>
+        <span class="material-icons nav-icon">style</span>
     </button>
 </div>
     </div>
