@@ -115,3 +115,33 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     text-decoration: underline; 
 }
 
+/* Список чекбоксов для выбора нескольких жанров */
+.genres-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #121214;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #29292e;
+}
+
+/* Строка с каждым отдельным жанром и галочкой */
+.genre-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #e1e1e6;
+    font-size: 14px;
+}
+
+/* Сама галочка (сделаем её чуть удобнее для клика) */
+.genre-checkbox-label input[type="checkbox"] {
+    width: auto;
+    height: auto;
+    cursor: pointer;
+    accent-color: #06B6D4; /* Цвет галочки под тон твоих кнопок */
+}
