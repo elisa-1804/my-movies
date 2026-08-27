@@ -268,22 +268,14 @@ if (gData) {
         const div = document.createElement('div');
         div.className = 'swipe-item-wrapper';
         
-        div.innerHTML = 
-            // Задний скрытый слой с кнопками управления 
-            <div class="swipe-actions-bg">
-                <button class="swipe-btn edit" onclick="openGenreModal('${g.id}', '${g.name}')">✏️</button>
-                <button class="swipe-btn delete" onclick="deleteGenre('${g.id}')">🗑️</button>
-            </div>
-            
-            // Передний видимый слой с названием жанра
-            <div class="swipe-content-front" 
-                 ontouchstart="handleTouchStart(event)" 
-                 ontouchmove="handleTouchMove(event)" 
-                 ontouchend="handleTouchEnd(event)">
-                <span>${g.name}</span>
-                <span class="swipe-hint">‹ свайп</span>
-            </div>
-        ;
+        div.innerHTML = '<div class="swipe-actions-bg">' +
+            '<button class="swipe-btn edit" onclick="openGenreModal(\'' + g.id + '\', \'' + g.name + '\')">✏️</button>' +
+            '<button class="swipe-btn delete" onclick="deleteGenre(\'' + g.id + '\')">🗑️</button>' +
+        '</div>' +
+        '<div class="swipe-content-front" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">' +
+            '<span>' + g.name + '</span>' +
+            '<span class="swipe-hint">‹ свайп</span>' +
+        '</div>';
         
         list.appendChild(div);
     });
