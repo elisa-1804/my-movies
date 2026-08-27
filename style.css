@@ -28,7 +28,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Меняем цвет фона карточки, если фильм в избранном */
 .movie-card.is-fav {
-    background-color: #62163c !important;
+    background-color: #3d1127 !important;
     border: 1px solid #EC4899;
 }
 
