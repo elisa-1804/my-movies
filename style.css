@@ -48,6 +48,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 /* Кнопка меню */
+/* Кнопка меню */
 .nav-item {
     background: none;
     border: none;
@@ -59,33 +60,38 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    opacity: 0.5; /* Неактивные кнопки будут слегка прозрачными */
+    
+    /* Неактивные иконки сделаем слегка приглушенными */
+    opacity: 0.4; 
     transition: opacity 0.2s, transform 0.1s;
 }
 
-/* Активная (нажатая кнопка) загорается на максимум */
+/* Активная (нажатая) кнопка загорается на полную */
 .nav-item.active {
     opacity: 1; 
 }
 
-/* Сама PNG иконка внутри кнопки */
+/* Сама картинка-иконка */
 .nav-icon {
-    /* Жестко задаем размер (можешь сделать 26px или 28px, если покажутся мелкими) */
-    width: 24px;
-    height: 24px;
+    /* 1. Увеличиваем размер до 32 пикселей (было 24) */
+    width: 32px;
+    height: 32px;
     
-    /* Секретное свойство: аккуратно вписывает картинку в этот квадрат, не растягивая её */
     object-fit: contain;
-    
     display: block;
     background: transparent !important;
-    
-    /* Перекрашивает черные иконки в белые */
-    filter: invert(1); 
-    
-    /* Добавим небольшой внутренний отступ, чтобы у иконок «от края до края» воздух появился */
     padding: 2px; 
     box-sizing: border-box;
+
+    /* 2. Делаем иконку гарантированно ярко-белой, в независимости от того, 
+       какой она была при скачивании — чёрной или серой */
+    filter: brightness(0) invert(1); 
+}
+
+/* 3. Магия для НАЖАТОЙ кнопки: красим её в фирменный голубой цвет */
+.nav-item.active .nav-icon {
+    /* Этот фильтр превращает белый цвет в сочный голубой (под тон Supabase/кнопок) */
+    filter: invert(53%) sepia(93%) saturate(4202%) hue-rotate(159deg) brightness(94%) contrast(104%);
 }
 
 /* Вкладка жанров */
