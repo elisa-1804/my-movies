@@ -66,7 +66,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Страница просмотра фильма */
 .details-container { background-color: #202024; border-radius: 12px; padding: 20px; margin-top: 10px; transition: background-color 0.3s; }
-.details-container.is-fav { background-color: #1a2421; border: 1px solid #06B6D4; }
+.details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
 .details-header-panel { display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background-color: #121214; padding: 10px 0; z-index: 5; margin-bottom: 15px; }
 .back-btn { background: none; border: none; color: #06B6D4; font-size: 16px; cursor: pointer; }
 .edit-icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
