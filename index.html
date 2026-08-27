@@ -263,8 +263,31 @@
 const response = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t } });
 const gData = response.ok ? await response.json() : [];
         const list = document.getElementById('genreList'); list.innerHTML = '';
-        if (gData) { gData.forEach(g => { const li = document.createElement('li'); li.className = 'genre-item'; li.innerHTML = '<span>' + g.name + '</span><button class="genre-edit-btn" onclick="openGenreModal(\'' + g.id + '\', \'' + g.name + '\')">✏️</button>'; list.appendChild(li); }); }
-        updateGenreSelect();
+if (gData) {
+    gData.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'swipe-item-wrapper';
+        
+        div.innerHTML = 
+            // Задний скрытый слой с кнопками управления 
+            <div class="swipe-actions-bg">
+                <button class="swipe-btn edit" onclick="openGenreModal('${g.id}', '${g.name}')">✏️</button>
+                <button class="swipe-btn delete" onclick="deleteGenre('${g.id}')">🗑️</button>
+            </div>
+            
+            // Передний видимый слой с названием жанра
+            <div class="swipe-content-front" 
+                 ontouchstart="handleTouchStart(event)" 
+                 ontouchmove="handleTouchMove(event)" 
+                 ontouchend="handleTouchEnd(event)">
+                <span>${g.name}</span>
+                <span class="swipe-hint">‹ свайп</span>
+            </div>
+        ;
+        
+        list.appendChild(div);
+    });
+}        updateGenreSelect();
     }
    async function addGenre() { 
         const input = document.getElementById('genreInput'); 
@@ -448,6 +471,46 @@ async function saveMovie() {
             showDetails(id); 
         } 
     }
+           // Переменные для отслеживания движения пальца
+let touchStartX = 0;
+let currentActiveSwipe = null;
+
+function handleTouchStart(e) {
+    touchStartX = e.touches.clientX;
+    // Если уже открыта другая строка, закрываем её при новом тапе
+    if (currentActiveSwipe && currentActiveSwipe !== e.currentTarget) {
+        currentActiveSwipe.style.transform = 'translateX(0)';
+    }
+}
+
+function handleTouchMove(e) {
+    const touchX = e.touches.clientX;
+    const diffX = touchStartX - touchX; // Сколько пикселей пролистали влево
+    const frontLayer = e.currentTarget;
+
+    // Разрешаем двигать только влево и не дальше, чем на 100 пикселей (ширина двух кнопок)
+    if (diffX > 100) return;
+    if (diffX > 10) {
+        frontLayer.style.transform = 'translateX(-' + diffX + 'px)';
+    }
+}
+
+function handleTouchEnd(e) {
+    const touchX = e.changedTouches.clientX;
+    const diffX = touchStartX - touchX;
+    const frontLayer = e.currentTarget;
+
+    // Если свайпнули достаточно сильно (больше 50px), фиксируем кнопки открытыми
+    if (diffX > 50) {
+        frontLayer.style.transform = 'translateX(-100px)';
+        currentActiveSwipe = frontLayer;
+    } else {
+        // Иначе возвращаем строчку на место
+        frontLayer.style.transform = 'translateX(0)';
+        currentActiveSwipe = null;
+    }
+}
+           
            checkUser();
            lucide.createIcons();
     </script>
