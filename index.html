@@ -71,9 +71,12 @@
                 <input type="number" id="formYear">
             </div>
             <div class="form-group">
-                <label>Жанр фильма</label>
-                <select id="formGenreSelect"><option value="">Без жанра</option></select>
-            </div>
+    <label>Жанры фильма</label>
+    <!-- Новый контейнер для галочек -->
+    <div id="movie-genres-list" class="genres-checkbox-list">
+        <!-- Сюда скрипт сам добавит галочки для каждого жанра -->
+    </div>
+</div>
             <div class="form-group">
                 <label>Моя оценка</label>
                 <div class="rating-stars" id="formRatingStars">
