@@ -3,8 +3,46 @@
 body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background-color: #121214; z-index: 10; }
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
-.add-movie-btn { background-color: #202024; color: #06B6D4; border: 2px solid #06B6D4; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.add-movie-btn {
+    background: #29292e !important; /* Круглая темная подложка */
+    border: none !important;
+    width: 40px !important;         /* Задаем фиксированный размер круга */
+    height: 40px !important;
+    border-radius: 50% !important;  /* Делаем кнопку идеально круглой */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+}
 
+/* Эффект при наведении мышки */
+.add-movie-btn:hover, .logout-btn:hover {
+    background: #323238 !important; /* Подложка становится чуть светлее */
+}
+
+/* Новый класс для кнопки выхода (чтобы убрать инлайн-стили из HTML) */
+.logout-btn {
+    background: #29292e !important; 
+    border: none !important;
+    width: 40px !important;         
+    height: 40px !important;
+    border-radius: 50% !important;  
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+/* Настройки для белых картинок-иконок внутри этих двух кнопок */
+.btn-icon {
+    width: 20px !important;         /* Размер самой иконки внутри круга */
+    height: 20px !important;
+    object-fit: contain !important;
+    display: block !important;
+    background: transparent !important;
+}
 /* Экраны и карточки */
 .page { display: none; padding: 0 20px; }
 .page.active { display: block; }
