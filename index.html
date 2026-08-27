@@ -467,36 +467,43 @@ let touchStartX = 0;
 let currentActiveSwipe = null;
 
 function handleTouchStart(e) {
-    touchStartX = e.touches.clientX;
-    // Если уже открыта другая строка, закрываем её при новом тапе
+    // Запоминаем начальную точку пальца
+    touchStartX = e.touches[0].clientX;
+    
+    // Если уже открыт другой свайп, закрываем его
     if (currentActiveSwipe && currentActiveSwipe !== e.currentTarget) {
         currentActiveSwipe.style.transform = 'translateX(0)';
     }
 }
 
 function handleTouchMove(e) {
-    const touchX = e.touches.clientX;
-    const diffX = touchStartX - touchX; // Сколько пикселей пролистали влево
+    const touchX = e.touches[0].clientX;
+    const diffX = touchStartX - touchX; 
     const frontLayer = e.currentTarget;
 
-    // Разрешаем двигать только влево и не дальше, чем на 100 пикселей (ширина двух кнопок)
-    if (diffX > 100) return;
+    // Если палец движется влево
     if (diffX > 10) {
-        frontLayer.style.transform = 'translateX(-' + diffX + 'px)';
+        // Запрещаем дефолтный скролл страницы телефона, пока идет свайп!
+        if (e.cancelable) e.preventDefault();
+        
+        // Ограничиваем максимальный сдвиг шириной кнопок (100px)
+        if (diffX <= 100) {
+            frontLayer.style.transform = 'translateX(-' + diffX + 'px)';
+        }
     }
 }
 
 function handleTouchEnd(e) {
-    const touchX = e.changedTouches.clientX;
+    const touchX = e.changedTouches[0].clientX;
     const diffX = touchStartX - touchX;
     const frontLayer = e.currentTarget;
 
-    // Если свайпнули достаточно сильно (больше 50px), фиксируем кнопки открытыми
+    // Если дотащили больше чем на половину (50px) — фиксируем кнопки
     if (diffX > 50) {
         frontLayer.style.transform = 'translateX(-100px)';
         currentActiveSwipe = frontLayer;
     } else {
-        // Иначе возвращаем строчку на место
+        // Иначе возвращаем плашку на место
         frontLayer.style.transform = 'translateX(0)';
         currentActiveSwipe = null;
     }
