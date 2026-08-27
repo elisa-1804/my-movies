@@ -33,31 +33,49 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 /* Навигация внизу */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background-color: #202024; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #29292e; z-index: 100; }
-css/* Кнопка меню (теперь без текста, центрирует только иконку) */
-.nav-item { 
-    color: #8d8d99; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    cursor: pointer; 
-    background: none; 
-    border: none; 
-    width: 33%; 
-    height: 100%; 
-    transition: color 0.2s;
+/* Нижняя панель меню */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #121214;
+    border-top: 1px solid #29292e;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
 }
 
-/* Цвет активной (нажатой) иконки */
-.nav-item.active { 
-    color: #06B6D4; 
+/* Кнопка внутри меню */
+.nav-item {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 60px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #8d8d99; /* Серый цвет для неактивных иконок */
+    transition: color 0.2s, transform 0.1s;
 }
 
-/* Размер самой иконки (сделали крупнее и аккуратнее) */
-.nav-icon { 
-    width: 26px;
-    height: 26px;
-    stroke: currentColor; /* Иконка автоматически станет голубой при нажатии! */
+/* Цвет иконки при нажатии (активная вкладка) */
+.nav-item.active {
+    color: #06B6D4; /* Красивый голубой цвет */
+}
+
+/* Сама SVG иконка внутри кнопки */
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    stroke: currentColor; /* Позволяет менять цвет через CSS */
+    fill: none;
 }
 
 /* Вкладка жанров */
