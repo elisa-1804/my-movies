@@ -73,7 +73,7 @@
             <div class="form-group">
     <label>Жанры фильма</label>
     <!-- Новый контейнер для галочек -->
-    <div id="movie-genres-list" class="genres-checkbox-list">
+    <div id="formGenreSelect" class="genres-checkbox-list">
         <!-- Сюда скрипт сам добавит галочки для каждого жанра -->
     </div>
 </div>
@@ -294,18 +294,29 @@ const gData = response.ok ? await response.json() : [];
         } 
     }
   function updateGenreSelect() {
-    // Находим наш новый блок для галочек, который мы создали в HTML
-    const container = document.getElementById('movie-genres-list');
+    // Ищем наш контейнер по его старому ID
+    const container = document.getElementById('formGenreSelect');
     if (!container) return;
     
-    // Очищаем его перед заполнением
+    // Очищаем перед заполнением
     container.innerHTML = '';
     
-    // Если жанров вообще нет, можно вывести подсказку
-    if (genres.length === 0) {
+    // Если жанров в массиве нет
+    if (!genres || genres.length === 0) {
         container.innerHTML = '<span style="color: #8d8d99; font-size: 13px;">Сначала добавьте жанры во вкладке "Жанры"</span>';
         return;
     }
+    
+    // Создаем галочки для каждого жанра
+    genres.forEach(g => {
+        container.innerHTML += `
+            <label class="genre-checkbox-label">
+                <input type="checkbox" class="movie-genre-checkbox" value="${g}">
+                <span>${g}</span>
+            </label>
+        `;
+    });
+}
     
     // Пробегаемся по твоему массиву жанров и создаем галочки
     genres.forEach(g => {
