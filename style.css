@@ -41,9 +41,17 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     height: 20px !important;
     object-fit: contain !important;
     display: block !important;
-    background: transparent !important;
     
-    /* СЕКРЕТНАЯ СТРОЧКА: Полностью растворяет белый фон у картинки на темном сайте */
+    /* 1. Намертво убираем любой фон и заливку */
+    background: transparent !important;
+    background-color: transparent !important;
+    
+    /* 2. Убираем любые стандартные рамки или тени, если они были */
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    
+    /* 3. Оставляем хитрый режим смешивания слоев */
     mix-blend-mode: screen !important;
 }
 /* Экраны и карточки */
