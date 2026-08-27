@@ -32,8 +32,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     border: 1px solid #EC4899;
 }
 
-/* Навигация внизу */
-/* Нижняя панель меню */
+/* Нижняя плашка меню */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -48,7 +47,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     z-index: 1000;
 }
 
-/* Кнопка внутри меню */
+/* Кнопка меню */
 .nav-item {
     background: none;
     border: none;
@@ -60,22 +59,22 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    color: #8d8d99; /* Серый цвет для неактивных иконок */
-    transition: color 0.2s, transform 0.1s;
+    opacity: 0.5; /* Неактивные кнопки будут слегка прозрачными */
+    transition: opacity 0.2s, transform 0.1s;
 }
 
-/* Цвет иконки при нажатии (активная вкладка) */
+/* Активная (нажатая кнопка) загорается на максимум */
 .nav-item.active {
-    color: #06B6D4; /* Красивый голубой цвет */
+    opacity: 1; 
 }
 
-/* Сама SVG иконка внутри кнопки */
+/* Сама PNG иконка внутри кнопки */
 .nav-icon {
     width: 24px;
     height: 24px;
+    object-fit: contain;
     display: block;
-    stroke: currentColor; /* Позволяет менять цвет через CSS */
-    fill: none;
+    background: transparent !important; /* Намертво убирает любые белые фоны */
 }
 
 /* Вкладка жанров */
