@@ -313,17 +313,6 @@ const gData = response.ok ? await response.json() : [];
         `;
     });
 }
-    
-    // Пробегаемся по твоему массиву жанров и создаем галочки
-    genres.forEach(g => {
-        container.innerHTML += `
-            <label class="genre-checkbox-label">
-                <input type="checkbox" class="movie-genre-checkbox" value="${g}">
-                <span>${g}</span>
-            </label>
-        `;
-    });
-}
     function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
     function openModal(editId = null) {
     updateGenreSelect(); 
