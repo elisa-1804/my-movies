@@ -293,7 +293,30 @@ const gData = response.ok ? await response.json() : [];
             renderGenresList(); 
         } 
     }
-    function updateGenreSelect() { const select = document.getElementById('formGenreSelect'); if(!select) return; select.innerHTML = '<option value="">Без жанра</option>'; genres.forEach(g => { select.innerHTML += '<option value="' + g + '">' + g + '</option>'; }); }
+  function updateGenreSelect() {
+    // Находим наш новый блок для галочек, который мы создали в HTML
+    const container = document.getElementById('movie-genres-list');
+    if (!container) return;
+    
+    // Очищаем его перед заполнением
+    container.innerHTML = '';
+    
+    // Если жанров вообще нет, можно вывести подсказку
+    if (genres.length === 0) {
+        container.innerHTML = '<span style="color: #8d8d99; font-size: 13px;">Сначала добавьте жанры во вкладке "Жанры"</span>';
+        return;
+    }
+    
+    // Пробегаемся по твоему массиву жанров и создаем галочки
+    genres.forEach(g => {
+        container.innerHTML += `
+            <label class="genre-checkbox-label">
+                <input type="checkbox" class="movie-genre-checkbox" value="${g}">
+                <span>${g}</span>
+            </label>
+        `;
+    });
+}
     function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
     function openModal(editId = null) {
         updateGenreSelect(); const deleteBtn = document.getElementById('formDeleteBtn');
