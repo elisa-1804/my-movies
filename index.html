@@ -274,7 +274,6 @@ if (gData) {
         '</div>' +
         '<div class="swipe-content-front" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">' +
             '<span>' + g.name + '</span>' +
-            '<span class="swipe-hint">‹ свайп</span>' +
         '</div>';
         
         list.appendChild(div);
@@ -300,7 +299,7 @@ if (gData) {
             });
 
             input.value = ''; 
-            renderGenresList(); 
+            List(); 
         } 
     }
     function openGenreModal(id, name) { document.getElementById('editGenreId').value = id; document.getElementById('editGenreInput').value = name; document.getElementById('genreModal').classList.add('active'); }
@@ -319,7 +318,7 @@ if (gData) {
 
         closeGenreModal(); 
         loadData(); 
-        renderGenresList(); 
+        List(); 
     }
 
     async function deleteGenreFromModal() { 
