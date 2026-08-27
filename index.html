@@ -296,14 +296,14 @@ const gData = response.ok ? await response.json() : [];
   function updateGenreSelect() {
     const container = document.getElementById('formGenreSelect');
     if (!container) return;
-    
+
     container.innerHTML = '';
-    
+
     if (!genres || genres.length === 0) {
         container.innerHTML = '<span style="color: #8d8d99; font-size: 13px;">Сначала добавьте жанры во вкладке "Жанры"</span>';
         return;
     }
-    
+
     genres.forEach(g => {
         container.innerHTML += `
             <label class="genre-checkbox-label">
@@ -326,29 +326,74 @@ const gData = response.ok ? await response.json() : [];
 }
     function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
     function openModal(editId = null) {
-        updateGenreSelect(); const deleteBtn = document.getElementById('formDeleteBtn');
-        if(editId) {
-            const m = movies.find(x => x.id === editId); document.getElementById('modalHeadline').textContent = "Редактировать фильм"; document.getElementById('formMovieId').value = m.id; document.getElementById('formTitle').value = m.title; document.getElementById('formYear').value = m.year; document.getElementById('formGenreSelect').value = m.genre; document.getElementById('formPoster').value = m.poster; document.getElementById('formDesc').value = m.desc; setFormRating(m.rating || 0); deleteBtn.style.display = 'block';
-        } else {
-            document.getElementById('modalHeadline').textContent = "Новый фильм"; document.getElementById('formMovieId').value = ''; document.getElementById('formTitle').value = ''; document.getElementById('formYear').value = ''; document.getElementById('formGenreSelect').value = ''; document.getElementById('formPoster').value = ''; document.getElementById('formDesc').value = ''; setFormRating(0); deleteBtn.style.display = 'none';
-        }
-        document.getElementById('addMovieModal').classList.add('active');
+    updateGenreSelect(); 
+    const deleteBtn = document.getElementById('formDeleteBtn');
+    
+    if(editId) {
+        const m = movies.find(x => x.id === editId); 
+        document.getElementById('modalHeadline').textContent = "Редактировать фильм"; 
+        document.getElementById('formMovieId').value = m.id; 
+        document.getElementById('formTitle').value = m.title; 
+        document.getElementById('formYear').value = m.year; 
+        document.getElementById('formPoster').value = m.poster; 
+        document.getElementById('formDesc').value = m.desc; 
+        setFormRating(m.rating || 0); 
+        deleteBtn.style.display = 'block';
+
+        // ИСПРАВЛЕНИЕ: Автоматически ставим галочки на жанры, которые сохранены у фильма
+        const checkboxes = document.querySelectorAll('.movie-genre-checkbox');
+        checkboxes.forEach(cb => {
+            // Если у вас в m.genre хранится массив жанров:
+            if (Array.isArray(m.genre)) {
+                cb.checked = m.genre.includes(cb.value);
+            } else {
+                // Если пока хранится старая одиночная строка:
+                cb.checked = (cb.value === m.genre);
+            }
+        });
+
+    } else {
+        document.getElementById('modalHeadline').textContent = "Новый фильм"; 
+        document.getElementById('formMovieId').value = ''; 
+        document.getElementById('formTitle').value = ''; 
+        document.getElementById('formYear').value = ''; 
+        document.getElementById('formPoster').value = ''; 
+        document.getElementById('formDesc').value = ''; 
+        setFormRating(0); 
+        deleteBtn.style.display = 'none';
+
+        // ИСПРАВЛЕНИЕ: Снимаем все галочки для нового фильма
+        const checkboxes = document.querySelectorAll('.movie-genre-checkbox');
+        checkboxes.forEach(cb => cb.checked = false);
     }
-    function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
-    async function saveMovie() {
-        const title = document.getElementById('formTitle').value.trim(); if (!title) { alert("Укажите название!"); return; }
-        const id = document.getElementById('formMovieId').value;
-        const t = localStorage.getItem("sb_token");
-        const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" };
-        const mData = { 
-            title: title, 
-            year: document.getElementById('formYear').value.trim(), 
-            genre: document.getElementById('formGenreSelect').value, 
-            poster: document.getElementById('formPoster').value.trim(), 
-            desc: document.getElementById('formDesc').value.trim(), 
-            rating: currentFormRating, 
-            user_id: currentUser.id 
-        };
+    document.getElementById('addMovieModal').classList.add('active');
+}
+    function closeModal() { 
+    document.getElementById('addMovieModal').classList.remove('active'); 
+}
+
+async function saveMovie() {
+    const title = document.getElementById('formTitle').value.trim(); 
+    if (!title) { alert("Укажите название!"); return; }
+    
+    const id = document.getElementById('formMovieId').value;
+    const t = localStorage.getItem("sb_token");
+    const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" };
+    
+    // ИСПРАВЛЕНИЕ: Находим все галочки, на которых пользователь поставил птичку
+    const checkedBoxes = document.querySelectorAll('.movie-genre-checkbox:checked');
+    // Собираем названия выбранных жанров в массив
+    const selectedGenres = Array.from(checkedBoxes).map(cb => cb.value);
+
+    const mData = { 
+        title: title, 
+        year: document.getElementById('formYear').value.trim(), 
+        genre: selectedGenres, // ИСПРАВЛЕНИЕ: Вместо одного значения отправляем массив выбранных жанров
+        poster: document.getElementById('formPoster').value.trim(), 
+        desc: document.getElementById('formDesc').value.trim(), 
+        rating: currentFormRating, 
+        user_id: currentUser.id 
+    };
         
         if(id) { 
             await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
