@@ -322,28 +322,27 @@ header button img {
     height: 100%;
     background-color: #1c1c1e; 
     display: flex;
-    justify-content: space-between;
+    
+    /* ИСПРАВЛЕНИЕ: Меняем центрирование! Теперь текст будет автоматически 
+       прижиматься к правому краю (ближе к кнопкам), когда плашка уедет */
+    justify-content: flex-end !important; 
     align-items: center;
-    padding: 0 20px;
+    padding-right: 20px !important; /* Отступ текста от кнопок */
+    
     z-index: 2; 
     box-sizing: border-box;
     color: #ffffff !important; 
     font-size: 16px !important;
     font-weight: 500 !important;
-
-    /* ПЛАВНОСТЬ: Настраиваем плавное изменение не только сдвига, но и внутренних отступов */
-    transition: transform 0.2s ease-out, padding-right 0.2s ease-out !important; 
+    transition: transform 0.2s ease-out !important; 
 }
 
-/* МЫШКА НА НОУТБУКЕ: когда строка уезжает влево, мы увеличиваем у неё правый отступ на 100px. 
-   Браузер сам плавно сожмет текст внутри плашки, и название жанра не улетит за экран! */
+/* МЫШКА НА НОУТБУКЕ: строка плавно уезжает влево */
 @media (hover: hover) {
     .swipe-item-wrapper:hover .swipe-content-front {
         transform: translateX(-100px) !important;
-        padding-right: 120px !important; /* Текст плавно подвинется и останется в поле зрения */
     }
 }
-
 /* Маленькая серая подсказка "свайп" */
 .swipe-hint {
     color: #52525b;
