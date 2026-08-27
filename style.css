@@ -37,11 +37,14 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Настройки для белых картинок-иконок внутри этих двух кнопок */
 .btn-icon {
-    width: 20px !important;         /* Размер самой иконки внутри круга */
+    width: 20px !important;
     height: 20px !important;
     object-fit: contain !important;
     display: block !important;
     background: transparent !important;
+    
+    /* СЕКРЕТНАЯ СТРОЧКА: Полностью растворяет белый фон у картинки на темном сайте */
+    mix-blend-mode: screen !important;
 }
 /* Экраны и карточки */
 .page { display: none; padding: 0 20px; }
