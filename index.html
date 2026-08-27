@@ -6,6 +6,8 @@
     <title>Киноман</title>
     <link rel="stylesheet" href="style.css">
    <script src="https://yastatic.net"></script>
+    <!-- Подключаем библиотеку иконок Lucide -->
+<script src="https://unpkg.com"></script>
 </head>
 <body>
     <div id="authPage" class="auth-container">
@@ -51,11 +53,22 @@
             <div class="details-container" id="detailsContainer"></div>
         </div>
 
-        <nav class="bottom-nav">
-            <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Все фильмы')"><span class="nav-icon">🏠</span><span>Главная</span></button>
-            <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')"><span class="nav-icon">⭐</span><span>Избранное</span></button>
-            <button class="nav-item" id="navGenres" onclick="switchPage('genresPage', 'Мои жанры')"><span class="nav-icon">📂</span><span>Жанры</span></button>
-        </nav>
+        <div class="bottom-nav">
+    <!-- Кнопка Главная -->
+    <button class="nav-item active" onclick="showPage('main', event)">
+        <i data-lucide="clapperboard" class="nav-icon"></i>
+    </button>
+    
+    <!-- Кнопка Избранное -->
+    <button class="nav-item" onclick="showPage('favorites', event)">
+        <i data-lucide="heart" class="nav-icon"></i>
+    </button>
+    
+    <!-- Кнопка Жанры -->
+    <button class="nav-item" onclick="showPage('genres', event)">
+        <i data-lucide="folder-heart" class="nav-icon"></i>
+    </button>
+</div>
     </div>
 
     <div class="modal" id="addMovieModal">
