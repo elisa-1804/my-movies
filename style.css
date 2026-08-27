@@ -318,29 +318,34 @@ header button img {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    
+    /* ИСПРАВЛЕНИЕ: Плашка занимает всю ширину, КРОМЕ 100 пикселей под кнопки справа */
+    width: calc(100% - 100px) !important; 
+    
     height: 100%;
     background-color: #1c1c1e; 
     display: flex;
     
-    /* ИСПРАВЛЕНИЕ: Меняем центрирование! Теперь текст будет автоматически 
-       прижиматься к правому краю (ближе к кнопкам), когда плашка уедет */
-    justify-content: flex-end !important; 
+    /* Текст снова начинается КРАСИВО СЛЕВА, как и должен! */
+    justify-content: flex-start !important; 
     align-items: center;
-    padding-right: 20px !important; /* Отступ текста от кнопок */
+    padding-left: 20px !important; /* Отступ текста от левого края */
     
     z-index: 2; 
     box-sizing: border-box;
     color: #ffffff !important; 
     font-size: 16px !important;
     font-weight: 500 !important;
-    transition: transform 0.2s ease-out !important; 
+    
+    /* Делаем плавное появление кнопок за счет изменения ширины при наведении */
+    transition: width 0.2s ease-out !important; 
 }
 
-/* МЫШКА НА НОУТБУКЕ: строка плавно уезжает влево */
+/* МЫШКА НА НОУТБУКЕ: при наведении мышки плашка плавно сжимается, 
+   оголяя кнопки справа, а сам текст слева никуда НЕ ДВИГАЕТСЯ и не улетает! */
 @media (hover: hover) {
     .swipe-item-wrapper:hover .swipe-content-front {
-        transform: translateX(-100px) !important;
+        width: calc(100% - 100px) !important; /* Удерживает правильный размер */
     }
 }
 /* Маленькая серая подсказка "свайп" */
