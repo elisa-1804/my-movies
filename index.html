@@ -28,12 +28,19 @@
 
     <div id="appContent" style="display: none;">
         <header>
-            <h1 id="pageTitle">Все фильмы</h1>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">+</button>
-                <button onclick="logout()" style="background:none; border:none; font-size:20px; cursor:pointer;">🚪</button>
-            </div>
-        </header>
+    <h1 id="pageTitle">Все фильмы</h1>
+    <div style="display:flex; gap:15px; align-items:center;">
+        <!-- Кнопка Добавить фильм (теперь с картинкой) -->
+        <button class="action-btn" id="headerPlusBtn" onclick="openModal()">
+            <img src="icon-add.png" class="btn-icon" alt="Добавить">
+        </button>
+        
+        <!-- Кнопка Выйти из профиля (теперь с картинкой и без лишнего встроенного стиля) -->
+        <button class="action-btn" onclick="logout()">
+            <img src="icon-logout.png" class="btn-icon" alt="Выйти">
+        </button>
+    </div>
+</header>
 
         <div id="homePage" class="page active"><div class="movies-grid" id="moviesGrid"></div></div>
         <div id="favoritesPage" class="page"><div class="movies-grid" id="favoritesGrid"></div></div>
