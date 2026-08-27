@@ -294,20 +294,16 @@ const gData = response.ok ? await response.json() : [];
         } 
     }
   function updateGenreSelect() {
-    // Ищем наш контейнер по его старому ID
     const container = document.getElementById('formGenreSelect');
     if (!container) return;
     
-    // Очищаем перед заполнением
     container.innerHTML = '';
     
-    // Если жанров в массиве нет
     if (!genres || genres.length === 0) {
         container.innerHTML = '<span style="color: #8d8d99; font-size: 13px;">Сначала добавьте жанры во вкладке "Жанры"</span>';
         return;
     }
     
-    // Создаем галочки для каждого жанра
     genres.forEach(g => {
         container.innerHTML += `
             <label class="genre-checkbox-label">
