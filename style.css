@@ -48,50 +48,42 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 /* Кнопка меню */
-/* Кнопка меню */
 .nav-item {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
     width: 60px;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    
-    /* Неактивные иконки сделаем слегка приглушенными */
-    opacity: 0.4; 
-    transition: opacity 0.2s, transform 0.1s;
+    opacity: 0.4; /* Неактивные кнопки будут полупрозрачными */
+    transition: opacity 0.2s;
 }
 
-/* Активная (нажатая) кнопка загорается на полную */
+/* Нажатая кнопка загорается на полную */
 .nav-item.active {
-    opacity: 1; 
+    opacity: 1 !important; 
 }
 
 /* Сама картинка-иконка */
 .nav-icon {
-    /* 1. Увеличиваем размер до 32 пикселей (было 24) */
-    width: 32px;
-    height: 32px;
+    width: 32px !important;   /* Крупный размер */
+    height: 32px !important;  /* Крупный размер */
+    object-fit: contain !important;
+    display: block !important;
+    background: transparent !important; /* Убирает рамки */
     
-    object-fit: contain;
-    display: block;
-    background: transparent !important;
-    padding: 2px; 
-    box-sizing: border-box;
-
-    /* 2. Делаем иконку гарантированно ярко-белой, в независимости от того, 
-       какой она была при скачивании — чёрной или серой */
-    filter: brightness(0) invert(1); 
+    /* Делаем картинку белой, даже если вы скачали её чёрной */
+    filter: brightness(0) invert(1) !important; 
 }
 
-/* 3. Магия для НАЖАТОЙ кнопки: красим её в фирменный голубой цвет */
+/* Магия для иконки НАЖАТОЙ кнопки: красим её в сочный голубой */
 .nav-item.active .nav-icon {
-    /* Этот фильтр превращает белый цвет в сочный голубой (под тон Supabase/кнопок) */
-    filter: invert(53%) sepia(93%) saturate(4202%) hue-rotate(159deg) brightness(94%) contrast(104%);
+    /* Фильтр превратит белый цвет в яркий голубой (#06B6D4) */
+    filter: invert(56%) sepia(81%) saturate(3025%) hue-rotate(156deg) brightness(97%) contrast(102%) !important;
 }
 
 /* Вкладка жанров */
