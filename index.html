@@ -130,19 +130,19 @@
                 <label>Название жанра</label>
                 <input type="text" id="editGenreInput">
             </div>
-            <div class="form-buttons">
-    <!-- Кнопка Удалить (теперь с картинкой) -->
+<div class="form-buttons" style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 25px; box-sizing: border-box;">
+    <!-- Кнопка Удалить -->
     <button class="del-mini-btn" id="myGenreDeleteBtn" onclick="deleteGenreFromModal()">
         <img src="delete.png" class="my-header-img" alt="Удалить">
     </button>
-    <div style="display:flex; gap:10px; margin-left:auto;">
-        <!-- Кнопка Отмена (оставили как есть) -->
-        <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
-        <!-- Кнопка Сохранить (теперь круглая с картинкой) -->
-        <button class="action-btn save-btn" onclick="saveGenreChanges()" style="width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; padding:0;">
-            <img src="save.png" class="my-header-img" alt="Сохранить">
-        </button>
-    </div>
+    
+    <!-- Кнопка Отмена -->
+    <button class="cancel-btn" onclick="closeGenreModal()">Отмена</button>
+    
+    <!-- Кнопка Сохранить -->
+    <button class="save-btn" onclick="saveGenreChanges()">
+        <img src="save.png" class="my-header-img" alt="Сохранить">
+    </button>
 </div>
         </div>
     </div>
