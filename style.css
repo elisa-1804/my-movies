@@ -177,7 +177,11 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Звездочки оценки */
 .rating-stars { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #29292e; }
 .rating-stars span.active { color: #fba94c; }
-м
+.action-btn { padding: 10px 15px; border-radius: 6px; border: none; font-size: 14px; cursor: pointer; font-weight: 600; }
+.save-btn { background-color: #06B6D4; color: white; }
+.cancel-btn { background-color: #29292e; color: #8d8d99; }
+.del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
+
 
 /* Страница просмотра фильма */
 .details-container { background-color: #202024; border-radius: 12px; padding: 20px; margin-top: 10px; transition: background-color 0.3s; }
