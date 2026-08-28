@@ -391,3 +391,19 @@ header button img {
         transform: translateX(-100px);
     }
 }
+/* Делаем внутреннюю кнопку удаления жанра круглой */
+.del-mini-btn {
+    background: #ef4444 !important; /* Красный цвет для удаления */
+    border: none !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+}
+.del-mini-btn:hover {
+    background: #dc2626 !important; /* Чуть темнеет при наведении */
+}
