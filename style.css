@@ -178,10 +178,60 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Звездочки и Кнопки */
 .rating-stars { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #29292e; }
 .rating-stars span.active { color: #fba94c; }
-.action-btn { padding: 10px 15px; border-radius: 6px; border: none; font-size: 14px; cursor: pointer; font-weight: 600; }
-.save-btn { background-color: #06B6D4; color: white; }
-.cancel-btn { background-color: #29292e; color: #8d8d99; }
-.del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
+/* Базовый класс для кнопок в окнах */
+.action-btn { 
+    padding: 10px 15px; 
+    border-radius: 6px; 
+    border: none; 
+    font-size: 14px; 
+    cursor: pointer; 
+    font-weight: 600; 
+}
+
+/* Кнопка отмены (остаётся прямоугольной с текстом) */
+.cancel-btn { 
+    background-color: #29292e; 
+    color: #8d8d99; 
+    height: 44px !important;
+    border-radius: 8px !important;
+}
+
+/* Кнопка сохранения (Квадрат со скруглением под иконку) */
+.save-btn { 
+    background-color: #06B6D4; 
+    color: white; 
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+}
+
+/* Кнопка удаления (Красный квадрат со скруглением под иконку) */
+.del-mini-btn { 
+    background-color: #ef4444; 
+    border: none; 
+    cursor: pointer; 
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+}
+
+/* Фиксируем размеры ваших любимых картинок внутри этих кнопок */
+.save-btn img, .del-mini-btn img {
+    width: 20px !important;
+    height: 20px !important;
+    object-fit: contain !important;
+    display: block !important;
+    background: transparent !important;
+    mix-blend-mode: screen !important; /* Намертво растворяет белый фон картинок */
+}
 
 /* Страница просмотра фильма */
 .details-container { background-color: #202024; border-radius: 12px; padding: 20px; margin-top: 10px; transition: background-color 0.3s; }
@@ -390,20 +440,4 @@ header button img {
     .swipe-item-wrapper:hover .swipe-content-front {
         transform: translateX(-100px);
     }
-}
-/* Делаем внутреннюю кнопку удаления жанра круглой */
-.del-mini-btn {
-    background: #ef4444 !important; /* Красный цвет для удаления */
-    border: none !important;
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    cursor: pointer !important;
-    padding: 0 !important;
-}
-.del-mini-btn:hover {
-    background: #dc2626 !important; /* Чуть темнеет при наведении */
 }
