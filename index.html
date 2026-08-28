@@ -123,19 +123,20 @@
                 <label>Название жанра</label>
                 <input type="text" id="editGenreInput">
             </div>
-<div class="form-buttons" style="display: flex; justify-content: center; align-items: center; gap: 15px; width: 100%; margin-top: 25px; box-sizing: border-box;">
-    <!-- Кнопка Удалить -->
-    <button class="del-mini-btn" id="myGenreDeleteBtn" onclick="deleteGenreFromModal()">
-        <img src="delete.png" class="my-header-img" alt="Удалить">
+<div class="form-buttons">
+    <!-- 1. Ваша родная кнопка удаления -->
+    <button class="del-mini-btn" onclick="deleteGenreFromModal()">
+        <img src="delete.png" alt="Удалить">
     </button>
     
-    <!-- Кнопка Отмена -->
-    <button class="cancel-btn" onclick="closeGenreModal()">Отмена</button>
-    
-    <!-- Кнопка Сохранить -->
-    <button class="save-btn" onclick="saveGenreChanges()">
-        <img src="save.png" class="my-header-img" alt="Сохранить">
-    </button>
+    <div style="display:flex; gap:10px; margin-left:auto;">
+        <!-- 2. Ваша родная кнопка отмены -->
+        <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+        <!-- 3. Ваша родная кнопка сохранения -->
+        <button class="action-btn save-btn" onclick="saveGenreChanges()">
+            <img src="save.png" alt="Сохранить">
+        </button>
+    </div>
 </div>
         </div>
     </div>
