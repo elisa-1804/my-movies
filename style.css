@@ -97,7 +97,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 /* Кнопка меню */
-/* Кнопка меню */
 .nav-item {
     background: none !important;
     border: none !important;
@@ -175,12 +174,115 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #06B6D4; }
 .form-buttons { display: flex; gap: 10px; margin-top: 20px; width: 100%; }
 
-/* Звездочки и Кнопки */
+/* Звездочки оценки */
 .rating-stars { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #29292e; }
 .rating-stars span.active { color: #fba94c; }
-.save-btn { background-color: #06B6D4; color: white; }
-.cancel-btn { background-color: #29292e; color: #8d8d99; }
-.del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
+
+/* 1. ГЛАВНЫЙ БАЗОВЫЙ КЛАСС ДЛЯ БОЛЬШИХ КНОПОК (Вход, Создать жанр, Создать фильм) 
+   Он возвращает им полную ширину, красивый цвет и запрещает тексту вылезать наружу */
+.action-btn { 
+    padding: 12px 24px !important; 
+    border-radius: 8px !important; 
+    border: none !important; 
+    font-size: 15px !important; 
+    cursor: pointer !important; 
+    font-weight: 600 !important;
+    background-color: #06B6D4 !important; /* Наш фирменный голубой цвет */
+    color: white !important;
+    width: 100% !important; /* Намертво растягиваем во всю ширину окна/формы */
+    display: block !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    transition: background 0.2s;
+}
+.action-btn:hover {
+    background-color: #0891b2 !important;
+}
+
+/* 2. КНОПКА ОТМЕНЫ (Внутри модальных окон)
+   Она остаётся аккуратной прямоугольной кнопкой с серым текстом по центру */
+.cancel-btn { 
+    background-color: #29292e !important; 
+    color: #8d8d99 !important; 
+    height: 44px !important;
+    width: auto !important; /* Ей не нужно растягиваться во весь экран */
+    padding: 0 24px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+.cancel-btn:hover {
+    background-color: #323238 !important;
+    color: #ffffff !important;
+}
+
+/* 3. КНОПКА СОХРАНЕНИЯ (Внутри окон создания фильма и жанра)
+   Мы превращаем её в аккуратный закругленный квадрат под вашу белую иконку */
+.save-btn { 
+    background-color: #06B6D4 !important; 
+    color: white !important;
+    width: 44px !important;  /* Идеальный квадрат */
+    height: 44px !important; /* Идеальный квадрат */
+    border-radius: 8px !important; /* Закругленные углы */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+.save-btn:hover {
+    background-color: #0891b2 !important;
+}
+
+/* 4. КНОПКА УДАЛЕНИЯ (Внутри окон фильма и жанра)
+   Точно такой же аккуратный квадрат со скруглением, но красного цвета */
+.del-mini-btn { 
+    background-color: #f75a68 !important; /* Родной кораллово-красный цвет со скриншота */
+    color: white !important; 
+    width: 44px !important;  /* Идеальный квадрат */
+    height: 44px !important; /* Идеальный квадрат */
+    border-radius: 8px !important; /* Закругленные углы */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+.del-mini-btn:hover {
+    background-color: #ef4444 !important;
+}
+
+/* 5. ЖЕСТКАЯ ФИКСАЦИЯ ИКОНОК ВНУТРИ КВАДРАТНЫХ КНОПОК
+   Этот селектор находит ЛЮБЫЕ картинки внутри кнопок сохранения и удаления и центрирует их,
+   не позволяя им сжиматься или растягиваться в полосы */
+.save-btn img, 
+.del-mini-btn img {
+    width: 20px !important;
+    height: 20px !important;
+    object-fit: contain !important; /* Сохраняет пропорции иконки */
+    display: block !important;
+    background: transparent !important;
+    mix-blend-mode: screen !important; /* Растворяет белый квадратный фон у картинок */
+}
+
+/* Центрируем весь ряд кнопок внутри ЛЮБОЙ формы/модалки */
+.form-buttons {
+    display: flex !important;
+    justify-content: center !important; /* Кнопки встанут строго по центру окна */
+    align-items: center !important;
+    gap: 15px !important; /* Расстояние между квадратами и отменой */
+    width: 100% !important;
+    margin-top: 25px !important;
+    box-sizing: border-box !important;
+}
 
 /* Страница просмотра фильма */
 .details-container { background-color: #202024; border-radius: 12px; padding: 20px; margin-top: 10px; transition: background-color 0.3s; }
