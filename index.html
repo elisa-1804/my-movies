@@ -119,20 +119,13 @@
     <div class="modal-content">
         <h3>Редактировать жанр</h3>
         
-        <!-- Ваши поля ввода жанра... -->
-
-        <!-- БЛОК КНОПОК ДОЛЖЕН СТОЯТЬ СТРОГО ЗДЕСЬ (ВНУТРИ ОКНА) -->
         <div class="form-buttons">
-            <button class="del-mini-btn" onclick="deleteGenreFromModal()">
-                <img src="delete.png" alt="Удалить">
-            </button>
-            <div style="display:flex; gap:10px; margin-left:auto;">
-                <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
-                <button class="action-btn save-btn" onclick="saveGenreChanges()">
-                    <img src="save.png" alt="Сохранить">
-                </button>
-            </div>
-    
+    <button class="del-mini-btn" onclick="deleteGenreFromModal()">Удалить</button>
+    <div style="display:flex; gap:10px; margin-left:auto;">
+        <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+        <button class="action-btn save-btn" onclick="saveGenreChanges()">Сохранить</button>
+    </div>
+</div>
 
     </div> <!-- Конец modal-content -->
 </div> <!-- Конец genreModal -->
