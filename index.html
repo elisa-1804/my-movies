@@ -21,7 +21,7 @@
                 <label>Пароль</label>
                 <input type="password" id="authPassword" placeholder="Минимум 6 символов">
             </div>
-            <button class="action-btn save-btn" style="width:100%; margin-top:10px;" id="authPrimaryBtn" onclick="handleAuth()">Войти</button>
+            <button class="action-btn" id="authPrimaryBtn" onclick="handleAuth()">Войти</button>
             <span class="auth-toggle" onclick="toggleAuthMode()">Нет аккаунта? Зарегистрироваться</span>
         </div>
     </div>
@@ -60,20 +60,13 @@
             <div class="details-container" id="detailsContainer"></div>
         </div>
 
-<div class="bottom-nav">
-    <!-- Кнопка Главная -->
-    <button class="nav-item active" onclick="switchPage('homePage', 'Все фильмы')">
-        <img src="home.png" class="nav-icon" alt="Главная">
+<div class="form-buttons">
+    <button class="del-mini-btn" id="myGenreDeleteBtn" onclick="deleteGenreFromModal()">
+        <img src="delete.png" class="my-header-img" alt="Удалить">
     </button>
-    
-    <!-- Кнопка Избранное -->
-    <button class="nav-item" onclick="switchPage('favoritesPage', 'Избранное')">
-        <img src="favorites.png" class="nav-icon" alt="Избранное">
-    </button>
-    
-    <!-- Кнопка Жанры -->
-    <button class="nav-item" onclick="switchPage('genresPage', 'Жанры')">
-        <img src="genres.png" class="nav-icon" alt="Жанры">
+    <button class="cancel-btn" onclick="closeGenreModal()">Отмена</button>
+    <button class="save-btn" onclick="saveGenreChanges()">
+        <img src="save.png" class="my-header-img" alt="Сохранить">
     </button>
 </div>
         
