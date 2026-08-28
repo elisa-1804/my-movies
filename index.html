@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Киноман</title>
+    <link rel="stylesheet" href="style.css">
+   <script src="https://yastatic.net"></script>
+</head>
+<body>
+    <div id="authPage" class="auth-container">
+        <div class="auth-card">
+            <h2 id="authTitle">Войти в профиль</h2>
+            <div class="form-group">
+    <label>Email</label>
+    <input type="email" id="authEmail" placeholder="example@mail.com">
+</div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="authPassword" placeholder="Минимум 6 символов">
+            </div>
+            <button class="action-btn save-btn" style="width:100%; margin-top:10px;" id="authPrimaryBtn" onclick="handleAuth()">Войти</button>
+            <span class="auth-toggle" onclick="toggleAuthMode()">Нет аккаунта? Зарегистрироваться</span>
+        </div>
+    </div>
+
+    <div id="appContent" style="display: none;">
+        <header>
+            <h1 id="pageTitle">Все фильмы</h1>
+            <div style="display:flex; gap:15px; align-items:center;">
+                <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">+</button>
+                <button onclick="logout()" style="background:none; border:none; font-size:20px; cursor:pointer;">🚪</button>
+            </div>
+        </header>
+
+        <div id="homePage" class="page active"><div class="movies-grid" id="moviesGrid"></div></div>
+        <div id="favoritesPage" class="page"><div class="movies-grid" id="favoritesGrid"></div></div>
+        <div id="genresPage" class="page">
+            <div class="genre-form">
+                <input type="text" id="genreInput" placeholder="Название жанра...">
+                <button class="action-btn save-btn" onclick="addGenre()">Создать</button>
+            </div>
+            <ul class="genre-list" id="genreList"></ul>
+        </div>
+
+        <div id="detailsPage" class="page">
+            <div class="details-header-panel">
+                <button class="back-btn" onclick="switchPage('homePage', 'Все фильмы')">← Назад</button>
+                <button class="edit-icon-btn" id="movieEditBtn">✏️</button>
+            </div>
+            <div class="details-container" id="detailsContainer"></div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Все фильмы')"><span class="nav-icon">🏠</span><span>Главная</span></button>
+            <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')"><span class="nav-icon">⭐</span><span>Избранное</span></button>
+            <button class="nav-item" id="navGenres" onclick="switchPage('genresPage', 'Мои жанры')"><span class="nav-icon">📂</span><span>Жанры</span></button>
+        </nav>
+    </div>
+
+    <div class="modal" id="addMovieModal">
+        <div class="modal-content">
+            <h3 id="modalHeadline">Новый фильм</h3>
+            <input type="hidden" id="formMovieId">
+            <div class="form-group">
+                <label>Наименование фильма *</label>
+                <input type="text" id="formTitle" required>
+            </div>
+            <div class="form-group">
+                <label>Год выпуска</label>
+                <input type="number" id="formYear">
+            </div>
+            <div class="form-group">
+                <label>Жанр фильма</label>
+                <select id="formGenreSelect"><option value="">Без жанра</option></select>
+            </div>
+            <div class="form-group">
+                <label>Моя оценка</label>
+                <div class="rating-stars" id="formRatingStars">
+                    <span onclick="setFormRating(1)">★</span><span onclick="setFormRating(2)">★</span><span onclick="setFormRating(3)">★</span><span onclick="setFormRating(4)">★</span><span onclick="setFormRating(5)">★</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Ссылка на постер из интернета</label>
+                <input type="text" id="formPoster">
+            </div>
+            <div class="form-group">
+                <label>Описание фильма</label>
+                <textarea id="formDesc" rows="3"></textarea>
+            </div>
+            <div class="form-buttons">
+                <button class="del-mini-btn" id="formDeleteBtn" style="display:none;" onclick="deleteMovieFromForm()">Удалить</button>
+                <div style="display:flex; gap:10px; margin-left:auto;">
+                    <button class="action-btn cancel-btn" onclick="closeModal()">Отмена</button>
+                    <button class="action-btn save-btn" onclick="saveMovie()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="genreModal">
+        <div class="modal-content">
+            <h3>Редактировать жанр</h3>
+            <input type="hidden" id="editGenreId">
+            <div class="form-group">
+                <label>Название жанра</label>
+                <input type="text" id="editGenreInput">
+            </div>
+            <div class="form-buttons">
+                <button class="del-mini-btn" onclick="deleteGenreFromModal()">🗑️ Удалить</button>
+                <div style="display:flex; gap:10px; margin-left:auto;">
+                    <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+                    <button class="action-btn save-btn" onclick="saveGenreChanges()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+       <script>
+    const SUPABASE_URL = "https://ppjezzfhwsartggywzyp.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ChDY37tmdQzyKO_xUe_kEw_D5zTO4og";
+   
+    let currentUser = null, movies = [], genres = [], currentFormRating = 0, isSignUpMode = false;
+    const defaultPoster = "https://unsplash.com";
+
+    function toggleAuthMode() {
+        isSignUpMode = !isSignUpMode;
+        document.getElementById('authTitle').textContent = isSignUpMode ? "Регистрация" : "Войти в профиль";
+        document.getElementById('authPrimaryBtn').textContent = isSignUpMode ? "Создать аккаунт" : "Войти";
+        document.getElementById('authPrimaryBtn').nextElementSibling.textContent = isSignUpMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Зарегистрироваться";
+    }
+    async function handleAuth() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        if(!email || !password) { alert("Заполните все поля!"); return; }
+
+        if(isSignUpMode) {
+            const r = await fetch(SUPABASE_URL + "/auth/v1/signup", { method: "POST", headers: { "apikey": SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+            if(!r.ok) { alert("Ошибка регистрации"); return; }
+            alert("Успешно! Теперь войдите."); 
+            toggleAuthMode();
+        } else {
+            const r = await fetch(SUPABASE_URL + "/auth/v1/token?grant_type=password", { method: "POST", headers: { "apikey": SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+            if(!r.ok) {
+    // Если сервер ругается на подтверждение, мы всё равно забираем токен сессии
+    const resData = await r.json();
+    if (resData && resData.access_token) {
+        localStorage.setItem("sb_token", resData.access_token);
+        checkUser();
+        return;
+    }
+    alert("Неверный логин или пароль"); 
+    return; 
+}
+            const resData = await r.json();
+            localStorage.setItem("sb_token", resData.access_token);
+            checkUser();
+        }
+    }
+    async function checkUser() {
+        const t = localStorage.getItem("sb_token");
+        if(!t) {
+            document.getElementById('authPage').style.display = 'flex';
+            document.getElementById('appContent').style.display = 'none';
+            return;
+        }
+        
+        // Сами запрашиваем профиль у сервера по интернету
+        const response = await fetch(SUPABASE_URL + "/auth/v1/user", {
+            method: "GET",
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + t
+            }
+        });
+        
+        if(response.ok) {
+            currentUser = await response.json();
+            document.getElementById('authPage').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+            loadData();
+        } else {
+            localStorage.removeItem("sb_token");
+            document.getElementById('authPage').style.display = 'flex';
+            document.getElementById('appContent').style.display = 'none';
+        }
+    }
+   async function logout() {
+    localStorage.removeItem("sb_token");
+    currentUser = null;
+    checkUser();
+}
+    async function loadData() {
+        if(!currentUser) return;
+        const t = localStorage.getItem("sb_token");
+        const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t };
+
+        // Напрямую скачиваем жанры из облака
+        const gResponse = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers });
+        const gData = gResponse.ok ? await gResponse.json() : [];
+        genres = gData ? gData.map(function(g) { return g.name; }) : [];
+        
+        // Напрямую скачиваем фильмы из облака
+        const mResponse = await fetch(SUPABASE_URL + "/rest/v1/movies?select=*", { method: "GET", headers });
+        movies = mResponse.ok ? await mResponse.json() : [];
+
+        renderMoviesGrid('moviesGrid', movies); 
+        updateGenreSelect();
+    }
+    function switchPage(pageId, titleText) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.getElementById('pageTitle').textContent = titleText;
+        document.getElementById('headerPlusBtn').style.display = (pageId === 'homePage') ? 'flex' : 'none';
+        if (pageId === 'homePage') renderMoviesGrid('moviesGrid', movies);
+        if (pageId === 'genresPage') renderGenresList();
+        if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
+    }
+    function getStarsHtml(r) { let h = ''; for(let i=1; i<=5; i++) { h += i <= r ? '★' : '☆'; } return h; }
+    function renderMoviesGrid(gridId, list) {
+        const grid = document.getElementById(gridId); grid.innerHTML = '';
+        if(list.length === 0) { grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список пуст 🎬</p>'; return; }
+        list.forEach(m => {
+            const card = document.createElement('div'); card.className = 'movie-card' + (m.favorite ? ' is-fav' : ''); card.onclick = function() { showDetails(m.id); };
+            card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><div class="card-fav-badge">❤️</div><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (m.genre || 'Общий') + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';
+            grid.appendChild(card);
+        });
+    }
+    async function renderGenresList() {
+        const t = localStorage.getItem("sb_token");
+const response = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t } });
+const gData = response.ok ? await response.json() : [];
+        const list = document.getElementById('genreList'); list.innerHTML = '';
+        if (gData) { gData.forEach(g => { const li = document.createElement('li'); li.className = 'genre-item'; li.innerHTML = '<span>' + g.name + '</span><button class="genre-edit-btn" onclick="openGenreModal(\'' + g.id + '\', \'' + g.name + '\')">✏️</button>'; list.appendChild(li); }); }
+        updateGenreSelect();
+    }
+   async function addGenre() { 
+        const input = document.getElementById('genreInput'); 
+        if(!input) return;
+        const val = input.value.trim(); 
+        if(val && currentUser) { 
+            const t = localStorage.getItem("sb_token");
+            
+            // Напрямую отправляем новый жанр в вашу таблицу Supabase
+            await fetch(SUPABASE_URL + "/rest/v1/genres", {
+                method: "POST",
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": "Bearer " + t,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name: val, user_id: currentUser.id })
+            });
+
+            input.value = ''; 
+            renderGenresList(); 
+        } 
+    }
+    function openGenreModal(id, name) { document.getElementById('editGenreId').value = id; document.getElementById('editGenreInput').value = name; document.getElementById('genreModal').classList.add('active'); }
+    function closeGenreModal() { document.getElementById('genreModal').classList.remove('active'); }
+   async function saveGenreChanges() { 
+        const id = document.getElementById('editGenreId').value; 
+        const name = document.getElementById('editGenreInput').value.trim(); 
+        if(!name) return; 
+        const t = localStorage.getItem("sb_token");
+        
+        await fetch(SUPABASE_URL + "/rest/v1/genres?id=eq." + id, {
+            method: "PATCH",
+            headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" },
+            body: JSON.stringify({ name: name })
+        });
+
+        closeGenreModal(); 
+        loadData(); 
+        renderGenresList(); 
+    }
+
+    async function deleteGenreFromModal() { 
+        const id = document.getElementById('editGenreId').value; 
+        if(confirm("Удалить жанр?")) { 
+            const t = localStorage.getItem("sb_token");
+            
+            await fetch(SUPABASE_URL + "/rest/v1/genres?id=eq." + id, {
+                method: "DELETE",
+                headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t }
+            });
+
+            closeGenreModal(); 
+            loadData(); 
+            renderGenresList(); 
+        } 
+    }
+    function updateGenreSelect() { const select = document.getElementById('formGenreSelect'); if(!select) return; select.innerHTML = '<option value="">Без жанра</option>'; genres.forEach(g => { select.innerHTML += '<option value="' + g + '">' + g + '</option>'; }); }
+    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
+    function openModal(editId = null) {
+        updateGenreSelect(); const deleteBtn = document.getElementById('formDeleteBtn');
+        if(editId) {
+            const m = movies.find(x => x.id === editId); document.getElementById('modalHeadline').textContent = "Редактировать фильм"; document.getElementById('formMovieId').value = m.id; document.getElementById('formTitle').value = m.title; document.getElementById('formYear').value = m.year; document.getElementById('formGenreSelect').value = m.genre; document.getElementById('formPoster').value = m.poster; document.getElementById('formDesc').value = m.desc; setFormRating(m.rating || 0); deleteBtn.style.display = 'block';
+        } else {
+            document.getElementById('modalHeadline').textContent = "Новый фильм"; document.getElementById('formMovieId').value = ''; document.getElementById('formTitle').value = ''; document.getElementById('formYear').value = ''; document.getElementById('formGenreSelect').value = ''; document.getElementById('formPoster').value = ''; document.getElementById('formDesc').value = ''; setFormRating(0); deleteBtn.style.display = 'none';
+        }
+        document.getElementById('addMovieModal').classList.add('active');
+    }
+    function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
+    async function saveMovie() {
+        const title = document.getElementById('formTitle').value.trim(); if (!title) { alert("Укажите название!"); return; }
+        const id = document.getElementById('formMovieId').value;
+        const t = localStorage.getItem("sb_token");
+        const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" };
+        const mData = { 
+            title: title, 
+            year: document.getElementById('formYear').value.trim(), 
+            genre: document.getElementById('formGenreSelect').value, 
+            poster: document.getElementById('formPoster').value.trim(), 
+            desc: document.getElementById('formDesc').value.trim(), 
+            rating: currentFormRating, 
+            user_id: currentUser.id 
+        };
+        
+        if(id) { 
+            await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
+        } else { 
+            mData.favorite = false; 
+            await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
+        }
+        closeModal(); await loadData(); if(id) { showDetails(Number(id)); } else { switchPage('homePage', 'Все фильмы'); }
+    }
+    async function deleteMovieFromForm() { const id = document.getElementById('formMovieId').value; if(id && confirm("Удалить фильм?")) { await supabase.from('movies').delete().eq('id', id); closeModal(); await loadData(); switchPage('homePage', 'Все фильмы'); } }
+    function showDetails(id) {
+        const m = movies.find(x => x.id == id); if(!m) return; switchPage('detailsPage', 'О фильме'); document.getElementById('movieEditBtn').onclick = function() { openModal(m.id); };
+        const c = document.getElementById('detailsContainer'); c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
+        c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m.poster || defaultPoster) + '"><div class="details-content"><div class="details-top-row"><h2 class="details-title">' + m.title + '</h2><button class="heart-btn" onclick="toggleFav(' + m.id + ')">' + (m.favorite ? '❤️' : '🤍') + '</button></div><span class="details-tag">📅 ' + (m.year || '—') + '</span><span class="details-tag">🎭 ' + (m.genre || '—') + '</span><span class="details-tag" style="color:#fba94c">Рейтинг: ' + getStarsHtml(m.rating || 0) + '</span><p class="details-desc">' + (m.desc || 'Описание отсутствует.') + '</p></div></div>';
+    }
+    async function toggleFav(id) { 
+        const m = movies.find(function(x) { return x.id == id; }); 
+        if(m) { 
+            const t = localStorage.getItem("sb_token");
+            const nextState = !m.favorite;
+            
+            // Напрямую обновляем статус "избранное" в облаке
+            await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, {
+                method: "PATCH",
+                headers: { 
+                    "apikey": SUPABASE_KEY, 
+                    "Authorization": "Bearer " + t, 
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify({ favorite: nextState })
+            });
+            
+            await loadData(); 
+            showDetails(id); 
+        } 
+    }
+           checkUser();
+    </script>
+</body>
+</html>
