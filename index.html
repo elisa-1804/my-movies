@@ -115,31 +115,27 @@
         </div>
     </div>
 
-    <div class="modal" id="genreModal">
-        <div class="modal-content">
-            <h3>Редактировать жанр</h3>
-            <input type="hidden" id="editGenreId">
-            <div class="form-group">
-                <label>Название жанра</label>
-                <input type="text" id="editGenreInput">
+<div id="genreModal" class="modal">
+    <div class="modal-content">
+        <h3>Редактировать жанр</h3>
+        
+        <!-- Ваши поля ввода жанра... -->
+
+        <!-- БЛОК КНОПОК ДОЛЖЕН СТОЯТЬ СТРОГО ЗДЕСЬ (ВНУТРИ ОКНА) -->
+        <div class="form-buttons">
+            <button class="del-mini-btn" onclick="deleteGenreFromModal()">
+                <img src="delete.png" alt="Удалить">
+            </button>
+            <div style="display:flex; gap:10px; margin-left:auto;">
+                <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+                <button class="action-btn save-btn" onclick="saveGenreChanges()">
+                    <img src="save.png" alt="Сохранить">
+                </button>
             </div>
-<div class="form-buttons">
-    <!-- 1. Ваша родная кнопка удаления -->
-    <button class="del-mini-btn" onclick="deleteGenreFromModal()">
-        <img src="delete.png" alt="Удалить">
-    </button>
-    
-    <div style="display:flex; gap:10px; margin-left:auto;">
-        <!-- 2. Ваша родная кнопка отмены -->
-        <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
-        <!-- 3. Ваша родная кнопка сохранения -->
-        <button class="action-btn save-btn" onclick="saveGenreChanges()">
-            <img src="save.png" alt="Сохранить">
-        </button>
-    </div>
-</div>
         </div>
-    </div>
+
+    </div> <!-- Конец modal-content -->
+</div> <!-- Конец genreModal -->
 
        <script>
     const SUPABASE_URL = "https://ppjezzfhwsartggywzyp.supabase.co";
