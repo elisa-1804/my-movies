@@ -178,52 +178,9 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Звездочки и Кнопки */
 .rating-stars { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #29292e; }
 .rating-stars span.active { color: #fba94c; }
-/* Ваша кнопка удаления жанра (делаем её закругленным квадратом) */
-.del-mini-btn {
-    background-color: #ef4444 !important; 
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 8px !important; /* Округляем углы */
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 0 !important;
-    border: none !important;
-    cursor: pointer !important;
-}
-
-/* Ваша кнопка сохранения жанра (делаем её закругленным квадратом) */
-.save-btn {
-    background-color: #06B6D4 !important; 
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 8px !important; /* Округляем углы */
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 0 !important;
-    border: none !important;
-    cursor: pointer !important;
-}
-
-/* Ваша кнопка отмены (просто подгоняем высоту под квадраты) */
-.cancel-btn {
-    background-color: #29292e !important;
-    color: #8d8d99 !important;
-    height: 44px !important;
-    border-radius: 8px !important;
-}
-
-/* Намертво запрещаем картинкам внутри ваших кнопок растягиваться в полосы */
-.save-btn img, 
-.del-mini-btn img {
-    width: 20px !important;
-    height: 20px !important;
-    object-fit: contain !important; /* Картинка сохранит свои пропорции и не сожмется */
-    display: block !important;
-    background: transparent !important;
-    mix-blend-mode: screen !important; /* Убирает белый фон у иконок */
-}
+.save-btn { background-color: #06B6D4; color: white; }
+.cancel-btn { background-color: #29292e; color: #8d8d99; }
+.del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
 
 /* Страница просмотра фильма */
 .details-container { background-color: #202024; border-radius: 12px; padding: 20px; margin-top: 10px; transition: background-color 0.3s; }
