@@ -115,21 +115,30 @@
         </div>
     </div>
 
-<div id="genreModal" class="modal">
-    <div class="modal-content">
-        <h3>Редактировать жанр</h3>
-        
-        <div class="form-buttons">
+
+<div class="modal" id="genreModal">
+        <div class="modal-content">
+            <h3>Редактировать жанр</h3>
+            <input type="hidden" id="editGenreId">
+            <div class="form-group">
+                <label>Название жанра</label>
+                <input type="text" id="editGenreInput">
+            </div>
+            <div class="form-buttons">
     <button class="del-mini-btn" onclick="deleteGenreFromModal()">Удалить</button>
     <div style="display:flex; gap:10px; margin-left:auto;">
         <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
         <button class="action-btn save-btn" onclick="saveGenreChanges()">Сохранить</button>
     </div>
 </div>
+        </div>
+    </div>
 
-    </div> <!-- Конец modal-content -->
-</div> <!-- Конец genreModal -->
 
+
+
+
+    
        <script>
     const SUPABASE_URL = "https://ppjezzfhwsartggywzyp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ChDY37tmdQzyKO_xUe_kEw_D5zTO4og";
