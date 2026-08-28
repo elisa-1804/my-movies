@@ -178,28 +178,52 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Звездочки и Кнопки */
 .rating-stars { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #29292e; }
 .rating-stars span.active { color: #fba94c; }
-/* Базовый класс для кнопок в окнах */
+/* 1. Блок кнопок в окне жанров — центрируем ряд через CSS, а не через HTML */
+.form-buttons {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 15px !important;
+    width: 100% !important;
+    margin-top: 25px !important;
+    box-sizing: border-box !important;
+}
+
+/* 2. Все большие кнопки сайта (Вход, Создание жанра) автоматически растягиваются на 100% */
 .action-btn { 
-    padding: 10px 15px; 
-    border-radius: 6px; 
-    border: none; 
-    font-size: 14px; 
-    cursor: pointer; 
-    font-weight: 600; 
+    padding: 12px 24px !important; 
+    border-radius: 8px !important; 
+    border: none !important; 
+    font-size: 16px !important; 
+    cursor: pointer !important; 
+    font-weight: 500 !important; 
+    background-color: #06B6D4 !important;
+    color: white !important;
+    width: 100% !important; /* Вот здесь мы растягиваем их через CSS */
+    display: block !important;
+    box-sizing: border-box !important;
+    transition: background 0.2s;
+}
+.action-btn:hover {
+    background-color: #0891b2 !important;
 }
 
-/* Кнопка отмены (остаётся прямоугольной с текстом) */
+/* 3. Кнопка Отмена в окне жанров (прямоугольная с текстом) */
 .cancel-btn { 
-    background-color: #29292e; 
-    color: #8d8d99; 
+    background-color: #29292e !important; 
+    color: #8d8d99 !important; 
     height: 44px !important;
+    padding: 0 20px !important;
     border-radius: 8px !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
 }
 
-/* Кнопка сохранения (Квадрат со скруглением под иконку) */
+/* 4. Кнопка Сохранить в окне жанров (Квадратная под иконку) */
 .save-btn { 
-    background-color: #06B6D4; 
-    color: white; 
+    background-color: #06B6D4 !important; 
     width: 44px !important;
     height: 44px !important;
     border-radius: 8px !important;
@@ -207,13 +231,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     justify-content: center !important;
     align-items: center !important;
     padding: 0 !important;
+    border: none !important;
+    cursor: pointer !important;
 }
 
-/* Кнопка удаления (Красный квадрат со скруглением под иконку) */
+/* 5. Кнопка Удалить в окне жанров (Красный квадрат) */
 .del-mini-btn { 
-    background-color: #ef4444; 
-    border: none; 
-    cursor: pointer; 
+    background-color: #ef4444 !important; 
     width: 44px !important;
     height: 44px !important;
     border-radius: 8px !important;
@@ -221,16 +245,18 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     justify-content: center !important;
     align-items: center !important;
     padding: 0 !important;
+    border: none !important;
+    cursor: pointer !important;
 }
 
-/* Фиксируем размеры ваших любимых картинок внутри этих кнопок */
-.save-btn img, .del-mini-btn img {
+/* Картинки-иконки внутри маленьких квадратных кнопок */
+.my-header-img {
     width: 20px !important;
     height: 20px !important;
     object-fit: contain !important;
     display: block !important;
     background: transparent !important;
-    mix-blend-mode: screen !important; /* Намертво растворяет белый фон картинок */
+    mix-blend-mode: screen !important;
 }
 
 /* Страница просмотра фильма */
