@@ -131,12 +131,19 @@
                 <input type="text" id="editGenreInput">
             </div>
             <div class="form-buttons">
-                <button class="del-mini-btn" onclick="deleteGenreFromModal()">🗑️ Удалить</button>
-                <div style="display:flex; gap:10px; margin-left:auto;">
-                    <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
-                    <button class="action-btn save-btn" onclick="saveGenreChanges()">Сохранить</button>
-                </div>
-            </div>
+    <!-- Кнопка Удалить (теперь с картинкой) -->
+    <button class="del-mini-btn" id="myGenreDeleteBtn" onclick="deleteGenreFromModal()">
+        <img src="icon-logout.png" class="my-header-img" alt="Удалить">
+    </button>
+    <div style="display:flex; gap:10px; margin-left:auto;">
+        <!-- Кнопка Отмена (оставили как есть) -->
+        <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+        <!-- Кнопка Сохранить (теперь круглая с картинкой) -->
+        <button class="action-btn save-btn" onclick="saveGenreChanges()" style="width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; padding:0;">
+            <img src="icon-add.png" class="my-header-img" alt="Сохранить">
+        </button>
+    </div>
+</div>
         </div>
     </div>
 
@@ -303,6 +310,16 @@ if (gData) {
         } 
     }
     function openGenreModal(id, name) { document.getElementById('editGenreId').value = id; document.getElementById('editGenreInput').value = name; document.getElementById('genreModal').classList.add('active'); }
+    function deleteGenre(genreId, genreName) {
+    // 1. Открываем модальное окно для этого жанра
+    openGenreModal(genreId, genreName);
+    
+    // 2. И сразу даем команду автоматически кликнуть по кнопке удаления внутри окна!
+    const internalDeleteBtn = document.getElementById('myGenreDeleteBtn');
+    if (internalDeleteBtn) {
+        internalDeleteBtn.click();
+    }
+}
     function closeGenreModal() { document.getElementById('genreModal').classList.remove('active'); }
    async function saveGenreChanges() { 
         const id = document.getElementById('editGenreId').value; 
