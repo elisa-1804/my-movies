@@ -33,11 +33,8 @@
         <header>
             <h1 id="pageTitle">Киноман</h1>
             <div style="display:flex; gap:15px; align-items:center;">
-                <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
-                    <img src="add.png" alt="Добавить" class="header-icon-img">
-                </button>
                 <button class="logout-btn" onclick="logout()">
-                    <img src="logout.png" alt="Выйти" class="header-icon-img">
+                    <img src="exit.png" alt="Выйти" class="header-icon-img">
                 </button>
             </div>
         </header>
@@ -51,6 +48,9 @@
 
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (БЫВШАЯ ГЛАВНАЯ) -->
         <div id="allMoviesPage" class="page">
+            <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
+                    <img src="add.png" alt="Добавить" class="header-icon-img">
+                </button>
             <div class="movies-grid" id="moviesGrid"></div>
         </div>
 
