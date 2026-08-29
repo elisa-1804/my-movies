@@ -1,7 +1,18 @@
 /* Настройки темы, сетка и шапка */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
 body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background-color: #121214; z-index: 10; }
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 20px; 
+    
+    /* ЖЕСТКИЕ ПРАВИЛА ПРОТИВ СДВИГА КНОПОК: */
+    width: 100%;               /* Шапка всегда растянута на всю ширину экрана */
+    box-sizing: border-box;    /* Включает паддинги в общую ширину, чтобы ничего не вылезало */
+    flex-wrap: nowrap;         /* КАТЕГОРИЧЕСКИ ЗАПРЕЩАЕТ кнопкам падать на вторую строку */
+    gap: 15px;                 /* Безопасное расстояние между заголовком и блоком кнопок */
+}
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Кнопка добавления фильма */
 .add-movie-btn { 
