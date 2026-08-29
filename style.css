@@ -372,7 +372,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     left: 0px;                 /* Отступ слева под размер боковых полей сайта */
     right: 20px;                /* Отступ справа */
     
-    margin-top: 20px !important;   /* Полностью обнуляем margin, чтобы он не мешал */
+    margin-top: 100px !important;   /* Полностью обнуляем margin, чтобы он не мешал */
     
     transition: background-color 0.3s; 
 }
