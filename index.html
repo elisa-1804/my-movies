@@ -390,6 +390,7 @@
     if (pageId === 'genresPage') renderGenresList();
     if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
     if (pageId === 'recommendationsPage') loadRecommendations();
+    if (pageId === 'moviePartsPage') renderCollectionsGrid();
 }
 
 
@@ -844,6 +845,58 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             const errText = await response.text();
             alert("Ошибка при создании жанра: " + errText);
         }
+    }
+    // --- РАЗДЕЛ: ФИЛЬМЫ ПО ЧАСТЯМ (ОТРИСОВКА СТОПОК) ---
+    function renderCollectionsGrid() {
+        const gridContainer = document.getElementById('collectionsGrid');
+        if (!gridContainer) return;
+        
+        gridContainer.innerHTML = '';
+        
+        // 1. Фильтруем фильмы, у которых заполнено поле collection
+        const partMovies = movies.filter(m => m.collection && m.collection.trim() !== '');
+        
+        if (partMovies.length === 0) {
+            gridContainer.innerHTML = '<div class="empty-section-message">Пока нет созданных франшиз. Укажите коллекцию в редактировании фильма!</div>';
+            return;
+        }
+        
+        // 2. Группируем фильмы по имени коллекции
+        const groups = {};
+        partMovies.forEach(m => {
+            const name = m.collection.trim();
+            if (!groups[name]) groups[name] = [];
+            groups[name].push(m);
+        });
+        
+        // 3. Строим стопки для каждой франшизы
+        Object.keys(groups).forEach(collectionName => {
+            const list = groups[collectionName];
+            
+            // Сортируем фильмы внутри коллекции по году выпуска (от старых к новым)
+            list.sort((a, b) => (a.year || 0) - (b.year || 0));
+            
+            // Берем самый первый фильм франшизы как главную обложку стопки
+            const coverMovie = list[0];
+            const defaultPoster = 'https://unsplash.com';
+            
+            // Создаем обертку-контейнер, на которой в CSS висит эффект края книги (before/after)
+            const wrapper = document.createElement('div');
+            wrapper.className = 'movie-stack-wrapper';
+            
+            // При клике на стопку мы пока просто откроем описание первой части 
+            // (в будущем сюда можно будет повесить открытие списка всех частей этой франшизы!)
+            wrapper.onclick = () => showDetails(coverMovie.id);
+            
+            wrapper.innerHTML = `
+                <div class="collection-cover-card">
+                    <img src="${coverMovie.poster || defaultPoster}" alt="${collectionName}">
+                    <div class="collection-stack-title">${collectionName}</div>
+                </div>
+            `;
+            
+            gridContainer.appendChild(wrapper);
+        });
     }
 
 
