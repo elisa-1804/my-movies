@@ -564,3 +564,57 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 
+
+/* Контейнер кнопок в окне жанров (строго по центру) */
+.genre-modal-buttons {
+    display: flex;
+    justify-content: center; /* Центрируем кнопки по горизонтали */
+    align-items: center;
+    gap: 20px;               /* Расстояние между двумя кнопками */
+    margin-top: 25px;
+    width: 100%;
+}
+
+/* Круглая кнопка удаления (красная) */
+.genre-del-icon-btn {
+    background-color: #f75a68; /* Твой оригинальный красный цвет удаления */
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    outline: none;
+}
+.genre-del-icon-btn:hover { background-color: #ff6b7b; }
+.genre-del-icon-btn:active { transform: scale(0.95); }
+
+/* Круглая кнопка сохранения (голубая) */
+.genre-save-icon-btn {
+    background-color: #06B6D4; /* Твой оригинальный акцентный голубой */
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    outline: none;
+}
+.genre-save-icon-btn:hover { background-color: #0dd0f2; }
+.genre-save-icon-btn:active { transform: scale(0.95); }
+
+/* Белые PNG-картинки внутри этих кнопок */
+.genre-btn-img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    pointer-events: none;
+    display: block;
+}
+
