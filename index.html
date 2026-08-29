@@ -357,22 +357,26 @@ const gData = response.ok ? await response.json() : [];
         const t = localStorage.getItem("sb_token");
         const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" };
         
-        // ЧИТАЕМ ЗНАЧЕНИЯ ИЗ ПОЛЕЙ
+                // ЧИТАЕМ ЗНАЧЕНИЯ ИЗ ПОЛЕЙ
         const posterValue = document.getElementById('formPoster').value.trim();
         const descValue = document.getElementById('formDesc').value.trim();
         const genreValue = document.getElementById('formGenreSelect').value;
         const yearValue = document.getElementById('formYear').value.trim();
 
-        // ИСПРАВЛЕНИЕ: Если поле пустое, отправляем null, иначе отправляем текст
+        // НОВАЯ СТРОЧКА: Стираем кавычки у года и превращаем его в число для int8
+        const parsedYear = yearValue ? parseInt(yearValue, 10) : null;
+
+        // ИСПРАВЛЕНИЕ: Теперь отправляем строго правильные типы данных
         const mData = { 
             title: title, 
-            year: yearValue || null, 
+            year: parsedYear,             // ТЕПЕРЬ ТУТ ЧИСЛО (без кавычек), база int8 примет его!
             genre: genreValue || null, 
-            poster: posterValue || null, // Если пусто — уйдет null вместо ""
-            desc: descValue || null,     // Если пусто — уйдет null вместо ""
+            poster: posterValue || null,  // Если пусто — уйдет null вместо ""
+            desc: descValue || null,      // Если пусто — уйдет null вместо ""
             rating: currentFormRating, 
             user_id: currentUser.id 
         };
+
         
         if(id) { 
             await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
