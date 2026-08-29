@@ -192,7 +192,17 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .modal-content h3 { margin-bottom: 20px; text-align: center; }
 .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
 .form-group label { font-size: 13px; color: #8d8d99; margin-bottom: 6px; }
-.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background-color: #121214; border: 1px solid #29292e; border-radius: 6px; color: white; font-size: 14px; outline: none; }
+.form-group input, .form-group textarea, .form-group select { 
+    width: 100%; 
+    padding: 10px; 
+    background-color: #121214; 
+    border: 1px solid #29292e; 
+    border-radius: 6px; 
+    color: white; 
+    font-size: 14px; 
+    outline: none; 
+    resize: none; /* Запрещаем ручное изменение размера текстового поля */
+}
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #06B6D4; }
 .form-buttons { 
     display: flex; 
