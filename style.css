@@ -74,19 +74,22 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     position: absolute; 
     bottom: 10px; 
     right: 10px; 
-    width: 16px;       /* Делаем его аккуратным и компактным на карточке */
+    width: 16px;       
     height: 16px;
     object-fit: contain;
-    opacity: 0.2;      /* На обычных фильмах оно бледное и не отвлекает */
-    transition: opacity 0.3s, filter 0.3s;
-}
-
-/* КОГДА ФИЛЬМ В ИЗБРАННОМ: делаем иконку яркой и красим в розовый (БЕЗ свечения) */
-.movie-card.is-fav .card-heart-img { 
-    opacity: 1;        /* Полная яркость */
+    
+    /* Скрываем иконку на обычных фильмах */
+    display: none;      
+    
     /* Фильтр делает контур розовым в цвет бордовой карточки */
     filter: invert(41%) sepia(82%) saturate(4645%) hue-rotate(313deg) brightness(97%) contrast(93%);
 }
+
+/* КОГДА ФИЛЬМ В ИЗБРАННОМ: показываем иконку на карточке */
+.movie-card.is-fav .card-heart-img { 
+    display: block;    
+}
+
 
 /* Меняем цвет фона карточки, если фильм в избранном */
 .movie-card.is-fav {
