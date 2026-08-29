@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Киноман</title>
     <link rel="stylesheet" href="style.css">
-   <script src="https://yastatic.net"></script>
+    <script src="https://yastatic.net"></script>
 </head>
 <body>
+
+    <!-- ЭКРАН АВТОРИЗАЦИИ (Показывается до входа) -->
     <div id="authPage" class="auth-container">
         <div class="auth-card">
             <h2 id="authTitle">Войти в профиль</h2>
             <div class="form-group">
-    <label>Email</label>
-    <input type="email" id="authEmail" placeholder="example@mail.com">
-</div>
+                <label>Email</label>
+                <input type="email" id="authEmail" placeholder="example@mail.com">
+            </div>
             <div class="form-group">
                 <label>Пароль</label>
                 <input type="password" id="authPassword" placeholder="Минимум 6 символов">
@@ -24,10 +26,12 @@
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ (Показывается только после входа) -->
+    <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ (Показывается строго после входа) -->
     <div id="appContent" style="display: none;">
+        
+        <!-- ВЕРХНЯЯ ШАПКА САЙТА -->
         <header>
-            <h1 id="pageTitle">Все фильмы</h1>
+            <h1 id="pageTitle">Киноман</h1>
             <div style="display:flex; gap:15px; align-items:center;">
                 <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
                     <img src="add.png" alt="Добавить" class="header-icon-img">
@@ -38,10 +42,10 @@
             </div>
         </header>
 
-        <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ) -->
+        <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ) -->
         <div id="homePage" class="page active">
             <div class="hub-grid" id="hubGrid">
-                <!-- Сюда мы добавим 3 плитки разделов -->
+                <!-- Сюда в следующем шаге мы добавим 3 красивые плитки -->
             </div>
         </div>
 
@@ -50,12 +54,12 @@
             <div class="movies-grid" id="moviesGrid"></div>
         </div>
 
-        <!-- 3. ИЗБРАННОЕ -->
+        <!-- 3. СТРАНИЦА ИЗБРАННОГО -->
         <div id="favoritesPage" class="page">
             <div class="movies-grid" id="favoritesGrid"></div>
         </div>
 
-        <!-- 4. СТРАНИЦА ЖАНРОВ (ФОРМА СОЗДАНИЯ И СПИСОК СТРОГО ТУТ) -->
+        <!-- 4. СТРАНИЦА ЖАНРОВ -->
         <div id="genresPage" class="page">
             <div class="genre-form">
                 <input type="text" id="genreInput" placeholder="Название жанра...">
@@ -65,7 +69,7 @@
         </div>
 
         <!-- 5. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
-        <div id="detailsPage" class="page">
+        <div id="detailsPage" class="page" style="position: relative;">
             <div class="details-fixed-header">
                 <h1 class="details-page-main-title">О фильме</h1>
                 <div class="details-header-panel">
@@ -78,68 +82,28 @@
             <div class="details-container" id="detailsContainer"></div>
         </div>
 
-        <!-- НИЖНЕЕ МЕНЮ (ЛЕЖИТ СТРОГО ВНУТРИ APPCONTENT, ЧТОБЫ ПРЯТАТЬСЯ НА ВХОДЕ) -->
+        <!-- НИЖНЕЕ НАВИГАЦИОННОЕ МЕНЮ (НА САМОМ ДНЕ APPCONTENT) -->
         <nav class="bottom-nav">
             <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Киноман')">
                 <img src="home.png" alt="Главная" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
             <button class="nav-item" id="navAllMovies" onclick="switchPage('allMoviesPage', 'Все фильмы')">
-                <img src="movies_icon.png" alt="Все фильмы" class="nav-icon-img">
+                <img src="video.png" alt="Все фильмы" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
             <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')">
-                <img src="fav.png" alt="Избранное" class="nav-icon-img">
+                <img src="favorites.png" alt="Избранное" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
         </nav>
+
     </div> <!-- КОНЕЦ БЛОКА appContent -->
 
 
-       <div id="detailsPage" class="page" style="position: relative;">
-    <!-- ОБЩАЯ КРАСИВАЯ ЗАКРЕПЛЕННАЯ ШАПКА -->
-    <div class="details-fixed-header">
-        <h1 class="details-page-main-title">О фильме</h1>
-        <div class="details-header-panel">
-            <button class="back-btn" onclick="switchPage('homePage', 'Все фильмы')">← Назад</button>
-<button class="edit-icon-btn" id="movieEditBtn">
-    <img src="edit.png" alt="Редактировать" class="details-edit-img">
-</button>
-        </div>
-    </div>
+    <!-- МОДАЛЬНЫЕ ОКНА (ЛЕЖАТ ВНЕ ОСНОВНОГО ПОТОКА СТРАНИЦЫ) -->
     
-    <!-- КАРТОЧКА ФИЛЬМА (ТЕПЕРЬ ОНА В ЕСТЕСТВЕННОМ ПОТОКЕ) -->
-    <div class="details-container" id="detailsContainer"></div>
-</div>
-
-
-
-
-
-       <nav class="bottom-nav">
-    <!-- Кнопка 1. Новая Главная страница (Хаб) -->
-    <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Киноман')">
-        <img src="home.png" alt="Главная" class="nav-icon-img">
-        <div class="nav-line"></div>
-    </button>
-    
-    <!-- Кнопка 2. Бывшая Главная, теперь это просто "Все фильмы" -->
-    <button class="nav-item" id="navAllMovies" onclick="switchPage('allMoviesPage', 'Все фильмы')">
-        <img src="video.png" alt="Все фильмы" class="nav-icon-img">
-        <div class="nav-line"></div>
-    </button>
-    
-    <!-- Кнопка 3. Избранное -->
-    <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')">
-        <img src="favorites.png" alt="Избранное" class="nav-icon-img">
-        <div class="nav-line"></div>
-    </button>
-</nav>
-
-
-
-    </div>
-
+    <!-- МОДАЛКА: ДОБАВИТЬ/РЕДАКТИРОВАТЬ ФИЛЬМ -->
     <div class="modal" id="addMovieModal">
         <div class="modal-content">
             <h3 id="modalHeadline">Новый фильм</h3>
@@ -153,13 +117,9 @@
                 <input type="number" id="formYear">
             </div>
             <div class="form-group">
-    <label>Жанры фильма</label>
-    <!-- Контейнер для списка жанров с чекбоксами -->
-    <div id="genresCheckboxContainer" class="genres-checkbox-list">
-        <!-- Сюда JS сам добавит чекбоксы -->
-    </div>
-</div>
-
+                <label>Жанры фильма</label>
+                <div id="genresCheckboxContainer" class="genres-checkbox-list"></div>
+            </div>
             <div class="form-group">
                 <label>Моя оценка</label>
                 <div class="rating-stars" id="formRatingStars">
@@ -174,19 +134,16 @@
                 <label>Описание фильма</label>
                 <textarea id="formDesc" rows="3"></textarea>
             </div>
-            <!-- Кнопки должны быть СТРОГО здесь, внутри modal-content -->
-                        <!-- Обновленный блок кнопок в окне фильма -->
             <div class="form-buttons">
                 <button class="action-btn cancel-btn" onclick="closeModal()">Отмена</button>
                 <button class="genre-save-icon-btn" onclick="saveMovie()">
                     <img src="save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
             </div>
+        </div>
+    </div>
 
-        </div> <!-- Конец modal-content -->
-    </div> <!-- Конец addMovieModal -->
-
-
+    <!-- МОДАЛКА: РЕДАКТИРОВАТЬ ЖАНР -->
     <div class="modal" id="genreModal">
         <div class="modal-content">
             <h3>Редактировать жанр</h3>
@@ -206,6 +163,7 @@
             </div>
         </div>
     </div>
+
 
 
        <script>
