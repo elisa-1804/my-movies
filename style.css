@@ -4,42 +4,53 @@ body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background-color: #121214; z-index: 10; }
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Кнопка добавления фильма */
+/* Кнопка добавления фильма (в сером кружке) */
 .add-movie-btn { 
     background-color: #29292e; 
     border: none; 
     width: 40px; 
     height: 40px; 
     border-radius: 50%; 
-    display: flex;             /* Возвращаем flex */
-    align-items: center;       /* Центровка по вертикали */
-    justify-content: center;   /* Центровка по горизонтали */
+    display: inline-flex;       
+    align-items: center;        
+    justify-content: center;    
     cursor: pointer; 
     transition: background-color 0.2s;
-    flex-shrink: 0;            /* Запрещаем кнопке сжиматься или деформироваться */
+    flex-shrink: 0;            
+    padding: 0 !important;      /* Сбросили отступы, чтобы плюс не съезжал */
+    margin: 0;
 }
 
-/* Кнопка выхода */
+/* Новая кнопка выхода (в точно таком же сером кружке) */
 .logout-btn {
     background-color: #29292e; 
     border: none; 
     width: 40px; 
     height: 40px; 
     border-radius: 50%; 
-    display: flex; 
+    display: inline-flex; 
     align-items: center; 
     justify-content: center; 
     cursor: pointer; 
     transition: background-color 0.2s;
-    flex-shrink: 0;            /* Запрещаем деформацию */
+    flex-shrink: 0;
+    padding: 0 !important;      /* Здесь тоже сбрасываем */
+    margin: 0;
 }
 
-/* Картинки внутри кнопок шапки */
+/* Эффект при наведении на серые кружки */
+.add-movie-btn:hover, .logout-btn:hover {
+    background-color: #323238;
+}
+
+/* Картинки внутри кнопок шапки (Идеальная центровка) */
 .header-icon-img {
-    width: 20px;  
-    height: 20px;
+    width: 20px !important;     
+    height: 20px !important;
     object-fit: contain;
-    pointer-events: none;      /* ВАЖНО: клик будет проходить сквозь картинку прямо на кнопку */
+    pointer-events: none;      
     display: block;
+    margin: 0 !important;       /* Убираем любые авто-сдвиги */
 }
 
 /* Класс для скрытия кнопки на других вкладках */
