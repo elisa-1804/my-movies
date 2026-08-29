@@ -93,10 +93,15 @@
             <div class="empty-section-message">Раздел "Фильмы по частям" находится в разработке...</div>
         </div>
 
-        <!-- НОВАЯ СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
+               <!-- 2. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
         <div id="recommendationsPage" class="page">
-            <div class="empty-section-message">Раздел "Рекомендации" находится в разработке...</div>
+            <!-- Кнопка "Пополнить реки" строго под заголовком -->
+            <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
+            
+            <!-- Сюда JS будет выводить список рекомендаций -->
+            <ul class="rec-list" id="recList"></ul>
         </div>
+
         
         <!-- 5. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
         <div id="detailsPage" class="page" style="position: relative;">
@@ -194,6 +199,40 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО: ДОБАВИТЬ В РЕКОМЕНДАЦИИ -->
+    <div class="modal" id="recModal">
+        <div class="modal-content">
+            <h3 id="recModalHeadline">Новая рекомендация</h3>
+            <input type="hidden" id="editRecId">
+            
+            <div class="form-group">
+                <label>Название фильма или сериала</label>
+                <input type="text" id="recInput" placeholder="Что ты услышала...">
+            </div>
+            
+            <!-- Выбор тега (выбрать можно только один) -->
+            <div class="form-group">
+                <label>Тип контента</label>
+                <div class="rec-type-selector">
+                    <div class="rec-type-pill movie active" id="typeMovie" onclick="selectRecType('movie')">Фильм</div>
+                    <div class="rec-type-pill series" id="typeSeries" onclick="selectRecType('series')">Сериал</div>
+                </div>
+            </div>
+
+            <div class="genre-modal-buttons">
+                <!-- Кнопка удаления (покажется только при редактировании) -->
+                <button class="genre-del-icon-btn" id="recDeleteBtn" style="display:none;" onclick="deleteRec()">
+                    <img src="delete.png" alt="Удалить" class="genre-btn-img">
+                </button>
+                <button class="action-btn cancel-btn" onclick="closeRecModal()">Отмена</button>
+                <button class="genre-save-icon-btn" onclick="saveRecommendation()">
+                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
 
 
        <script>
