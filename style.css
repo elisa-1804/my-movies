@@ -326,9 +326,31 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
 
 /* Страница просмотра фильма */
-.details-container { background-color: #202024; border-radius: 12px; padding: 20px; margin-top: 10px; transition: background-color 0.3s; }
+.details-container { 
+    background-color: #202024; 
+    border-radius: 12px; 
+    padding: 20px; 
+    
+    /* ИСПРАВЛЕНИЕ: Добавляем отступ сверху, чтобы фильм не прятался под закрепленной панелью */
+    margin-top: 75px;           /* 60px высота панели + 15px свободного воздуха */
+    
+    transition: background-color 0.3s; 
+}
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
-.details-header-panel { display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background-color: #121214; padding: 10px 0; z-index: 5; margin-bottom: 15px; }
+.details-header-panel { 
+    position: fixed;            /* Намертво прижимаем панель к экрану */
+    top: 0; 
+    left: 0;
+    right: 0;
+    height: 60px;               /* Задаем фиксированную высоту панели */
+    background-color: #121214;  /* Четкий темный фон, чтобы текст под ним полностью скрывался */
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 0 20px;            /* Боковые отступы для кнопок внутри */
+    z-index: 150;               /* Высокий приоритет, чтобы панель была поверх карточки фильма */
+    border-bottom: 1px solid #29292e; /* Красивая тонкая разделительная полоса внизу */
+}
 .back-btn { background: none; border: none; color: #06B6D4; font-size: 16px; cursor: pointer; }
 .edit-icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
 .details-flex { display: flex; gap: 20px; flex-wrap: wrap; }
