@@ -360,23 +360,22 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
 
 /* Страница просмотра фильма */
-/* Карточка самого фильма — абсолютное позиционирование против скрытых отступов */
 .details-container { 
     background-color: #202024; 
     border-radius: 12px; 
     padding: 20px; 
     
-    /* ЖЕСТКАЯ ПРИВЯЗКА К ВЕРХУ СТРАНИЦЫ: */
-    position: absolute;         /* Вырываем карточку из авто-распределения браузера */
-    top: 10px;                 /* Точное расстояние от самого верха экрана до начала карточки */
-    left: 0px;                 /* Отступ слева под размер боковых полей сайта */
-    right: 20px;                /* Отступ справа */
+    /* ИСПРАВЛЕНИЕ: Возвращаем в нормальный поток вместо абсолютного позиционирования */
+    position: relative;         
     
-    margin-top: 100px !important;   /* Полностью обнуляем margin, чтобы он не мешал */
+    /* ЧЁТКИЕ ОТСТУПЫ: */
+    margin-top: 145px !important;    /* Этот маржин опустит карточку ровно из-под закреплённых кнопок */
+    margin-bottom: 100px !important; /* Внешний отступ снизу спасает от заезда под нижнее меню */
     
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     transition: background-color 0.3s; 
 }
-
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
 /* Общий контейнер шапки деталей, закрепленный вверху */
 /* Общий контейнер шапки деталей, закрепленный вверху */
