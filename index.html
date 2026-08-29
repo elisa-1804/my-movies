@@ -79,14 +79,13 @@
             <div class="movies-grid" id="favoritesGrid"></div>
         </div>
 
-        <!-- 4. СТРАНИЦА ЖАНРОВ -->
+                <!-- 4. СТРАНИЦА ЖАНРОВ (Только кнопка добавления и список) -->
         <div id="genresPage" class="page">
-            <div class="genre-form">
-                <input type="text" id="genreInput" placeholder="Название жанра...">
-                <button class="action-btn save-btn" onclick="addGenre()">Создать</button>
-            </div>
+            <!-- Красивая голубая кнопка на всю ширину -->
+            <button class="add-rec-btn" onclick="openAddGenreModal()">Добавить жанр</button>
             <ul class="genre-list" id="genreList"></ul>
         </div>
+
 
         <!-- НОВАЯ СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
         <div id="moviePartsPage" class="page">
@@ -232,7 +231,23 @@
         </div>
     </div>
 
-    
+        <!-- МОДАЛЬНОЕ ОКНО: ДОБАВИТЬ НОВЫЙ ЖАНР -->
+    <div class="modal" id="addGenreModal">
+        <div class="modal-content">
+            <h3>Новый жанр</h3>
+            <div class="form-group">
+                <label>Название жанра</label>
+                <input type="text" id="newGenreInput" placeholder="Например: Аниме, Триллер...">
+            </div>
+            <div class="form-buttons">
+                <button class="action-btn cancel-btn" onclick="closeAddGenreModal()">Отмена</button>
+                <button class="genre-save-icon-btn" onclick="submitNewGenre()">
+                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                </button>
+            </div>
+        </div>
+    </div>
+
 
 
        <script>
@@ -788,6 +803,41 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
         }
     }
 
+    // 1. Открытие модалки создания жанра
+    function openAddGenreModal() {
+        document.getElementById('newGenreInput').value = ''; // Очищаем поле
+        document.getElementById('addGenreModal').classList.add('active');
+    }
+
+    // 2. Закрытие модалки создания жанра
+    function closeAddGenreModal() {
+        document.getElementById('addGenreModal').classList.remove('active');
+    }
+
+    // 3. Функция создания жанра через модальное окно
+    async function submitNewGenre() {
+        const name = document.getElementById('newGenreInput').value.trim();
+        if (!name) { alert("Введите название жанра!"); return; }
+
+        const t = localStorage.getItem("sb_token");
+        const response = await fetch(SUPABASE_URL + "/rest/v1/genres", {
+            method: "POST",
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + t,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name: name })
+        });
+
+        if (response.ok) {
+            closeAddGenreModal();  // Закрываем окно создания
+            await loadData();      // Полностью обновляем данные с сервера
+        } else {
+            const errText = await response.text();
+            alert("Ошибка при создании жанра: " + errText);
+        }
+    }
 
 
            
