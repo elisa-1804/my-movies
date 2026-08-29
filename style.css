@@ -337,31 +337,47 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     transition: background-color 0.3s; 
 }
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
-.details-header-panel { 
-    position: fixed;            /* Намертво прижимаем панель к экрану */
-    top: 0; 
+/* Наш новый общий контейнер шапки, закрепленный вверху */
+.details-fixed-header {
+    position: fixed;            /* Намертво прижимаем всю конструкцию к экрану */
+    top: 0;
     left: 0;
     right: 0;
-    height: 60px;               /* Задаем фиксированную высоту панели */
-    background-color: #121214;  /* Четкий темный фон, чтобы текст под ним полностью скрывался */
+    background-color: #121214;  /* Плотный темный фон шапки */
+    z-index: 150;               /* Поверх контента фильма */
+    padding-top: 15px;          /* Отступ сверху для заголовка */
+    border-bottom: 1px solid #29292e; /* Тонкая разделительная полоса в самом низу шапки */
+}
+
+/* Крупный красивый заголовок "О фильме" на самом верху */
+.details-main-title {
+    font-size: 22px;            /* Крупный размер, как у оригинальных заголовков */
+    font-weight: 600;
+    color: #E2E8F0;
+    text-align: center;         /* Строго по центру */
+    margin-bottom: 10px;        /* Отступ до кнопок, которые идут ниже */
+    margin-top: 0;
+}
+
+/* Панель с кнопками, которая теперь лежит внутри общей шапки */
+.details-header-panel { 
+    height: 45px;               /* Умеренная высота для кнопок */
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    padding: 0 20px;            /* Боковые отступы для кнопок внутри */
-    z-index: 150;               /* Высокий приоритет, чтобы панель была поверх карточки фильма */
-    border-bottom: 1px solid #29292e; /* Красивая тонкая разделительная полоса внизу */
+    padding: 0 20px 10px 20px;  /* Боковые отступы и отступ снизу */
 }
-/* Стиль для текста "О фильме" в закрепленной шапке */
-.details-header-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #E2E8F0;
-    margin: 0;
-    text-align: center;
-    position: absolute; /* Магия абсолютного позиционирования */
-    left: 50%;
-    transform: translateX(-50%); /* Выравниваем текст идеально по центру экрана */
-    pointer-events: none; /* Чтобы текст не мешал кликам по кнопкам рядом */
+
+/* Корректируем отступ самого контейнера с фильмом */
+.details-container { 
+    background-color: #202024; 
+    border-radius: 12px; 
+    padding: 20px; 
+    
+    /* ИСПРАВЛЕНИЕ: Так как шапка стала выше, увеличиваем отступ, чтобы фильм не прятался под ней */
+    margin-top: 115px;          /* Место под крупный заголовок + кнопки + воздух */
+    
+    transition: background-color 0.3s; 
 }
 
 .back-btn { background: none; border: none; color: #06B6D4; font-size: 16px; cursor: pointer; }
