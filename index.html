@@ -39,12 +39,40 @@
             </div>
         </header>
 
-        <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ) -->
+                <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ) -->
         <div id="homePage" class="page active">
-            <div class="hub-grid" id="hubGrid">
-                <!-- Сюда в следующем шаге мы добавим 3 красивые плитки -->
+            <div class="hub-sections-list">
+                
+                <!-- Раздел 1. Фильмы по частям -->
+                <div class="hub-section-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
+                    <div class="hub-card-left">
+                        <img src="playlist.png" alt="Части" class="hub-card-icon">
+                        <span class="hub-card-title">Фильмы по частям</span>
+                    </div>
+                    <span class="hub-card-arrow">➔</span>
+                </div>
+
+                <!-- Раздел 2. Рекомендации к просмотру -->
+                <div class="hub-section-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
+                    <div class="hub-card-left">
+                        <img src="bookmark.png" alt="Рекомендации" class="hub-card-icon">
+                        <span class="hub-card-title">Рекомендации к просмотру</span>
+                    </div>
+                    <span class="hub-card-arrow">➔</span>
+                </div>
+
+                <!-- Раздел 3. Жанры -->
+                <div class="hub-section-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
+                    <div class="hub-card-left">
+                        <img src="genres_main_icon.png" alt="Жанры" class="hub-card-icon">
+                        <span class="hub-card-title">Жанры</span>
+                    </div>
+                    <span class="hub-card-arrow">➔</span>
+                </div>
+
             </div>
         </div>
+
 
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (БЫВШАЯ ГЛАВНАЯ) -->
         <div id="allMoviesPage" class="page">
@@ -68,6 +96,16 @@
             <ul class="genre-list" id="genreList"></ul>
         </div>
 
+        <!-- НОВАЯ СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
+        <div id="moviePartsPage" class="page">
+            <div class="empty-section-message">Раздел "Фильмы по частям" находится в разработке...</div>
+        </div>
+
+        <!-- НОВАЯ СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
+        <div id="recommendationsPage" class="page">
+            <div class="empty-section-message">Раздел "Рекомендации" находится в разработке...</div>
+        </div>
+        
         <!-- 5. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
         <div id="detailsPage" class="page" style="position: relative;">
             <div class="details-fixed-header">
