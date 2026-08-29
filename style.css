@@ -334,8 +334,43 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 
 /* Анимированное Сердечко */
-.heart-btn { background: none; border: none; font-size: 26px; cursor: pointer; position: absolute; top: 0; right: 0; transition: transform 0.2s; outline: none; }
-.heart-btn:active { transform: scale(1.4); }
+/* Кнопка-контейнер для сердечка на странице деталей */
+.heart-btn { 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    position: absolute; 
+    top: 0; 
+    right: 0; 
+    transition: transform 0.2s; 
+    outline: none; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Эффект пульсации при нажатии */
+.heart-btn:active { 
+    transform: scale(1.3); 
+}
+
+/* Стили для белой PNG иконки сердечка внутри кнопки */
+.heart-icon-img {
+    width: 20px;  /* Делаем её чуть поменьше, чем в нижнем меню (там было 24px) */
+    height: 20px;
+    object-fit: contain;
+    opacity: 0.3; /* Изначально сердечко бледное */
+    transition: opacity 0.3s, filter 0.3s;
+}
+
+/* КОГДА ФИЛЬМ В ИЗБРАННОМ: красим белую иконку и заставляем её светиться */
+/* Магия CSS превращает белую PNG-иконку в ярко-розовую (под цвет бордовой карточки) */
+.details-container.is-fav .heart-icon-img {
+    opacity: 1; /* Полная яркость */
+    /* Фильтр перекрашивает белую картинку в розовый цвет #EC4899 и добавляет свечение: */
+    filter: invert(41%) sepia(82%) saturate(4645%) hue-rotate(313deg) brightness(97%) contrast(93%) drop-shadow(0px 0px 8px rgba(236, 72, 153, 0.8));
+}
+
 .details-tag { display: inline-block; background-color: #29292e; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px; margin-bottom: 10px; }
 .details-desc { margin-top: 15px; line-height: 1.5; color: #c4c4cc; }
 
