@@ -56,7 +56,16 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .movie-poster { width: 100%; height: 200px; object-fit: cover; }
 .movie-info { padding: 10px; }
 .movie-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.movie-meta { font-size: 11px; color: #8d8d99; margin-bottom: 4px; }
+.movie-meta { 
+    font-size: 11px; 
+    color: #8d8d99; 
+    margin-bottom: 4px; 
+    
+    /* Добавляем строгий запрет на перенос и красивое многоточие: */
+    white-space: nowrap;      /* Текст всегда идет строго в одну строку */
+    overflow: hidden;         /* Все, что вылезло за границы, прячется */
+    text-overflow: ellipsis;  /* Автоматически рисует три точки "..." в конце */
+}
 .card-stars { font-size: 11px; color: #fba94c; }
 
 /* Сердечко-значок на главной */
