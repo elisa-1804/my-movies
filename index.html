@@ -38,9 +38,24 @@
 </header>
 
 
-        <div id="homePage" class="page active"><div class="movies-grid" id="moviesGrid"></div></div>
-        <div id="favoritesPage" class="page"><div class="movies-grid" id="favoritesGrid"></div></div>
-        <div id="genresPage" class="page">
+            <!-- 1. СОВЕРШЕННО НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ) -->
+    <div id="homePage" class="page active">
+        <!-- Сюда в следующем шаге мы закинем 3 новых раздела с твоими иконками -->
+        <div class="hub-grid" id="hubGrid">
+            
+        </div>
+    </div>
+
+    <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (БЫВШАЯ ГЛАВНАЯ — ВНУТРИ ВСЁ БЕЗ ИЗМЕНЕНИЙ) -->
+    <div id="allMoviesPage" class="page">
+        <div class="movies-grid" id="moviesGrid"></div>
+    </div>
+
+    <!-- 3. ИЗБРАННОЕ -->
+    <div id="favoritesPage" class="page">
+        <div class="movies-grid" id="favoritesGrid"></div>
+    </div>
+
             <div class="genre-form">
                 <input type="text" id="genreInput" placeholder="Название жанра...">
                 <button class="action-btn save-btn" onclick="addGenre()">Создать</button>
@@ -68,16 +83,26 @@
 
 
 
-        <nav class="bottom-nav">
+       <nav class="bottom-nav">
+    <!-- Кнопка 1. Новая Главная страница (Хаб) -->
     <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Киноман')">
         <img src="home.png" alt="Главная" class="nav-icon-img">
         <div class="nav-line"></div>
     </button>
+    
+    <!-- Кнопка 2. Бывшая Главная, теперь это просто "Все фильмы" -->
+    <button class="nav-item" id="navAllMovies" onclick="switchPage('allMoviesPage', 'Все фильмы')">
+        <img src="video.png" alt="Все фильмы" class="nav-icon-img">
+        <div class="nav-line"></div>
+    </button>
+    
+    <!-- Кнопка 3. Избранное -->
     <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')">
         <img src="favorites.png" alt="Избранное" class="nav-icon-img">
         <div class="nav-line"></div>
     </button>
 </nav>
+
 
 
     </div>
