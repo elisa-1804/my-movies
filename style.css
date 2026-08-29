@@ -443,11 +443,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-size: 24px; 
 }
 .auth-toggle { 
+    display: block;       /* Превращаем в блочный элемент, чтобы сработало центрирование */
     text-align: center; 
-    margin-top: 15px; 
+    margin-top: 25px;     /* Увеличили отступ сверху, чтобы опустить строчку ровно на уровень ниже */
     font-size: 13px; 
     color: #06B6D4; 
     cursor: pointer; 
     text-decoration: underline; 
 }
+
 
