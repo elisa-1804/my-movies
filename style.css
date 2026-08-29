@@ -69,14 +69,24 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .card-stars { font-size: 11px; color: #fba94c; }
 
 /* Сердечко-значок на главной */
-.card-fav-badge { 
+/* Новое PNG-сердечко на карточках главной страницы */
+.card-heart-img { 
     position: absolute; 
     bottom: 10px; 
     right: 10px; 
-    font-size: 14px; 
-    display: none; 
+    width: 16px;       /* Делаем его аккуратным и компактным на карточке */
+    height: 16px;
+    object-fit: contain;
+    opacity: 0.2;      /* На обычных фильмах оно бледное и не отвлекает */
+    transition: opacity 0.3s, filter 0.3s;
 }
-.movie-card.is-fav .card-fav-badge { display: block; }
+
+/* КОГДА ФИЛЬМ В ИЗБРАННОМ: делаем иконку яркой и красим в розовый (БЕЗ свечения) */
+.movie-card.is-fav .card-heart-img { 
+    opacity: 1;        /* Полная яркость */
+    /* Фильтр делает контур розовым в цвет бордовой карточки */
+    filter: invert(41%) sepia(82%) saturate(4645%) hue-rotate(313deg) brightness(97%) contrast(93%);
+}
 
 /* Меняем цвет фона карточки, если фильм в избранном */
 .movie-card.is-fav {
