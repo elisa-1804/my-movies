@@ -39,39 +39,31 @@
             </div>
         </header>
 
-                <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ) -->
+                <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ КВАДРАТАМИ) -->
         <div id="homePage" class="page active">
-            <div class="hub-sections-list">
+            <div class="hub-grid">
                 
-                <!-- Раздел 1. Фильмы по частям -->
-                <div class="hub-section-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
-                    <div class="hub-card-left">
-                        <img src="playlist.png" alt="Части" class="hub-card-icon">
-                        <span class="hub-card-title">Фильмы по частям</span>
-                    </div>
-                    <span class="hub-card-arrow">➔</span>
+                <!-- Карточка 1. Фильмы по частям -->
+                <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
+                    <img src="parts_icon.png" alt="Части" class="hub-tile-icon">
+                    <span class="hub-tile-title">Фильмы по частям</span>
                 </div>
 
-                <!-- Раздел 2. Рекомендации к просмотру -->
-                <div class="hub-section-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
-                    <div class="hub-card-left">
-                        <img src="bookmark.png" alt="Рекомендации" class="hub-card-icon">
-                        <span class="hub-card-title">Рекомендации к просмотру</span>
-                    </div>
-                    <span class="hub-card-arrow">➔</span>
+                <!-- Карточка 2. Рекомендации к просмотру -->
+                <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
+                    <img src="recommend_icon.png" alt="Рекомендации" class="hub-tile-icon">
+                    <span class="hub-tile-title">Рекомендации к просмотру</span>
                 </div>
 
-                <!-- Раздел 3. Жанры -->
-                <div class="hub-section-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
-                    <div class="hub-card-left">
-                        <img src="genres_main_icon.png" alt="Жанры" class="hub-card-icon">
-                        <span class="hub-card-title">Жанры</span>
-                    </div>
-                    <span class="hub-card-arrow">➔</span>
+                <!-- Карточка 3. Жанры -->
+                <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
+                    <img src="genres_main_icon.png" alt="Жанры" class="hub-tile-icon">
+                    <span class="hub-tile-title">Жанры</span>
                 </div>
 
             </div>
         </div>
+
 
 
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (БЫВШАЯ ГЛАВНАЯ) -->
