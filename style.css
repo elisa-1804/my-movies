@@ -368,33 +368,57 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 /* Стили для белой PNG иконки сердечка внутри кнопки */
+/* Белая PNG иконка сердечка (базовое бледное состояние) */
 .heart-icon-img {
-    width: 20px;  /* Делаем её чуть поменьше, чем в нижнем меню (там было 24px) */
-    height: 20px;
+    width: 20px !important;
+    height: 20px !important;
     object-fit: contain;
-    opacity: 0.3; /* Изначально сердечко бледное */
+    opacity: 0.3;
+    background: transparent !important; /* Убираем любые фоновые заливки с самой картинки */
+    padding: 0 !important;             /* Запрещаем внутренние отступы, чтобы не плыл размер */
     transition: opacity 0.3s, filter 0.3s;
 }
 
-/* КОГДА ФИЛЬМ В ИЗБРАННОМ: красим белую иконку и заставляем её светиться */
-/* Магия CSS превращает белую PNG-иконку в ярко-розовую (под цвет бордовой карточки) */
-/* КОГДА ФИЛЬМ В ИЗБРАННОМ: иконка становится ярче и пускает мягкое свечение из центра */
+/* КОГДА ФИЛЬМ В ИЗБРАННОМ: идеальный розовый цвет #EC4899 для белой картинки */
 .details-container.is-fav .heart-icon-img {
-    opacity: 1; /* Полная яркость контура */
+    opacity: 1;
     
-    /* Делаем контур розовым в тон темы */
-    filter: invert(41%) sepia(82%) saturate(4645%) hue-rotate(313deg) brightness(97%) contrast(93%);
-    
-    /* Магия: создаем мягкое круглое облако свечения прямо за сердечком */
-    background: radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(236, 72, 153, 0) 70%);
-    border-radius: 50%; /* Чтобы градиент расходился идеальным кругом */
-    padding: 6px;       /* Расширяем область, чтобы свечение выходило за рамки контура */
-    
-    /* Сдвигаем размеры, чтобы из-за паддинга сердечко визуально не увеличилось */
-    box-sizing: content-box; 
-    
-    transition: background 0.4s ease, opacity 0.3s;
+    /* Точный CSS-фильтр перевода белого цвета в розовый #EC4899 (без ухода в красный) */
+    -webkit-filter: invert(44%) sepia(51%) saturate(3474%) hue-rotate(307deg) brightness(96%) contrast(96%) !important;
+    filter: invert(44%) sepia(51%) saturate(3474%) hue-rotate(307deg) brightness(96%) contrast(96%) !important;
 }
+
+/* Переносим свечение на саму кнопку (контейнер), чтобы оно было ЗА картинкой и не перекрывало её */
+.heart-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 32px;  /* Размер области клика */
+    height: 32px;
+    transition: transform 0.2s;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.4s ease, transform 0.2s;
+}
+
+/* Пульсация при клике */
+.heart-btn:active {
+    transform: scale(1.3);
+}
+
+/* КОГДА ФИЛЬМ В ИЗБРАННОМ: нежное розовое сияние рождается НА ФОНЕ кнопки ЗА сердечком */
+.details-container.is-fav .heart-btn {
+    /* Нежно-розовый радиальный градиент с высокой прозрачностью (всего 15-20%) */
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.25) 0%, rgba(236, 72, 153, 0) 70%) !important;
+}
+
 
 .details-tag { display: inline-block; background-color: #29292e; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px; margin-bottom: 10px; }
 .details-desc { margin-top: 15px; line-height: 1.5; color: #c4c4cc; }
