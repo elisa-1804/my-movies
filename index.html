@@ -258,31 +258,48 @@
         updateGenreSelect();
     }
     function switchPage(pageId, titleText) {
+    // 1. Снимаем активные классы со страниц и меню
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     
+    // 2. Активируем текущую страницу
     document.getElementById(pageId).classList.add('active');
     
-    // ИСПРАВЛЕННЫЙ БЛОК: проверяем 3 наши новые кнопки меню
+    // 3. Подсвечиваем нужную кнопку в нижнем меню
     if (pageId === 'homePage') document.getElementById('navHome').classList.add('active');
     if (pageId === 'allMoviesPage') document.getElementById('navAllMovies').classList.add('active');
     if (pageId === 'favoritesPage') document.getElementById('navFav').classList.add('active');
 
-    // Оставшаяся часть функции без изменений:
+    // 4. Управляем оригинальной шапкой (прячем на странице деталей фильма)
+    const mainHeader = document.querySelector('#appContent > header');
+    if (mainHeader) {
+        if (pageId === 'detailsPage') {
+            mainHeader.style.display = 'none';
+        } else {
+            mainHeader.style.display = 'flex';
+        }
+    }
+
+    // 5. Меняем заголовок в шапке
     document.getElementById('pageTitle').textContent = titleText;
     
-    // Плюс виден только на странице всех фильмов, чтобы добавлять новые карточки
-    document.getElementById('headerPlusBtn').style.display = (pageId === 'allMoviesPage') ? 'block' : 'none';
-    if (pageId === 'allMoviesPage') {
-        document.getElementById('headerPlusBtn').classList.remove('hidden');
-    } else {
-        document.getElementById('headerPlusBtn').classList.add('hidden');
+    // 6. ЖЕСТКОЕ И ЧИСТОЕ УПРАВЛЕНИЕ КНОПКОЙ ДОБАВЛЕНИЯ:
+    // Показываем плюс ТОЛЬКО на странице "Все фильмы" (allMoviesPage)
+    const plusBtn = document.getElementById('headerPlusBtn');
+    if (plusBtn) {
+        if (pageId === 'allMoviesPage') {
+            plusBtn.classList.remove('hidden');
+        } else {
+            plusBtn.classList.add('hidden');
+        }
     }
     
+    // 7. Отрисовка списков на нужных страницах
     if (pageId === 'allMoviesPage') renderMoviesGrid('moviesGrid', movies);
     if (pageId === 'genresPage') renderGenresList();
     if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
 }
+
 
 
     function getStarsHtml(r) { let h = ''; for(let i=1; i<=5; i++) { h += i <= r ? '★' : '☆'; } return h; }
