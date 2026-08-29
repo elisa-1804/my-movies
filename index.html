@@ -230,7 +230,7 @@
 
     // Оставшаяся часть твоей функции (её не меняем):
     document.getElementById('pageTitle').textContent = titleText;
-    document.getElementById('headerPlusBtn').style.display = (pageId === 'homePage') ? 'flex' : 'none';
+    document.getElementById('headerPlusBtn').style.display = (pageId === 'homePage') ? 'block' : 'none';
     if (pageId === 'homePage') renderMoviesGrid('moviesGrid', movies);
     if (pageId === 'genresPage') renderGenresList();
     if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
