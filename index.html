@@ -350,41 +350,22 @@ const gData = response.ok ? await response.json() : [];
 
     function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
     async function saveMovie() {
-    const title = document.getElementById('formTitle').value.trim(); 
-    if (!title) { alert("Укажите название!"); return; }
-    
-    const id = document.getElementById('formMovieId').value;
-    const t = localStorage.getItem("sb_token");
-    const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" };
-    
-    // Возвращаем полностью твой оригинальный формат данных, который база точно принимает:
-    const mData = { 
-        title: title, 
-        year: document.getElementById('formYear').value.trim(), 
-        genre: document.getElementById('formGenreSelect').value, 
-        poster: document.getElementById('formPoster').value.trim(), 
-        desc: document.getElementById('formDesc').value.trim(), 
-        rating: currentFormRating, 
-        user_id: currentUser.id 
-    };
-    
-    if(id) { 
-        await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
-    } else { 
-        mData.favorite = false; 
-        await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
-    }
-    
-    closeModal(); 
-    await loadData(); 
-    
-    if(id) { 
-        showDetails(id); 
-    } else { 
-        switchPage('homePage', 'Все фильмы'); 
-    }
-}
-
+        const title = document.getElementById('formTitle').value.trim(); 
+        if (!title) { alert("Укажите название!"); return; }
+        
+        const id = document.getElementById('formMovieId').value;
+        const t = localStorage.getItem("sb_token");
+        const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" };
+        
+        const mData = { 
+            title: title, 
+            year: document.getElementById('formYear').value.trim(), 
+            genre: document.getElementById('formGenreSelect').value, 
+            poster: document.getElementById('formPoster').value.trim(), 
+            desc: document.getElementById('formDesc').value.trim(), 
+            rating: currentFormRating, 
+            user_id: currentUser.id 
+        };
         
         if(id) { 
             await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
@@ -392,21 +373,37 @@ const gData = response.ok ? await response.json() : [];
             mData.favorite = false; 
             await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
         }
-        closeModal(); await loadData(); if(id) { showDetails(Number(id)); } else { switchPage('homePage', 'Все фильмы'); }
+        closeModal(); 
+        await loadData(); 
+        if(id) { showDetails(id); } else { switchPage('homePage', 'Все фильмы'); }
     }
-    async function deleteMovieFromForm() { const id = document.getElementById('formMovieId').value; if(id && confirm("Удалить фильм?")) { await supabase.from('movies').delete().eq('id', id); closeModal(); await loadData(); switchPage('homePage', 'Все фильмы'); } }
+
+    async function deleteMovieFromForm() { 
+        const id = document.getElementById('formMovieId').value; 
+        if(id && confirm("Удалить фильм?")) { 
+            const t = localStorage.getItem("sb_token");
+            await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, {
+                method: "DELETE",
+                headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t }
+            });
+            closeModal(); 
+            await loadData(); 
+            switchPage('homePage', 'Все фильмы'); 
+        } 
+    }
+
     function showDetails(id) {
         const m = movies.find(x => x.id == id); if(!m) return; switchPage('detailsPage', 'О фильме'); document.getElementById('movieEditBtn').onclick = function() { openModal(m.id); };
         const c = document.getElementById('detailsContainer'); c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
         c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m.poster || defaultPoster) + '"><div class="details-content"><div class="details-top-row"><h2 class="details-title">' + m.title + '</h2><button class="heart-btn" onclick="toggleFav(' + m.id + ')">' + (m.favorite ? '❤️' : '🤍') + '</button></div><span class="details-tag">📅 ' + (m.year || '—') + '</span><span class="details-tag">🎭 ' + (m.genre || '—') + '</span><span class="details-tag" style="color:#fba94c">Рейтинг: ' + getStarsHtml(m.rating || 0) + '</span><p class="details-desc">' + (m.desc || 'Описание отсутствует.') + '</p></div></div>';
     }
+
     async function toggleFav(id) { 
         const m = movies.find(function(x) { return x.id == id; }); 
         if(m) { 
             const t = localStorage.getItem("sb_token");
             const nextState = !m.favorite;
             
-            // Напрямую обновляем статус "избранное" в облаке
             await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, {
                 method: "PATCH",
                 headers: { 
@@ -421,7 +418,9 @@ const gData = response.ok ? await response.json() : [];
             showDetails(id); 
         } 
     }
-           checkUser();
+
+    checkUser();
+
     </script>
 </body>
 </html>
