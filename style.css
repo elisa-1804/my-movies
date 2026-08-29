@@ -721,3 +721,112 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
         height: auto;
     }
 }
+
+
+
+/* Кнопка "Пополнить реки" под заголовком */
+.add-rec-btn {
+    width: 100%;
+    background-color: #29292e;
+    color: #e1e1e6;
+    border: 1px solid #323238;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.add-rec-btn:hover {
+    background-color: #323238;
+    border-color: #06B6D4; /* Слегка подсвечиваем голубым при наведении */
+}
+
+/* Список рекомендаций */
+.rec-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Строка рекомендации */
+.rec-item {
+    background-color: #202024;
+    border: 1px solid #29292e;
+    padding: 14px 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.rec-item:hover {
+    background-color: #242429;
+}
+
+/* Овальные теги-чеплашки справа */
+.rec-badge {
+    padding: 4px 12px;
+    border-radius: 20px; /* Идеальная овальная форма */
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Цвета для тегов в списке */
+.rec-badge.movie {
+    background-color: rgba(139, 92, 246, 0.15); /* Мягкий фиолетовый фон */
+    color: #a78bfa;                             /* Светло-фиолетовый текст */
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+.rec-badge.series {
+    background-color: rgba(236, 72, 153, 0.15); /* Мягкий розовый фон */
+    color: #f472b6;                             /* Светло-розовый текст */
+    border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+/* Контейнер выбора тегов внутри модального окна */
+.rec-type-selector {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Кнопки-теги в модальном окне */
+.rec-type-pill {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #121214;
+    border: 1px solid #29292e;
+    color: #8d8d99;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* Стиль АКТИВНОГО тега Фильм (Фиолетовое свечение) */
+.rec-type-pill.movie.active {
+    background-color: rgba(139, 92, 246, 0.2);
+    border-color: #8b5cf6;
+    color: #c084fc;
+}
+
+/* Стиль АКТИВНОГО тега Сериал (Розовое свечение) */
+.rec-type-pill.series.active {
+    background-color: rgba(236, 72, 153, 0.2);
+    border-color: #ec4899;
+    color: #f472b6;
+}
