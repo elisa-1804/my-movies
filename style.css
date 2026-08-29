@@ -568,53 +568,50 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Контейнер кнопок в окне жанров (строго по центру) */
 .genre-modal-buttons {
     display: flex;
-    justify-content: center; /* Центрируем кнопки по горизонтали */
+    justify-content: center; /* Центрируем всю тройку кнопок по горизонтали */
     align-items: center;
-    gap: 20px;               /* Расстояние между двумя кнопками */
+    gap: 15px;               /* Расстояние между кнопками */
     margin-top: 25px;
     width: 100%;
 }
 
-/* Круглая кнопка удаления (красная) */
+/* Квадратная кнопка удаления со скругленными углами (Красная) */
 .genre-del-icon-btn {
-    background-color: #f75a68; /* Твой оригинальный красный цвет удаления */
+    background-color: #f75a68; 
     border: none;
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
+    padding: 10px 20px;        /* Горизонтальные отступы для прямоугольной формы */
+    height: 40px;              /* Высота точно совпадает со стандартной cancel-btn */
+    border-radius: 6px;        /* Аккуратные скругленные уголки */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: background-color 0.2s;
     outline: none;
 }
 .genre-del-icon-btn:hover { background-color: #ff6b7b; }
-.genre-del-icon-btn:active { transform: scale(0.95); }
 
-/* Круглая кнопка сохранения (голубая) */
+/* Квадратная кнопка сохранения со скругленными углами (Голубая) */
 .genre-save-icon-btn {
-    background-color: #06B6D4; /* Твой оригинальный акцентный голубой */
+    background-color: #06B6D4; 
     border: none;
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
+    padding: 10px 20px;        
+    height: 40px;              /* Высота точно совпадает со стандартной cancel-btn */
+    border-radius: 6px;        /* Аккуратные скругленные уголки */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: background-color 0.2s;
     outline: none;
 }
 .genre-save-icon-btn:hover { background-color: #0dd0f2; }
-.genre-save-icon-btn:active { transform: scale(0.95); }
 
-/* Белые PNG-картинки внутри этих кнопок */
+/* Иконки внутри прямоугольных кнопок */
 .genre-btn-img {
-    width: 20px;
-    height: 20px;
+    width: 18px;               /* Чуть-чуть уменьшили для аккуратного баланса */
+    height: 18px;
     object-fit: contain;
     pointer-events: none;
     display: block;
 }
-
