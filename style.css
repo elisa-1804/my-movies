@@ -161,24 +161,32 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: flex;             /* Помогает элементам внутри распределяться правильно */
     flex-direction: column;
 }
-/* Кастомизация полосы прокрутки для модального окна */
-.modal-content::-webkit-scrollbar {
+/* Красивая тонкая прокрутка для окна, списка жанров и описания */
+.modal-content::-webkit-scrollbar,
+.genres-checkbox-list::-webkit-scrollbar,
+.form-group textarea::-webkit-scrollbar {
     width: 6px; /* Делаем полосу тонкой */
 }
 
-.modal-content::-webkit-scrollbar-track {
-    background: #202024; /* Цвет подложки скролла (совпадает с окном) */
-    border-radius: 0 12px 12px 0;
+.modal-content::-webkit-scrollbar-track,
+.genres-checkbox-list::-webkit-scrollbar-track,
+.form-group textarea::-webkit-scrollbar-track {
+    background: transparent; /* Делаем фон дорожки прозрачным для аккуратности */
 }
 
-.modal-content::-webkit-scrollbar-thumb {
-    background: #29292e; /* Цвет самого бегунка */
+.modal-content::-webkit-scrollbar-thumb,
+.genres-checkbox-list::-webkit-scrollbar-thumb,
+.form-group textarea::-webkit-scrollbar-thumb {
+    background: #29292e; /* Серый бегунок под цвет темы */
     border-radius: 10px;
 }
 
-.modal-content::-webkit-scrollbar-thumb:hover {
+.modal-content::-webkit-scrollbar-thumb:hover,
+.genres-checkbox-list::-webkit-scrollbar-thumb:hover,
+.form-group textarea::-webkit-scrollbar-thumb:hover {
     background: #06B6D4; /* При наведении бегунок подсвечивается голубым */
 }
+
 
 
 .modal-content h3 { margin-bottom: 20px; text-align: center; }
