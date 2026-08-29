@@ -841,3 +841,121 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     border-color: #ec4899;
     color: #f472b6;
 }
+
+
+/* Сетка для стопок фильмов */
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 стопки в ряд на телефоне */
+    gap: 30px 20px;                         /* Большой вертикальный зазор, чтобы верхние стопки не перекрывали нижние */
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Контейнер-обертка для создания эффекта многослойности */
+.movie-stack-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3; /* Сохраняем идеальные кинопропорции как у обычных карточек */
+}
+
+/* Базовая карточка-обложка (верхняя в стопке) */
+.collection-cover-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 3; /* Самая верхняя */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+/* Постер внутри обложки */
+.collection-cover-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Текстовая плашка с названием франшизы внизу карточки */
+.collection-stack-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(18, 18, 20, 0.95) 0%, rgba(18, 18, 20, 0) 100%);
+    padding: 25px 10px 10px 10px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ЭФФЕКТ КРАЯ КНИЖКИ: Вторая карточка (средний слой) */
+.movie-stack-wrapper::before {
+    content: "";
+    position: absolute;
+    top: -6px;    /* Сдвигаем чуть выше */
+    left: 4px;    /* Сдвигаем чуть вправо */
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1e;
+    border: 1px solid #242429;
+    border-radius: 8px;
+    z-index: 2;   /* Под обложкой */
+    opacity: 0.85;
+    transform: rotate(2deg); /* Слегка поворачиваем для эффекта колоды */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s, top 0.2s, left 0.2s;
+}
+
+/* ЭФФЕКТ КРАЯ КНИЖКИ: Третья карточка (самый нижний слой) */
+.movie-stack-wrapper::after {
+    content: "";
+    position: absolute;
+    top: -12px;   /* Сдвигаем еще выше */
+    left: 8px;    /* Сдвигаем еще вправо */
+    width: 100%;
+    height: 100%;
+    background-color: #141416;
+    border: 1px solid #1c1c1f;
+    border-radius: 8px;
+    z-index: 1;   /* Самый низ */
+    opacity: 0.6;
+    transform: rotate(4deg); /* Чуть больший наклон */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, top 0.2s, left 0.2s;
+}
+
+/* ИНТЕРАКТИВНОСТЬ: При наведении колода карт красиво "оживает" и присобирается */
+.movie-stack-wrapper:hover .collection-cover-card {
+    border-color: #06B6D4;
+}
+.movie-stack-wrapper:hover::before {
+    top: -3px;
+    left: 2px;
+    transform: rotate(1deg);
+}
+.movie-stack-wrapper:hover::after {
+    top: -6px;
+    left: 4px;
+    transform: rotate(2deg);
+}
+
+/* На больших экранах ноутбуков делаем 4 стопки в ряд */
+@media (min-width: 768px) {
+    .collections-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 35px 25px;
+    }
+}
+
