@@ -731,7 +731,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     align-items: center;
     justify-content: center;    /* Центрируем текст по центру полосы */
     background-color: #06B6D4;  /* Твой фирменный акцентный голубой */
-    color: #121214;             /* Темный контрастный текст для стиля */
+    color: white;             /* Темный контрастный текст для стиля */
     border: none;
     padding: 12px;              /* Хороший вертикальный объем под палец */
     border-radius: 8px;         /* Стильные скругленные уголки */
