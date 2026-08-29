@@ -10,7 +10,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     width: 40px; 
     height: 40px; 
     border-radius: 50%; 
-    display: inline-flex;       /* inline-flex автоматически выровняет её в ряд с дверью */
+    display: flex;       /* inline-flex автоматически выровняет её в ряд с дверью */
     align-items: center;        
     justify-content: center;    
     cursor: pointer; 
