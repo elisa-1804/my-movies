@@ -638,75 +638,78 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 
 
-/* Контейнер для списка разделов на Главной */
-.hub-sections-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;         /* Расстояние между плашками */
+/* Сетка для квадратных плиток на Главной */
+.hub-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* На телефонах разбиваем на 2 колонки */
+    gap: 15px;                             /* Расстояние между квадратами */
     margin-top: 20px;
     width: 100%;
 }
 
-/* Крупная интерактивная плашка раздела */
-.hub-section-card {
-    background-color: #202024; /* Благородный темный цвет карточки */
+/* На телефонах делаем третью плитку (Жанры) во всю ширину, чтобы сетка была гармоничной */
+.hub-tile-card:nth-child(3) {
+    grid-column: span 2;
+}
+
+/* Стиль самой квадратной плитки */
+.hub-tile-card {
+    background-color: #202024;
     border: 1px solid #29292e;
     border-radius: 12px;
-    padding: 20px;
+    aspect-ratio: 1 / 1;       /* Магия CSS: делает карточку ИДЕАЛЬНО квадратной */
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;   /* Центрируем иконку и текст внутри квадрата */
+    text-align: center;
+    padding: 15px;
     cursor: pointer;
     transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
     user-select: none;
+    box-sizing: border-box;
 }
 
-/* Левая часть плашки (иконка + текст) */
-.hub-card-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+/* Если плитка растянута во всю ширину (как Жанры), квадрат ломать не нужно, делаем её аккуратным прямоугольником */
+.hub-tile-card:nth-child(3) {
+    aspect-ratio: unset;
+    height: 110px;             /* Компактная высота для нижней длинной плашки */
 }
 
-/* Белая PNG иконка внутри плашки */
-.hub-card-icon {
-    width: 24px !important;
-    height: 24px !important;
+/* Белая PNG иконка по центру квадрата */
+.hub-tile-icon {
+    width: 32px !important;    /* Сделали чуть крупнее, так как карточка стала квадратной */
+    height: 32px !important;
     object-fit: contain;
+    margin-bottom: 12px;       /* Расстояние от иконки до текста под ней */
     display: block;
 }
 
-/* Крупный заголовок раздела */
-.hub-card-title {
-    font-size: 16px;
+/* Текст внутри плитки */
+.hub-tile-title {
+    font-size: 14px;
     font-weight: 500;
     color: #e1e1e6;
+    line-height: 1.3;
 }
 
-/* Стрелочка перехода справа */
-.hub-card-arrow {
-    font-size: 16px;
-    color: #8d8d99;
-    transition: color 0.2s, transform 0.2s;
-}
-
-/* Эффекты при наведении и клике на карточку */
-.hub-section-card:hover {
+/* Эффекты подсветки и клика */
+.hub-tile-card:hover {
     background-color: #242429;
-    border-color: #06B6D4; /* Подсвечиваем ободок нашим акцентным голубым */
+    border-color: #06B6D4;     /* Мягкий голубой неоновый ободок при фокусе */
 }
-.hub-section-card:hover .hub-card-arrow {
-    color: #06B6D4;
-    transform: translateX(3px); /* Стрелочка слегка сдвигается вправо при наведении */
-}
-.hub-section-card:active {
-    transform: scale(0.98); /* Карточка приятно сжимается при клике на телефоне */
+.hub-tile-card:active {
+    transform: scale(0.96);    /* Плитка упруго сжимается под пальцем */
 }
 
-/* Временный стиль для пустых страниц */
-.empty-section-message {
-    text-align: center;
-    color: #8d8d99;
-    font-size: 14px;
-    margin-top: 40px;
+/* Адаптивность для больших экранов ноутбуков/ПК */
+@media (min-width: 768px) {
+    .hub-grid {
+        grid-template-columns: repeat(3, 1fr); /* На ноуте все 3 плитки встанут в один красивый ряд */
+    }
+    .hub-tile-card:nth-child(3) {
+        grid-column: span 1;   /* Отменяем растяжение на ноуте */
+        aspect-ratio: 1 / 1;   /* Возвращаем идеальный квадрат */
+        height: auto;
+    }
 }
