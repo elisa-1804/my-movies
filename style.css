@@ -635,3 +635,78 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     pointer-events: none;
     display: block;
 }
+
+
+
+/* Контейнер для списка разделов на Главной */
+.hub-sections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;         /* Расстояние между плашками */
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Крупная интерактивная плашка раздела */
+.hub-section-card {
+    background-color: #202024; /* Благородный темный цвет карточки */
+    border: 1px solid #29292e;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    user-select: none;
+}
+
+/* Левая часть плашки (иконка + текст) */
+.hub-card-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Белая PNG иконка внутри плашки */
+.hub-card-icon {
+    width: 24px !important;
+    height: 24px !important;
+    object-fit: contain;
+    display: block;
+}
+
+/* Крупный заголовок раздела */
+.hub-card-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #e1e1e6;
+}
+
+/* Стрелочка перехода справа */
+.hub-card-arrow {
+    font-size: 16px;
+    color: #8d8d99;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Эффекты при наведении и клике на карточку */
+.hub-section-card:hover {
+    background-color: #242429;
+    border-color: #06B6D4; /* Подсвечиваем ободок нашим акцентным голубым */
+}
+.hub-section-card:hover .hub-card-arrow {
+    color: #06B6D4;
+    transform: translateX(3px); /* Стрелочка слегка сдвигается вправо при наведении */
+}
+.hub-section-card:active {
+    transform: scale(0.98); /* Карточка приятно сжимается при клике на телефоне */
+}
+
+/* Временный стиль для пустых страниц */
+.empty-section-message {
+    text-align: center;
+    color: #8d8d99;
+    font-size: 14px;
+    margin-top: 40px;
+}
