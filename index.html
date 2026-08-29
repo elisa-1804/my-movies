@@ -176,6 +176,10 @@
                     <img src="save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
             </div>
+            <div class="form-group">
+                <label>Франшиза / Коллекция (необязательно)</label>
+                <input type="text" id="formCollection" placeholder="Например: Гарри Поттер, Человек-паук...">
+            </div>
         </div>
     </div>
 
@@ -496,6 +500,7 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         }); 
     }    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
     // 2. Функция открытия модального окна (с авто-выбором галочек при редактировании)
+        // 1. Обновленная функция открытия модалки фильма
     function openModal(editId = null) {
         updateGenreSelect(); 
         
@@ -507,9 +512,12 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
             document.getElementById('formYear').value = m.year || ''; 
             document.getElementById('formPoster').value = m.poster || ''; 
             document.getElementById('formDesc').value = m.desc || ''; 
+            
+            // НОВАЯ СТРОЧКА: подставляем франшизу при редактировании
+            document.getElementById('formCollection').value = m.collection || ''; 
+            
             setFormRating(m.rating || 0); 
             
-            // Если у фильма есть жанры, проставляем галочки
             const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
             document.querySelectorAll('.movie-genre-checkbox').forEach(cb => {
                 cb.checked = movieGenres.includes(cb.value);
@@ -521,16 +529,17 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
             document.getElementById('formYear').value = ''; 
             document.getElementById('formPoster').value = ''; 
             document.getElementById('formDesc').value = ''; 
-            setFormRating(0); 
             
-            // При создании нового фильма сбрасываем все галочки
+            // НОВАЯ СТРОЧКА: сбрасываем поле франшизы для нового фильма
+            document.getElementById('formCollection').value = ''; 
+            
+            setFormRating(0); 
             document.querySelectorAll('.movie-genre-checkbox').forEach(cb => cb.checked = false);
         }
         document.getElementById('addMovieModal').classList.add('active');
     }
 
-    function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
-// 3. Функция сохранения фильма (собирает массив отмеченных жанров)
+    // 2. Обновленная функция сохранения фильма
     async function saveMovie() {
         const title = document.getElementById('formTitle').value.trim(); 
         if (!title) { alert("Укажите название!"); return; }
@@ -546,26 +555,27 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         const posterValue = document.getElementById('formPoster').value.trim();
         const descValue = document.getElementById('formDesc').value.trim();
         const yearValue = document.getElementById('formYear').value.trim();
+        
+        // ЧИТАЕМ ЗНАЧЕНИЕ ФРАНШИЗЫ:
+        const collectionValue = document.getElementById('formCollection').value.trim();
 
-        // Превращаем год в чистое число без кавычек (для типа int8)
         const parsedYear = yearValue ? parseInt(yearValue, 10) : null;
-        // Превращаем оценку в число (для типа int8)
         const parsedRating = currentFormRating ? parseInt(currentFormRating, 10) : 0;
 
-        // СОБИРАЕМ ВСЕ ОТМЕЧЕННЫЕ ЖАНРЫ В МАССИВ
         const selectedGenres = [];
         document.querySelectorAll('.movie-genre-checkbox:checked').forEach(cb => {
             selectedGenres.push(cb.value);
         });
 
-        // Собираем правильный объект данных
+        // Собираем объект данных для Supabase
         const mData = { 
             title: title, 
             year: parsedYear,             
-            genre: selectedGenres.length > 0 ? selectedGenres : null, // Отправляем массив или null, если ничего не выбрано
+            genre: selectedGenres.length > 0 ? selectedGenres : null, 
             poster: posterValue || null,  
             desc: descValue || null,      
-            rating: parsedRating,         
+            rating: parsedRating,
+            collection: collectionValue || null, // ТЕПЕРЬ ФРАНШИЗА УЛЕТАЕТ В БАЗУ!
             user_id: currentUser.id 
         };
         
@@ -580,21 +590,16 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         if (response.ok) {
             closeModal(); 
             await loadData(); 
-            if(id) { 
-                showDetails(id); 
-            } else { 
-                switchPage('homePage', 'Все фильмы'); 
-            }
+            if(id) { showDetails(id); } else { switchPage('allMoviesPage', 'Все фильмы'); }
         } else {
-            const errorData = await response.json().catch(() => null);
-            const errorText = errorData ? JSON.stringify(errorData) : await response.text();
-            alert("Ответ сервера Supabase: " + errorText);
-            console.error("Полная ошибка:", errorText);
+            const errorText = await response.text();
+            alert("Ошибка сохранения фильма: " + errorText);
         }
     }
 
-
-
+           
+    function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
+           
     async function deleteMovieFromForm() { 
         const id = document.getElementById('formMovieId').value; 
         if(id && confirm("Удалить фильм?")) { 
