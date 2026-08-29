@@ -78,14 +78,15 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     object-fit: contain;
     display: none;      
     
-    /* Тот же точный розовый фильтр для мобильных и десктопов */
-    -webkit-filter: invert(44%) sepia(51%) saturate(3474%) hue-rotate(307deg) brightness(96%) contrast(96%) !important;
-    filter: invert(44%) sepia(51%) saturate(3474%) hue-rotate(307deg) brightness(96%) contrast(96%) !important;
+    /* Тот же мягкий розовый фильтр без перегрузки по красному цвету */
+    -webkit-filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%) !important;
+    filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%) !important;
 }
 
 .movie-card.is-fav .card-heart-img { 
     display: block;    
 }
+
 
 
 /* Меняем цвет фона карточки, если фильм в избранном */
