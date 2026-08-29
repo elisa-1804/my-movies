@@ -3,23 +3,24 @@
 body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background-color: #121214; z-index: 10; }
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
-/* Обновленная кнопка добавления (в сером кружке) */
+/* Кнопка добавления фильма */
 .add-movie-btn { 
-    background-color: #29292e; /* Серый кружок */
+    background-color: #29292e; 
     border: none; 
     width: 40px; 
     height: 40px; 
     border-radius: 50%; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
+    display: flex;             /* Возвращаем flex */
+    align-items: center;       /* Центровка по вертикали */
+    justify-content: center;   /* Центровка по горизонтали */
     cursor: pointer; 
     transition: background-color 0.2s;
+    flex-shrink: 0;            /* Запрещаем кнопке сжиматься или деформироваться */
 }
 
-/* Новая кнопка выхода (в точно таком же сером кружке) */
+/* Кнопка выхода */
 .logout-btn {
-    background-color: #29292e; /* Серый кружок */
+    background-color: #29292e; 
     border: none; 
     width: 40px; 
     height: 40px; 
@@ -29,20 +30,23 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     justify-content: center; 
     cursor: pointer; 
     transition: background-color 0.2s;
+    flex-shrink: 0;            /* Запрещаем деформацию */
 }
 
-/* Эффект при наведении на серые кружки (они станут чуть светлее) */
-.add-movie-btn:hover, .logout-btn:hover {
-    background-color: #323238;
-}
-
-/* Стили для белых PNG иконок внутри этих кружков */
+/* Картинки внутри кнопок шапки */
 .header-icon-img {
-    width: 20px;  /* Размер самой иконки внутри кружка */
+    width: 20px;  
     height: 20px;
     object-fit: contain;
+    pointer-events: none;      /* ВАЖНО: клик будет проходить сквозь картинку прямо на кнопку */
     display: block;
 }
+
+/* Класс для скрытия кнопки на других вкладках */
+.add-movie-btn.hidden {
+    display: none !important;
+}
+
 
 /* Экраны и карточки */
 .page { display: none; padding: 0 20px; }
