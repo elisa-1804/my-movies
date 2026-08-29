@@ -69,23 +69,20 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .card-stars { font-size: 11px; color: #fba94c; }
 
 /* Сердечко-значок на главной */
-/* Новое PNG-сердечко на карточках главной страницы */
 .card-heart-img { 
     position: absolute; 
     bottom: 10px; 
     right: 10px; 
-    width: 16px;       
-    height: 16px;
+    width: 16px !important;       
+    height: 16px !important;
     object-fit: contain;
-    
-    /* Скрываем иконку на обычных фильмах */
     display: none;      
     
-    /* Фильтр делает контур розовым в цвет бордовой карточки */
-    filter: invert(41%) sepia(82%) saturate(4645%) hue-rotate(313deg) brightness(97%) contrast(93%);
+    /* Тот же точный розовый фильтр для мобильных и десктопов */
+    -webkit-filter: invert(44%) sepia(51%) saturate(3474%) hue-rotate(307deg) brightness(96%) contrast(96%) !important;
+    filter: invert(44%) sepia(51%) saturate(3474%) hue-rotate(307deg) brightness(96%) contrast(96%) !important;
 }
 
-/* КОГДА ФИЛЬМ В ИЗБРАННОМ: показываем иконку на карточке */
 .movie-card.is-fav .card-heart-img { 
     display: block;    
 }
