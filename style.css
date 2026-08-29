@@ -3,7 +3,46 @@
 body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background-color: #121214; z-index: 10; }
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
-.add-movie-btn { background-color: #202024; color: #06B6D4; border: 2px solid #06B6D4; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+/* Обновленная кнопка добавления (в сером кружке) */
+.add-movie-btn { 
+    background-color: #29292e; /* Серый кружок */
+    border: none; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: background-color 0.2s;
+}
+
+/* Новая кнопка выхода (в точно таком же сером кружке) */
+.logout-btn {
+    background-color: #29292e; /* Серый кружок */
+    border: none; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: background-color 0.2s;
+}
+
+/* Эффект при наведении на серые кружки (они станут чуть светлее) */
+.add-movie-btn:hover, .logout-btn:hover {
+    background-color: #323238;
+}
+
+/* Стили для белых PNG иконок внутри этих кружков */
+.header-icon-img {
+    width: 20px;  /* Размер самой иконки внутри кружка */
+    height: 20px;
+    object-fit: contain;
+    display: block;
+}
 
 /* Экраны и карточки */
 .page { display: none; padding: 0 20px; }
