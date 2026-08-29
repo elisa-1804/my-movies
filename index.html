@@ -24,44 +24,77 @@
         </div>
     </div>
 
+    <!-- ОСНОВНОЙ КОНТЕНТ (Показывается только после входа) -->
     <div id="appContent" style="display: none;">
         <header>
-    <h1 id="pageTitle">Все фильмы</h1>
-    <div style="display:flex; gap:15px; align-items:center;">
-        <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
-            <img src="add.png" alt="Добавить" class="header-icon-img">
-        </button>
-        <button class="logout-btn" onclick="logout()">
-            <img src="exit.png" alt="Выйти" class="header-icon-img">
-        </button>
-    </div>
-</header>
+            <h1 id="pageTitle">Все фильмы</h1>
+            <div style="display:flex; gap:15px; align-items:center;">
+                <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
+                    <img src="add.png" alt="Добавить" class="header-icon-img">
+                </button>
+                <button class="logout-btn" onclick="logout()">
+                    <img src="logout.png" alt="Выйти" class="header-icon-img">
+                </button>
+            </div>
+        </header>
 
-
-            <!-- 1. СОВЕРШЕННО НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ) -->
-    <div id="homePage" class="page active">
-        <!-- Сюда в следующем шаге мы закинем 3 новых раздела с твоими иконками -->
-        <div class="hub-grid" id="hubGrid">
-            
+        <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ) -->
+        <div id="homePage" class="page active">
+            <div class="hub-grid" id="hubGrid">
+                <!-- Сюда мы добавим 3 плитки разделов -->
+            </div>
         </div>
-    </div>
 
-    <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (БЫВШАЯ ГЛАВНАЯ — ВНУТРИ ВСЁ БЕЗ ИЗМЕНЕНИЙ) -->
-    <div id="allMoviesPage" class="page">
-        <div class="movies-grid" id="moviesGrid"></div>
-    </div>
+        <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (БЫВШАЯ ГЛАВНАЯ) -->
+        <div id="allMoviesPage" class="page">
+            <div class="movies-grid" id="moviesGrid"></div>
+        </div>
 
-    <!-- 3. ИЗБРАННОЕ -->
-    <div id="favoritesPage" class="page">
-        <div class="movies-grid" id="favoritesGrid"></div>
-    </div>
+        <!-- 3. ИЗБРАННОЕ -->
+        <div id="favoritesPage" class="page">
+            <div class="movies-grid" id="favoritesGrid"></div>
+        </div>
 
+        <!-- 4. СТРАНИЦА ЖАНРОВ (ФОРМА СОЗДАНИЯ И СПИСОК СТРОГО ТУТ) -->
+        <div id="genresPage" class="page">
             <div class="genre-form">
                 <input type="text" id="genreInput" placeholder="Название жанра...">
                 <button class="action-btn save-btn" onclick="addGenre()">Создать</button>
             </div>
             <ul class="genre-list" id="genreList"></ul>
         </div>
+
+        <!-- 5. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
+        <div id="detailsPage" class="page">
+            <div class="details-fixed-header">
+                <h1 class="details-page-main-title">О фильме</h1>
+                <div class="details-header-panel">
+                    <button class="back-btn" onclick="switchPage('allMoviesPage', 'Все фильмы')">← Назад</button>
+                    <button class="edit-icon-btn" id="movieEditBtn">
+                        <img src="edit.png" alt="Редактировать" class="details-edit-img">
+                    </button>
+                </div>
+            </div>
+            <div class="details-container" id="detailsContainer"></div>
+        </div>
+
+        <!-- НИЖНЕЕ МЕНЮ (ЛЕЖИТ СТРОГО ВНУТРИ APPCONTENT, ЧТОБЫ ПРЯТАТЬСЯ НА ВХОДЕ) -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Киноман')">
+                <img src="home.png" alt="Главная" class="nav-icon-img">
+                <div class="nav-line"></div>
+            </button>
+            <button class="nav-item" id="navAllMovies" onclick="switchPage('allMoviesPage', 'Все фильмы')">
+                <img src="movies_icon.png" alt="Все фильмы" class="nav-icon-img">
+                <div class="nav-line"></div>
+            </button>
+            <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')">
+                <img src="fav.png" alt="Избранное" class="nav-icon-img">
+                <div class="nav-line"></div>
+            </button>
+        </nav>
+    </div> <!-- КОНЕЦ БЛОКА appContent -->
+
 
        <div id="detailsPage" class="page" style="position: relative;">
     <!-- ОБЩАЯ КРАСИВАЯ ЗАКРЕПЛЕННАЯ ШАПКА -->
