@@ -337,7 +337,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     transition: background-color 0.3s; 
 }
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
-/* Наш новый общий контейнер шапки, закрепленный вверху */
 /* Общий контейнер шапки деталей, закрепленный вверху */
 .details-fixed-header {
     position: fixed;            
@@ -346,25 +345,27 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     right: 0;
     background-color: #121214;  
     z-index: 150;               
-    border-bottom: 1px solid #29292e; 
+    /* Исправлено: тонкую полоску полностью удалили */
 }
 
-/* Заголовок "О фильме" один в один как на главной */
-#detailsPageTitle {
-    font-size: 22px;    /* Точный размер заголовка главной страницы */
-    font-weight: 600;
+/* Заголовок "О фильме" — точная копия стилей h1 с главной страницы */
+.details-page-main-title {
+    font-size: 22px; 
+    font-weight: 600; 
     color: #E2E8F0;
-    padding: 20px 20px 0 20px; /* Отступы слева и сверху как у главного заголовка */
-    margin-bottom: 20px;       /* Исправлено: увеличили расстояние до кнопок ниже */
+    /* Точные отступы оригинального хедера, чтобы текст не прижимался к краю ноута/телефона: */
+    padding: 20px 20px 0 20px; 
+    margin-top: 0;
+    margin-bottom: 25px; /* Исправлено: сделали расстояние между заголовком и кнопками ещё больше */
 }
 
 /* Панель с кнопками */
 .details-header-panel { 
-    height: 45px;               
+    height: 40px;               
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    padding: 0 20px 15px 20px;  /* Боковые отступы и отступ снизу */
+    padding: 0 20px 5px 20px;  /* Уменьшили нижний паддинг, чтобы карточка подтянулась выше */
 }
 
 /* Карточка самого фильма */
@@ -373,11 +374,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     border-radius: 12px; 
     padding: 20px; 
     
-    /* Исправлено: подтянули карточку повыше, уменьшив отступ под размер сетки на главной */
-    margin-top: 145px;          
+    /* Исправлено: сильно уменьшили отступ, чтобы карточка подтянулась вплотную к кнопкам */
+    margin-top: 125px;          
     
     transition: background-color 0.3s; 
 }
+
 
 
 .back-btn { background: none; border: none; color: #06B6D4; font-size: 16px; cursor: pointer; }
