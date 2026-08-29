@@ -609,8 +609,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Иконки внутри прямоугольных кнопок */
 .genre-btn-img {
-    width: 18px;               /* Чуть-чуть уменьшили для аккуратного баланса */
-    height: 18px;
+    width: 22px;               /* Чуть-чуть уменьшили для аккуратного баланса */
+    height: 22px;
     object-fit: contain;
     pointer-events: none;
     display: block;
