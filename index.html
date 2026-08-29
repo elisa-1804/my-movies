@@ -323,36 +323,62 @@ const gData = response.ok ? await response.json() : [];
             renderGenresList(); 
         } 
     }
-    function updateGenreSelect() { const select = document.getElementById('formGenreSelect'); if(!select) return; select.innerHTML = '<option value="">Без жанра</option>'; genres.forEach(g => { select.innerHTML += '<option value="' + g + '">' + g + '</option>'; }); }
-    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
+// 1. Функция генерации чекбоксов вместо старого селекта
+    function updateGenreSelect() { 
+        const container = document.getElementById('genresCheckboxContainer'); 
+        if(!container) return; 
+        
+        container.innerHTML = ''; 
+        if (genres.length === 0) {
+            container.innerHTML = '<span style="color:#8d8d99; font-size:13px;">Жанры не созданы</span>';
+            return;
+        }
+        
+        genres.forEach(g => { 
+            container.innerHTML += `
+                <label class="genre-checkbox-item">
+                    <input type="checkbox" value="${g}" class="movie-genre-checkbox">
+                    <span>${g}</span>
+                </label>
+            `;
+        }); 
+    }    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
+    // 2. Функция открытия модального окна (с авто-выбором галочек при редактировании)
     function openModal(editId = null) {
-    updateGenreSelect(); 
-    
-    if(editId) {
-        const m = movies.find(x => x.id == editId); 
-        document.getElementById('modalHeadline').textContent = "Редактировать фильм"; 
-        document.getElementById('formMovieId').value = m.id; 
-        document.getElementById('formTitle').value = m.title; 
-        document.getElementById('formYear').value = m.year; 
-        document.getElementById('formGenreSelect').value = m.genre; 
-        document.getElementById('formPoster').value = m.poster; 
-        document.getElementById('formDesc').value = m.desc; 
-        setFormRating(m.rating || 0); 
-    } else {
-        document.getElementById('modalHeadline').textContent = "Новый фильм"; 
-        document.getElementById('formMovieId').value = ''; 
-        document.getElementById('formTitle').value = ''; 
-        document.getElementById('formYear').value = ''; 
-        document.getElementById('formGenreSelect').value = ''; 
-        document.getElementById('formPoster').value = ''; 
-        document.getElementById('formDesc').value = ''; 
-        setFormRating(0); 
+        updateGenreSelect(); 
+        
+        if(editId) {
+            const m = movies.find(x => x.id == editId); 
+            document.getElementById('modalHeadline').textContent = "Редактировать фильм"; 
+            document.getElementById('formMovieId').value = m.id; 
+            document.getElementById('formTitle').value = m.title; 
+            document.getElementById('formYear').value = m.year || ''; 
+            document.getElementById('formPoster').value = m.poster || ''; 
+            document.getElementById('formDesc').value = m.desc || ''; 
+            setFormRating(m.rating || 0); 
+            
+            // Если у фильма есть жанры, проставляем галочки
+            const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
+            document.querySelectorAll('.movie-genre-checkbox').forEach(cb => {
+                cb.checked = movieGenres.includes(cb.value);
+            });
+        } else {
+            document.getElementById('modalHeadline').textContent = "Новый фильм"; 
+            document.getElementById('formMovieId').value = ''; 
+            document.getElementById('formTitle').value = ''; 
+            document.getElementById('formYear').value = ''; 
+            document.getElementById('formPoster').value = ''; 
+            document.getElementById('formDesc').value = ''; 
+            setFormRating(0); 
+            
+            // При создании нового фильма сбрасываем все галочки
+            document.querySelectorAll('.movie-genre-checkbox').forEach(cb => cb.checked = false);
+        }
+        document.getElementById('addMovieModal').classList.add('active');
     }
-    // Вот эта строчка теперь сработает, потому что код выше больше не падает в ошибку!
-    document.getElementById('addMovieModal').classList.add('active');
-}
 
     function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
+// 3. Функция сохранения фильма (собирает массив отмеченных жанров)
     async function saveMovie() {
         const title = document.getElementById('formTitle').value.trim(); 
         if (!title) { alert("Укажите название!"); return; }
@@ -365,10 +391,8 @@ const gData = response.ok ? await response.json() : [];
             "Content-Type": "application/json" 
         };
         
-        // Читаем значения из полей формы
         const posterValue = document.getElementById('formPoster').value.trim();
         const descValue = document.getElementById('formDesc').value.trim();
-        const genreValue = document.getElementById('formGenreSelect').value;
         const yearValue = document.getElementById('formYear').value.trim();
 
         // Превращаем год в чистое число без кавычек (для типа int8)
@@ -376,11 +400,17 @@ const gData = response.ok ? await response.json() : [];
         // Превращаем оценку в число (для типа int8)
         const parsedRating = currentFormRating ? parseInt(currentFormRating, 10) : 0;
 
+        // СОБИРАЕМ ВСЕ ОТМЕЧЕННЫЕ ЖАНРЫ В МАССИВ
+        const selectedGenres = [];
+        document.querySelectorAll('.movie-genre-checkbox:checked').forEach(cb => {
+            selectedGenres.push(cb.value);
+        });
+
         // Собираем правильный объект данных
         const mData = { 
             title: title, 
             year: parsedYear,             
-            genre: genreValue || null, 
+            genre: selectedGenres.length > 0 ? selectedGenres : null, // Отправляем массив или null, если ничего не выбрано
             poster: posterValue || null,  
             desc: descValue || null,      
             rating: parsedRating,         
@@ -389,15 +419,12 @@ const gData = response.ok ? await response.json() : [];
         
         let response;
         if(id) { 
-            // Если редактируем существующий фильм
             response = await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
         } else { 
-            // Если создаем новый фильм
             mData.favorite = false; 
             response = await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
         }
 
-        // Проверяем статус ответа сервера
         if (response.ok) {
             closeModal(); 
             await loadData(); 
@@ -407,7 +434,6 @@ const gData = response.ok ? await response.json() : [];
                 switchPage('homePage', 'Все фильмы'); 
             }
         } else {
-            // Если возникла ошибка 400 или любая другая — выводим её точный текст на экран
             const errorData = await response.json().catch(() => null);
             const errorText = errorData ? JSON.stringify(errorData) : await response.text();
             alert("Ответ сервера Supabase: " + errorText);
