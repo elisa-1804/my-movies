@@ -32,11 +32,67 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     border: 1px solid #EC4899;
 }
 
-/* Навигация внизу */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background-color: #202024; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #29292e; z-index: 100; }
-.nav-item { color: #8d8d99; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; background: none; border: none; width: 33%; height: 100%; justify-content: center; }
-.nav-item.active { color: #06B6D4; }
-.nav-icon { font-size: 20px; }
+/* Навигация внизу (Обновлено) */
+.bottom-nav { 
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    height: 70px; 
+    background-color: #202024; 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center; 
+    border-top: 1px solid #29292e; 
+    z-index: 100; 
+}
+
+.nav-item { 
+    position: relative; /* Нужно для позиционирования полоски */
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer; 
+    background: none; 
+    border: none; 
+    width: 33%; 
+    height: 100%; 
+}
+
+/* Стили для твоих PNG картинок */
+.nav-icon-img {
+    width: 24px;   /* Можешь изменить размер под свои иконки */
+    height: 24px;
+    object-fit: contain;
+    opacity: 0.4;  /* В неактивном состоянии иконки полупрозрачные */
+    transition: opacity 0.3s, filter 0.3s;
+}
+
+/* Перетекающая полоска внизу кнопки */
+.nav-line {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0); /* Сжимаем полоску в точку по умолчанию */
+    width: 40px; /* Ширина полоски под иконкой */
+    height: 3px;
+    background-color: #06B6D4; /* Наш акцентный голубой */
+    border-radius: 3px 3px 0 0;
+    transition: transform 0.3s ease; /* Плавный эффект перетекания/появления */
+}
+
+/* Состояние активности (Голубой цвет) */
+.nav-item.active .nav-icon-img { 
+    opacity: 1; /* Иконка горит на полную яркость */
+    /* Добавляем голубое неоновое свечение самой иконке */
+    filter: drop-shadow(0px 0px 8px rgba(6, 182, 212, 0.6)); 
+}
+
+.nav-item.active .nav-line {
+    transform: translateX(-50%) scaleX(1); /* Полоска плавно расширяется при активации */
+}
+
 
 /* Вкладка жанров */
 .genre-form { display: flex; gap: 10px; margin-bottom: 20px; }
