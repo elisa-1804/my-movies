@@ -365,10 +365,22 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* КОГДА ФИЛЬМ В ИЗБРАННОМ: красим белую иконку и заставляем её светиться */
 /* Магия CSS превращает белую PNG-иконку в ярко-розовую (под цвет бордовой карточки) */
+/* КОГДА ФИЛЬМ В ИЗБРАННОМ: иконка становится ярче и пускает мягкое свечение из центра */
 .details-container.is-fav .heart-icon-img {
-    opacity: 1; /* Полная яркость */
-    /* Фильтр перекрашивает белую картинку в розовый цвет #EC4899 и добавляет свечение: */
-    filter: invert(41%) sepia(82%) saturate(4645%) hue-rotate(313deg) brightness(97%) contrast(93%) drop-shadow(0px 0px 8px rgba(236, 72, 153, 0.8));
+    opacity: 1; /* Полная яркость контура */
+    
+    /* Делаем контур розовым в тон темы */
+    filter: invert(41%) sepia(82%) saturate(4645%) hue-rotate(313deg) brightness(97%) contrast(93%);
+    
+    /* Магия: создаем мягкое круглое облако свечения прямо за сердечком */
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(236, 72, 153, 0) 70%);
+    border-radius: 50%; /* Чтобы градиент расходился идеальным кругом */
+    padding: 6px;       /* Расширяем область, чтобы свечение выходило за рамки контура */
+    
+    /* Сдвигаем размеры, чтобы из-за паддинга сердечко визуально не увеличилось */
+    box-sizing: content-box; 
+    
+    transition: background 0.4s ease, opacity 0.3s;
 }
 
 .details-tag { display: inline-block; background-color: #29292e; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px; margin-bottom: 10px; }
