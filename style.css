@@ -345,26 +345,24 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
 /* Общий контейнер шапки деталей, закрепленный вверху */
+/* Общий контейнер шапки деталей, закрепленный вверху */
 .details-fixed-header {
     position: fixed;            
     top: 0;
     left: 0;
     right: 0;
-    height: 110px;              /* ЖЕСТКО ЗАФИКСИРОВАЛИ ВЫСОТУ ВСЕЙ ШАПКИ */
     background-color: #121214;  
     z-index: 150;               
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
-/* Заголовок "О фильме" — точная копия стилей h1 с главной страницы */
+/* Заголовок "О фильме" — как на главной */
 .details-page-main-title {
     font-size: 22px; 
     font-weight: 600; 
     color: #E2E8F0;
-    padding: 20px 20px 0 20px; /* Отступ слева и сверху как на главной */
-    margin: 0;                 /* Сбросили все внешние отступы, чтобы не ломать высоту */
+    padding: 20px 20px 0 20px; 
+    margin-top: 0;
+    margin-bottom: 10px; 
 }
 
 /* Панель с кнопками */
@@ -373,28 +371,30 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    padding: 0 20px 10px 20px;  /* Боковые отступы и легкий отступ снизу */
+    padding: 0 20px 5px 20px;  
 }
 
-/* Настройка положения самой карточки фильма на странице */
+/* Карточка самого фильма (Исправлено!) */
 .details-container { 
     background-color: #202024; 
     border-radius: 12px; 
-    padding: 20px; 
+    padding: 20px; /* Чистый аккуратный отступ внутри панели, без пустого места снизу */
     
-    /* ПОЛОЖЕНИЕ КАРТОЧКИ: */
-    /* 110px (высота шапки) + 15px (желаемый зазор) = 125px от самого верха экрана */
-    margin-top: 125px !important; 
+    position: relative; /* Вернули в нормальный поток страницы */
+    
+    /* ИСПРАВЛЕНИЕ ГЕОМЕТРИИ И СКРОЛЛА: */
+    margin-top: 130px !important;    /* Твоё идеальное расстояние от кнопок до начала карточки */
+    margin-bottom: 100px !important; /* Внешний отступ снизу! Карточка прокрутится целиком и не залезет под меню */
     
     transition: background-color 0.3s; 
 }
 
-/* Убираем возможные скрытые отступы у внутренних элементов карточки */
+/* Элементы внутри карточки */
 .details-flex {
     display: flex; 
     gap: 20px; 
     flex-wrap: wrap; 
-    margin-top: 0 !important; /* Обнуляем, если флекс пытался оттолкнуться вниз */
+    margin-top: 0 !important;
 }
 
 
