@@ -11,7 +11,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     width: 40px; 
     height: 40px; 
     border-radius: 50%; 
-    display: inline-flex !important;      
+    display: inline-flex;      
     align-items: center;        
     justify-content: center;    
     cursor: pointer; 
