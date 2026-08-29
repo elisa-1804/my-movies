@@ -378,7 +378,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .details-container { 
     background-color: #202024; 
     border-radius: 12px; 
-    padding: 20px; /* Чистый аккуратный отступ внутри панели, без пустого места снизу */
+    padding: 0px; /* Чистый аккуратный отступ внутри панели, без пустого места снизу */
     
     position: relative; /* Вернули в нормальный поток страницы */
     
