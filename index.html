@@ -49,14 +49,21 @@
         </div>
 
         <div id="detailsPage" class="page">
-    <div class="details-header-panel">
-        <button class="back-btn" onclick="switchPage('homePage', 'Все фильмы')">← Назад</button>
-        <!-- ДОБАВИЛИ ТЕКСТ ПО ЦЕНТРУ: -->
-        <h3 class="details-header-title">О фильме</h3> 
-        <button class="edit-icon-btn" id="movieEditBtn">✏️</button>
+    <!-- ОБЩАЯ КРАСИВАЯ ЗАКРЕПЛЕННАЯ ШАПКА -->
+    <div class="details-fixed-header">
+        <!-- Текст "О фильме" теперь гордо стоит в самом верху -->
+        <h2 class="details-main-title">О фильме</h2>
+        
+        <!-- А сразу под ним — панель с нашими кнопками -->
+        <div class="details-header-panel">
+            <button class="back-btn" onclick="switchPage('homePage', 'Все фильмы')">← Назад</button>
+            <button class="edit-icon-btn" id="movieEditBtn">✏️</button>
+        </div>
     </div>
+    
     <div class="details-container" id="detailsContainer"></div>
 </div>
+
 
         <nav class="bottom-nav">
     <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Все фильмы')">
