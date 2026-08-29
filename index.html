@@ -267,28 +267,32 @@
         updateGenreSelect();
     }
     function switchPage(pageId, titleText) {
-    // 1. Сначала снимаем активный класс со ВСЕХ страниц и ВСЕХ кнопок меню
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     
-    // 2. Включаем активный класс для текущей страницы
     document.getElementById(pageId).classList.add('active');
     
-    // 3. Ищем, на какую кнопку нажали, и делаем её активной (чтобы загорелась иконка и полоска)
+    // ИСПРАВЛЕННЫЙ БЛОК: проверяем 3 наши новые кнопки меню
     if (pageId === 'homePage') document.getElementById('navHome').classList.add('active');
+    if (pageId === 'allMoviesPage') document.getElementById('navAllMovies').classList.add('active');
     if (pageId === 'favoritesPage') document.getElementById('navFav').classList.add('active');
-    if (pageId === 'genresPage') document.getElementById('navGenres').classList.add('active');
 
-    // Оставшаяся часть твоей функции (её не меняем):
+    // Оставшаяся часть функции без изменений:
     document.getElementById('pageTitle').textContent = titleText;
-if (pageId === 'homePage') {
-    document.getElementById('headerPlusBtn').classList.remove('hidden');
-} else {
-    document.getElementById('headerPlusBtn').classList.add('hidden');
-}    if (pageId === 'homePage') renderMoviesGrid('moviesGrid', movies);
+    
+    // Плюс виден только на странице всех фильмов, чтобы добавлять новые карточки
+    document.getElementById('headerPlusBtn').style.display = (pageId === 'allMoviesPage') ? 'block' : 'none';
+    if (pageId === 'allMoviesPage') {
+        document.getElementById('headerPlusBtn').classList.remove('hidden');
+    } else {
+        document.getElementById('headerPlusBtn').classList.add('hidden');
+    }
+    
+    if (pageId === 'allMoviesPage') renderMoviesGrid('moviesGrid', movies);
     if (pageId === 'genresPage') renderGenresList();
     if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
 }
+
 
     function getStarsHtml(r) { let h = ''; for(let i=1; i<=5; i++) { h += i <= r ? '★' : '☆'; } return h; }
     function renderMoviesGrid(gridId, list) {
