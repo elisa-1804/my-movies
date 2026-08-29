@@ -163,6 +163,20 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .genre-list { list-style: none; }
 .genre-item { background-color: #202024; padding: 12px 15px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
 .genre-edit-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px; }
+/* Стиль для кликабельного названия жанра */
+.genre-clickable-title {
+    width: 100%;             /* Растягиваем текст на всю ширину серой плашки */
+    padding: 4px 0;          /* Небольшие отступы, чтобы было легче кликнуть */
+    cursor: pointer;         /* Курсор-ручка на компьютере */
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+/* Эффект при наведении на название жанра (он станет чуть ярче акцентным голубым) */
+.genre-clickable-title:hover {
+    color: #06B6D4;
+}
+
 
 /* Окна форм (Модальные) */
 .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
