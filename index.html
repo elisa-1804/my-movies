@@ -128,25 +128,21 @@
     </div> <!-- Конец addMovieModal -->
 
 
-    <div class="modal" id="genreModal">
-    <div class="modal-content">
-        <h3>Редактировать жанр</h3>
-        <input type="hidden" id="editGenreId">
-        <div class="form-group">
-            <label>Название жанра</label>
-            <input type="text" id="editGenreInput">
-        </div>
-        <!-- ИСПРАВЛЕННЫЙ БЛОК КНОПОК ПО ЦЕНТРУ -->
-        <div class="genre-modal-buttons">
-            <button class="genre-del-icon-btn" onclick="deleteGenreFromModal()">
-                <img src="delete.png" alt="Удалить" class="genre-btn-img">
-            </button>
-            <button class="genre-save-icon-btn" onclick="saveGenreChanges()">
-                <img src="save.png" alt="Сохранить" class="genre-btn-img">
-            </button>
-        </div>
-    </div>
+    <div class="genre-modal-buttons">
+    <!-- Кнопка Удалить (Красная) -->
+    <button class="genre-del-icon-btn" onclick="deleteGenreFromModal()">
+        <img src="delete_icon.png" alt="Удалить" class="genre-btn-img">
+    </button>
+    
+    <!-- Кнопка Отмена (Серая, по центру) -->
+    <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+    
+    <!-- Кнопка Сохранить (Голубая) -->
+    <button class="genre-save-icon-btn" onclick="saveGenreChanges()">
+        <img src="save_icon.png" alt="Сохранить" class="genre-btn-img">
+    </button>
 </div>
+
 
        <script>
     const SUPABASE_URL = "https://ppjezzfhwsartggywzyp.supabase.co";
