@@ -468,7 +468,7 @@ const gData = response.ok ? await response.json() : [];
         // Переводим массив жанров в красивую строку с пробелами для страницы деталей
         const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
         
-        c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m.poster || defaultPoster) + '"><div class="details-content"><div class="details-top-row"><h2 class="details-title">' + m.title + '</h2><button class="heart-btn" onclick="toggleFav(' + m.id + ')">' + (m.favorite ? '❤️' : '🤍') + '</button></div><span class="details-tag">📅 ' + (m.year || '—') + '</span><span class="details-tag">🎭 ' + genreText + '</span><span class="details-tag" style="color:#fba94c">Рейтинг: ' + getStarsHtml(m.rating || 0) + '</span><p class="details-desc">' + (m.desc || 'Описание отсутствует.') + '</p></div></div>';
+c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m.poster || defaultPoster) + '"><div class="details-content"><div class="details-top-row"><h2 class="details-title">' + m.title + '</h2><button class="heart-btn" onclick="toggleFav(' + m.id + ')"><img src="favorites.png" class="heart-icon-img"></button></div><span class="details-tag">📅 ' + (m.year || '—') + '</span><span class="details-tag">🎭 ' + genreText + '</span><span class="details-tag" style="color:#fba94c">Рейтинг: ' + getStarsHtml(m.rating || 0) + '</span><p class="details-desc">' + (m.desc || 'Описание отсутствует.') + '</p></div></div>';
     }
 
 
