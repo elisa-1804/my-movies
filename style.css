@@ -351,6 +351,19 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     z-index: 150;               /* Высокий приоритет, чтобы панель была поверх карточки фильма */
     border-bottom: 1px solid #29292e; /* Красивая тонкая разделительная полоса внизу */
 }
+/* Стиль для текста "О фильме" в закрепленной шапке */
+.details-header-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #E2E8F0;
+    margin: 0;
+    text-align: center;
+    position: absolute; /* Магия абсолютного позиционирования */
+    left: 50%;
+    transform: translateX(-50%); /* Выравниваем текст идеально по центру экрана */
+    pointer-events: none; /* Чтобы текст не мешал кликам по кнопкам рядом */
+}
+
 .back-btn { background: none; border: none; color: #06B6D4; font-size: 16px; cursor: pointer; }
 .edit-icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
 .details-flex { display: flex; gap: 20px; flex-wrap: wrap; }
