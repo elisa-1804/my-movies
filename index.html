@@ -86,9 +86,13 @@
                 <input type="number" id="formYear">
             </div>
             <div class="form-group">
-                <label>Жанр фильма</label>
-                <select id="formGenreSelect"><option value="">Без жанра</option></select>
-            </div>
+    <label>Жанры фильма</label>
+    <!-- Контейнер для списка жанров с чекбоксами -->
+    <div id="genresCheckboxContainer" class="genres-checkbox-list">
+        <!-- Сюда JS сам добавит чекбоксы -->
+    </div>
+</div>
+
             <div class="form-group">
                 <label>Моя оценка</label>
                 <div class="rating-stars" id="formRatingStars">
