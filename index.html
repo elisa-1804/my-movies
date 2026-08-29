@@ -847,6 +847,7 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
         }
     }
     // --- РАЗДЕЛ: ФИЛЬМЫ ПО ЧАСТЯМ (ОТРИСОВКА СТОПОК) ---
+        // --- РАЗДЕЛ: ФИЛЬМЫ ПО ЧАСТЯМ (ИСПРАВЛЕННАЯ ОТРИСОВКА СТОПОК) ---
     function renderCollectionsGrid() {
         const gridContainer = document.getElementById('collectionsGrid');
         if (!gridContainer) return;
@@ -876,16 +877,15 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             // Сортируем фильмы внутри коллекции по году выпуска (от старых к новым)
             list.sort((a, b) => (a.year || 0) - (b.year || 0));
             
-            // Берем самый первый фильм франшизы как главную обложку стопки
-            const coverMovie = list[0];
+            // ИСПРАВЛЕНИЕ: Берем СТРОГО ПЕРВЫЙ фильм из списка [0] для обложки франшизы
+            const coverMovie = list[0]; 
             const defaultPoster = 'https://unsplash.com';
             
             // Создаем обертку-контейнер, на которой в CSS висит эффект края книги (before/after)
             const wrapper = document.createElement('div');
             wrapper.className = 'movie-stack-wrapper';
             
-            // При клике на стопку мы пока просто откроем описание первой части 
-            // (в будущем сюда можно будет повесить открытие списка всех частей этой франшизы!)
+            // При клике открываем описание первой части
             wrapper.onclick = () => showDetails(coverMovie.id);
             
             wrapper.innerHTML = `
@@ -898,6 +898,7 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             gridContainer.appendChild(wrapper);
         });
     }
+
 
 
            
