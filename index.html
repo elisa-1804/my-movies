@@ -270,14 +270,26 @@ if (pageId === 'homePage') {
 card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><img src="favorites.png" class="card-heart-img"><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';            grid.appendChild(card);
         });
     }
-    async function renderGenresList() {
+        async function renderGenresList() {
         const t = localStorage.getItem("sb_token");
-const response = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t } });
-const gData = response.ok ? await response.json() : [];
+        const response = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t } });
+        const gData = response.ok ? await response.json() : [];
         const list = document.getElementById('genreList'); list.innerHTML = '';
-        if (gData) { gData.forEach(g => { const li = document.createElement('li'); li.className = 'genre-item'; li.innerHTML = '<span>' + g.name + '</span><button class="genre-edit-btn" onclick="openGenreModal(\'' + g.id + '\', \'' + g.name + '\')">✏️</button>'; list.appendChild(li); }); }
+        
+        if (gData) { 
+            gData.forEach(g => { 
+                const li = document.createElement('li'); 
+                li.className = 'genre-item'; 
+                
+                // ИСПРАВЛЕНИЕ: привязали клик к самому тексту жанра, добавили класс для стилизации, а кнопку удалили
+                li.innerHTML = '<span class="genre-clickable-title" onclick="openGenreModal(\'' + g.id + '\', \'' + g.name + '\')">' + g.name + '</span>'; 
+                
+                list.appendChild(li); 
+            }); 
+        }
         updateGenreSelect();
     }
+
    async function addGenre() { 
         const input = document.getElementById('genreInput'); 
         if(!input) return;
