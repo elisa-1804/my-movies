@@ -325,6 +325,7 @@
 
         renderMoviesGrid('moviesGrid', movies); 
         updateGenreSelect();
+        await loadRecommendations();
     }
     function switchPage(pageId, titleText) {
     // 1. Снимаем активные классы со страниц и меню
@@ -367,6 +368,7 @@
     if (pageId === 'allMoviesPage') renderMoviesGrid('moviesGrid', movies);
     if (pageId === 'genresPage') renderGenresList();
     if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
+    if (pageId === 'recommendationsPage') loadRecommendations();
 }
 
 
@@ -625,6 +627,170 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             showDetails(id); 
         } 
     }
+
+    // --- РАЗДЕЛ: РЕКОМЕНДАЦИИ К ПРОСМОТРУ ---
+    
+    let currentRecType = 'movie'; // По умолчанию выбран тип "Фильм"
+    let recommendations = [];     // Массив для хранения данных из базы
+
+    // 1. Функция переключения тегов в модальном окне (выбрать можно только один)
+    function selectRecType(type) {
+        currentRecType = type;
+        
+        // Убираем активные классы со всех тегов
+        document.getElementById('typeMovie').classList.remove('active');
+        document.getElementById('typeSeries').classList.remove('active');
+        
+        // Добавляем активный класс только выбранному тегу
+        if (type === 'movie') {
+            document.getElementById('typeMovie').classList.add('active');
+        } else if (type === 'series') {
+            document.getElementById('typeSeries').classList.add('active');
+        }
+    }
+
+    // 2. Открытие модального окна рекомендаций (для создания или редактирования)
+    function openRecModal(editId = null) {
+        if (editId) {
+            // Если редактируем существующую рекомендацию
+            const r = recommendations.find(x => x.id == editId);
+            if (!r) return;
+            
+            document.getElementById('recModalHeadline').textContent = "Редактировать рекомендацию";
+            document.getElementById('editRecId').value = r.id;
+            document.getElementById('recInput').value = r.title;
+            selectRecType(r.type || 'movie');
+            
+            // Показываем кнопку удаления
+            document.getElementById('recDeleteBtn').style.display = 'block';
+        } else {
+            // If creating a new one
+            document.getElementById('recModalHeadline').textContent = "Новая рекомендация";
+            document.getElementById('editRecId').value = '';
+            document.getElementById('recInput').value = '';
+            selectRecType('movie'); // Сбрасываем на фильм по умолчанию
+            
+            // Прячем кнопку удаления
+            document.getElementById('recDeleteBtn').style.display = 'none';
+        }
+        
+        document.getElementById('recModal').classList.add('active');
+    }
+
+    // 3. Закрытие модального окна рекомендаций
+    function closeRecModal() {
+        document.getElementById('recModal').classList.remove('active');
+    }
+
+    // 4. Скачивание рекомендаций из Supabase и отрисовка списка
+    async function loadRecommendations() {
+        const t = localStorage.getItem("sb_token");
+        if (!t) return;
+        
+        // Скачиваем данные из новой таблицы recommendations
+        const response = await fetch(SUPABASE_URL + "/rest/v1/recommendations?select=*", {
+            method: "GET",
+            headers: { 
+                "apikey": SUPABASE_KEY, 
+                "Authorization": "Bearer " + t 
+            }
+        });
+        
+        recommendations = response.ok ? await response.json() : [];
+        renderRecommendationsList();
+    }
+
+    // 5. Отрисовка списка рекомендаций на экране
+    function renderRecommendationsList() {
+        const listContainer = document.getElementById('recList');
+        if (!listContainer) return;
+        
+        listContainer.innerHTML = '';
+        
+        if (recommendations.length === 0) {
+            listContainer.innerHTML = '<div class="empty-section-message">Пока тут пусто. Добавь что-нибудь!</div>';
+            return;
+        }
+        
+        recommendations.forEach(r => {
+            const li = document.createElement('li');
+            li.className = 'rec-item';
+            
+            // При клике на всю плашку — открывается редактирование
+            li.onclick = () => openRecModal(r.id);
+            
+            // Переводим технический тип на человеческий язык для чеплашки
+            const typeText = r.type === 'series' ? 'Сериал' : 'Фильм';
+            const badgeClass = r.type === 'series' ? 'series' : 'movie';
+            
+            li.innerHTML = `
+                <span>${r.title}</span>
+                <span class="rec-badge ${badgeClass}">${typeText}</span>
+            `;
+            
+            listContainer.appendChild(li);
+        });
+    }
+
+    // 6. Сохранение изменений (POST для нового, PATCH для редактирования)
+    async function saveRecommendation() {
+        const title = document.getElementById('recInput').value.trim();
+        if (!title) { alert("Введите название!"); return; }
+        
+        const id = document.getElementById('editRecId').value;
+        const t = localStorage.getItem("sb_token");
+        const headers = { 
+            "apikey": SUPABASE_KEY, 
+            "Authorization": "Bearer " + t, 
+            "Content-Type": "application/json" 
+        };
+        
+        const recData = {
+            title: title,
+            type: currentRecType,
+            user_id: currentUser.id
+        };
+        
+        let response;
+        if (id) {
+            // Редактируем старую
+            response = await fetch(SUPABASE_URL + "/rest/v1/recommendations?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(recData) });
+        } else {
+            // Создаем новую
+            response = await fetch(SUPABASE_URL + "/rest/v1/recommendations", { method: "POST", headers: headers, body: JSON.stringify(recData) });
+        }
+        
+        if (response.ok) {
+            closeRecModal();
+            await loadRecommendations(); // Перезагружаем список
+        } else {
+            const errorText = await response.text();
+            alert("Ошибка сохранения: " + errorText);
+        }
+    }
+
+    // 7. Удаление рекомендации из базы
+    async function deleteRec() {
+        const id = document.getElementById('editRecId').value;
+        if (id && confirm("Удалить из рекомендаций?")) {
+            const t = localStorage.getItem("sb_token");
+            const response = await fetch(SUPABASE_URL + "/rest/v1/recommendations?id=eq." + id, {
+                method: "DELETE",
+                headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t }
+            });
+            
+            if (response.ok) {
+                closeRecModal();
+                await loadRecommendations();
+            } else {
+                alert("Ошибка удаления!");
+            }
+        }
+    }
+
+
+
+           
 
     checkUser();
 
