@@ -255,8 +255,7 @@ if (pageId === 'homePage') {
         if(list.length === 0) { grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список пуст 🎬</p>'; return; }
         list.forEach(m => {
             const card = document.createElement('div'); card.className = 'movie-card' + (m.favorite ? ' is-fav' : ''); card.onclick = function() { showDetails(m.id); };
-            card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><div class="card-fav-badge">❤️</div><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';
-            grid.appendChild(card);
+card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><img src="favorites.png" class="card-heart-img"><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';            grid.appendChild(card);
         });
     }
     async function renderGenresList() {
