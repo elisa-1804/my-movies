@@ -349,46 +349,68 @@ const gData = response.ok ? await response.json() : [];
 }
 
     function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
-       async function saveMovie() {
+    async function saveMovie() {
         const title = document.getElementById('formTitle').value.trim(); 
         if (!title) { alert("Укажите название!"); return; }
         
         const id = document.getElementById('formMovieId').value;
         const t = localStorage.getItem("sb_token");
-        const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" };
+        const headers = { 
+            "apikey": SUPABASE_KEY, 
+            "Authorization": "Bearer " + t, 
+            "Content-Type": "application/json" 
+        };
         
-                // ЧИТАЕМ ЗНАЧЕНИЯ ИЗ ПОЛЕЙ
+        // Читаем значения из полей формы
         const posterValue = document.getElementById('formPoster').value.trim();
         const descValue = document.getElementById('formDesc').value.trim();
         const genreValue = document.getElementById('formGenreSelect').value;
         const yearValue = document.getElementById('formYear').value.trim();
 
-        // НОВАЯ СТРОЧКА: Стираем кавычки у года и превращаем его в число для int8
+        // Превращаем год в чистое число без кавычек (для типа int8)
         const parsedYear = yearValue ? parseInt(yearValue, 10) : null;
+        // Превращаем оценку в число (для типа int8)
+        const parsedRating = currentFormRating ? parseInt(currentFormRating, 10) : 0;
 
-        // ИСПРАВЛЕНИЕ: Теперь отправляем строго правильные типы данных
+        // Собираем правильный объект данных
         const mData = { 
             title: title, 
-            year: parsedYear,             // ТЕПЕРЬ ТУТ ЧИСЛО (без кавычек), база int8 примет его!
+            year: parsedYear,             
             genre: genreValue || null, 
-            poster: posterValue || null,  // Если пусто — уйдет null вместо ""
-            desc: descValue || null,      // Если пусто — уйдет null вместо ""
-            rating: currentFormRating, 
+            poster: posterValue || null,  
+            desc: descValue || null,      
+            rating: parsedRating,         
             user_id: currentUser.id 
         };
-
         
+        let response;
         if(id) { 
-            await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
+            // Если редактируем существующий фильм
+            response = await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
         } else { 
+            // Если создаем новый фильм
             mData.favorite = false; 
-            await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
+            response = await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
         }
-        
-        closeModal(); 
-        await loadData(); 
-        if(id) { showDetails(id); } else { switchPage('homePage', 'Все фильмы'); }
+
+        // Проверяем статус ответа сервера
+        if (response.ok) {
+            closeModal(); 
+            await loadData(); 
+            if(id) { 
+                showDetails(id); 
+            } else { 
+                switchPage('homePage', 'Все фильмы'); 
+            }
+        } else {
+            // Если возникла ошибка 400 или любая другая — выводим её точный текст на экран
+            const errorData = await response.json().catch(() => null);
+            const errorText = errorData ? JSON.stringify(errorData) : await response.text();
+            alert("Ответ сервера Supabase: " + errorText);
+            console.error("Полная ошибка:", errorText);
+        }
     }
+
 
 
     async function deleteMovieFromForm() { 
