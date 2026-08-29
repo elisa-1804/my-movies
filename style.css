@@ -383,8 +383,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     position: relative; /* Вернули в нормальный поток страницы */
     
     /* ИСПРАВЛЕНИЕ ГЕОМЕТРИИ И СКРОЛЛА: */
-    margin-top: 10px !important;    /* Твоё идеальное расстояние от кнопок до начала карточки */
-    margin-bottom: 100px !important; /* Внешний отступ снизу! Карточка прокрутится целиком и не залезет под меню */
+    margin-top: 15px !important;    /* Твоё идеальное расстояние от кнопок до начала карточки */
+    margin-bottom: 15px !important; /* Внешний отступ снизу! Карточка прокрутится целиком и не залезет под меню */
     
     transition: background-color 0.3s; 
 }
