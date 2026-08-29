@@ -186,7 +186,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     user-select: none;
 }
 
-/* Скрываем стандартный системный квадратный чекбокс */
+/* Скрываем стандартный системный чекбокс */
 .genre-checkbox-item input[type="checkbox"] {
     position: absolute;
     opacity: 0;
@@ -195,50 +195,53 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     width: 0;
 }
 
-/* Создаем наш собственный кастомный круглый чекбокс */
-.genre-checkbox-item::before {
+/* Создаем наш собственный круглый ободок, привязав его к тегу span */
+.genre-checkbox-item span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.genre-checkbox-item span::before {
     content: "";
     display: inline-block;
     width: 18px;
     height: 18px;
     border: 2px solid #29292e; /* Цвет ободка в выключенном состоянии */
-    border-radius: 50%;        /* Делаем его идеально круглым */
+    border-radius: 50%;        /* Идеальный круг */
     background-color: #121214;
-    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    transition: background-color 0.2s, border-color 0.2s;
     flex-shrink: 0;
 }
 
-/* Эффект при наведении на строку жанра (кружок слегка подсвечивается) */
-.genre-checkbox-item:hover::before {
+/* Эффект при наведении (кружок подсвечивается) */
+.genre-checkbox-item:hover span::before {
     border-color: #06B6D4;
-}
-
-/* Эффект клика (кружок слегка сжимается для интерактивности) */
-.genre-checkbox-item:active::before {
-    transform: scale(0.9);
 }
 
 /* КОГДА ЧЕКБОКС АКТИВЕН: красим кружок целиком в акцентный голубой */
 .genre-checkbox-item input[type="checkbox"]:checked + span::before {
-    /* Этот пустой блок нужен для связи селекторов, ничего не пишем */
-}
-
-/* Магия CSS: меняем стиль нашего круглого ободка, когда скрытый инпут отмечен галочкой */
-.genre-checkbox-item has(input[type="checkbox"]:checked)::before,
-.genre-checkbox-item:has(input:checked)::before {
     background-color: #06B6D4;
     border-color: #06B6D4;
 }
 
-/* Добавляем белую маленькую галочку или точку внутрь активного кружка */
-.genre-checkbox-item:has(input:checked)::after {
-    content: "✓";
+/* Рисуем белую галочку строго по центру активного кружка */
+.genre-checkbox-item span::after {
+    content: "";
     position: absolute;
-    left: 4px;
-    top: -1px;
-    font-size: 11px;
-    color: #121214; /* Темный цвет галочки на голубом фоне */
-    font-weight: bold;
+    left: 6px;
+    top: 3px;
+    width: 4px;
+    height: 8px;
+    border: solid #121214; /* Цвет галочки (темный на голубом фоне) */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0); /* Скрыта по умолчанию */
+    transition: transform 0.2s ease;
+}
+
+/* Показываем галочку при активации чекбокса */
+.genre-checkbox-item input[type="checkbox"]:checked + span::after {
+    transform: rotate(45deg) scale(1); /* Плавное появление галочки */
 }
 
 
