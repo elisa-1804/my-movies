@@ -165,16 +165,16 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .genres-checkbox-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-height: 120px; /* Ограничиваем высоту, чтобы окно не растягивалось */
-    overflow-y: auto;  /* Добавляем прокрутку, если жанров много */
+    gap: 10px;
+    max-height: 140px; 
+    overflow-y: auto;  
     background-color: #121214;
     border: 1px solid #29292e;
     border-radius: 6px;
     padding: 10px;
 }
 
-/* Строка с каждым отдельным жанром */
+/* Контейнер для строки жанра */
 .genre-checkbox-item {
     display: flex;
     align-items: center;
@@ -182,15 +182,65 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     cursor: pointer;
     font-size: 14px;
     color: #e1e1e6;
+    position: relative;
+    user-select: none;
 }
 
-/* Настройки для самого квадратика галочки */
+/* Скрываем стандартный системный квадратный чекбокс */
 .genre-checkbox-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Создаем наш собственный кастомный круглый чекбокс */
+.genre-checkbox-item::before {
+    content: "";
+    display: inline-block;
     width: 18px;
     height: 18px;
-    cursor: pointer;
-    accent-color: #06B6D4; /* Наш любимый акцентный голубой */
+    border: 2px solid #29292e; /* Цвет ободка в выключенном состоянии */
+    border-radius: 50%;        /* Делаем его идеально круглым */
+    background-color: #121214;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    flex-shrink: 0;
 }
+
+/* Эффект при наведении на строку жанра (кружок слегка подсвечивается) */
+.genre-checkbox-item:hover::before {
+    border-color: #06B6D4;
+}
+
+/* Эффект клика (кружок слегка сжимается для интерактивности) */
+.genre-checkbox-item:active::before {
+    transform: scale(0.9);
+}
+
+/* КОГДА ЧЕКБОКС АКТИВЕН: красим кружок целиком в акцентный голубой */
+.genre-checkbox-item input[type="checkbox"]:checked + span::before {
+    /* Этот пустой блок нужен для связи селекторов, ничего не пишем */
+}
+
+/* Магия CSS: меняем стиль нашего круглого ободка, когда скрытый инпут отмечен галочкой */
+.genre-checkbox-item has(input[type="checkbox"]:checked)::before,
+.genre-checkbox-item:has(input:checked)::before {
+    background-color: #06B6D4;
+    border-color: #06B6D4;
+}
+
+/* Добавляем белую маленькую галочку или точку внутрь активного кружка */
+.genre-checkbox-item:has(input:checked)::after {
+    content: "✓";
+    position: absolute;
+    left: 4px;
+    top: -1px;
+    font-size: 11px;
+    color: #121214; /* Темный цвет галочки на голубом фоне */
+    font-weight: bold;
+}
+
 
 
 /* Звездочки и Кнопки */
