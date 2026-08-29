@@ -4,24 +4,23 @@ body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background-color: #121214; z-index: 10; }
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Кнопка добавления фильма */
-/* Кнопка добавления фильма (в сером кружке) */
 .add-movie-btn { 
     background-color: #29292e; 
     border: none; 
     width: 40px; 
     height: 40px; 
     border-radius: 50%; 
-    display: inline-flex;      
+    display: inline-flex;       /* inline-flex автоматически выровняет её в ряд с дверью */
     align-items: center;        
     justify-content: center;    
     cursor: pointer; 
     transition: background-color 0.2s;
     flex-shrink: 0;            
-    padding: 0 !important;      /* Сбросили отступы, чтобы плюс не съезжал */
+    padding: 0 !important;      
     margin: 0;
 }
 
-/* Новая кнопка выхода (в точно таком же сером кружке) */
+/* Кнопка выхода */
 .logout-btn {
     background-color: #29292e; 
     border: none; 
@@ -34,26 +33,25 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     cursor: pointer; 
     transition: background-color 0.2s;
     flex-shrink: 0;
-    padding: 0 !important;      /* Здесь тоже сбрасываем */
+    padding: 0 !important;      
     margin: 0;
 }
 
-/* Эффект при наведении на серые кружки */
 .add-movie-btn:hover, .logout-btn:hover {
     background-color: #323238;
 }
 
-/* Картинки внутри кнопок шапки (Идеальная центровка) */
+/* Картинки внутри кнопок шапки */
 .header-icon-img {
     width: 20px !important;     
     height: 20px !important;
     object-fit: contain;
     pointer-events: none;      
     display: block;
-    margin: 0 !important;       /* Убираем любые авто-сдвиги */
+    margin: 0 !important;       
 }
 
-/* Класс для скрытия кнопки на других вкладках */
+/* Класс скрытия, который благодаря удалению display:inline-flex !important теперь будет работать идеально */
 .add-movie-btn.hidden {
     display: none !important;
 }
