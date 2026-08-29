@@ -400,7 +400,34 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 
 .back-btn { background: none; border: none; color: #06B6D4; font-size: 16px; cursor: pointer; }
-.edit-icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
+/* Кнопка карандаша на странице деталей (в сером кружке) */
+.edit-icon-btn { 
+    background-color: #29292e; /* Серый кружок в тон кнопкам главной шапки */
+    border: none; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%;        /* Идеальный круг */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: background-color 0.2s;
+    outline: none;
+}
+
+/* Эффект при наведении (кружок становится чуть светлее) */
+.edit-icon-btn:hover {
+    background-color: #323238;
+}
+
+/* Белая PNG иконка карандаша внутри серого кружка */
+.details-edit-img {
+    width: 20px;  /* Размер самой иконки */
+    height: 20px;
+    object-fit: contain;
+    pointer-events: none; /* Клик проходит сквозь картинку на саму кнопку */
+    display: block;
+}
 .details-flex { display: flex; gap: 20px; flex-wrap: wrap; }
 .details-poster { width: 140px; height: 200px; object-fit: cover; border-radius: 8px; }
 .details-content { flex: 1; min-width: 200px; position: relative; }
