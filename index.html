@@ -209,10 +209,18 @@
                 <label>Год выпуска</label>
                 <input type="number" id="formYear">
             </div>
+                        <!-- СПОЙЛЕР ЖАНРОВ ДЛЯ ФИЛЬМОВ -->
             <div class="form-group">
                 <label>Жанры фильма</label>
-                <div id="genresCheckboxContainer" class="genres-checkbox-list"></div>
+                <div class="genre-spoiler-toggle" onclick="toggleGenreDropdown('movie')">
+                    <span>Выбрать жанры</span>
+                    <span class="spoiler-arrow" id="movieGenreArrow">▼</span>
+                </div>
+                <div class="genres-checkboxes custom-scroll" id="movieGenresCheckboxes" style="display: none; max-height: 160px; overflow-y: auto; background: #1a1a1e; padding: 12px; border-radius: 6px; border: 1px solid #29292e; box-sizing: border-box; margin-top: 5px;">
+                    <!-- Сюда JS вставит галочки фильма -->
+                </div>
             </div>
+
             <div class="form-group">
                 <label>Моя оценка</label>
                 <div class="rating-stars" id="formRatingStars">
@@ -337,14 +345,18 @@
                 </div>
             </div>
 
-                        <!-- МНОЖЕСТВЕННЫЙ ВЫБОР ЖАНРОВ С ОГРАНИЧЕНИЕМ ПРОКРУТКИ -->
+                       <!-- СПОЙЛЕР ЖАНРОВ ДЛЯ СЕРИАЛОВ -->
             <div class="form-group">
                 <label>Жанры сериала</label>
-                <!-- Добавили класс custom-scroll для красивой прокрутки -->
-                <div class="genres-checkboxes custom-scroll" id="seriesGenresCheckboxes" style="max-height: 110px; overflow-y: auto; background: #1a1a1e; padding: 10px; border-radius: 6px; border: 1px solid #29292e; box-sizing: border-box;">
-                    <!-- Сюда JS автоматически вставит галочки из твоей базы жанров -->
+                <div class="genre-spoiler-toggle" onclick="toggleGenreDropdown('series')">
+                    <span>Выбрать жанры</span>
+                    <span class="spoiler-arrow" id="seriesGenreArrow">▼</span>
+                </div>
+                <div class="genres-checkboxes custom-scroll" id="seriesGenresCheckboxes" style="display: none; max-height: 160px; overflow-y: auto; background: #1a1a1e; padding: 12px; border-radius: 6px; border: 1px solid #29292e; box-sizing: border-box; margin-top: 5px;">
+                    <!-- Сюда JS вставит галочки сериала -->
                 </div>
             </div>
+
 
             <!-- РЕЙТИНГ ЗВЕЗДАМИ -->
             <div class="form-group">
@@ -661,40 +673,74 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
             `;
         }); 
     }    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
-    // 2. Функция открытия модального окна (с авто-выбором галочек при редактировании)
-        // 1. Обновленная функция открытия модалки фильма
-    function openModal(editId = null) {
-        updateGenreSelect(); 
+ function openModal(editId = null) {
+    // 1. Принудительно генерируем список жанров для выбора
+    updateGenreSelect(); 
+    
+    // 2. Сворачиваем спойлер жанров фильма по умолчанию при каждом открытии окна
+    const mDropdown = document.getElementById('movieGenresCheckboxes');
+    const mArrow = document.getElementById('movieGenreArrow');
+    if (mDropdown) mDropdown.style.display = 'none';
+    if (mArrow) mArrow.classList.remove('open');
+    
+    if (editId) {
+        // ЛОГИКА ДЛЯ РЕДАКТИРОВАНИЯ СУЩЕСТВУЮЩЕГО ФИЛЬМА
+        const m = movies.find(x => x.id == editId); 
+        if (!m) return;
         
-        if(editId) {
-            const m = movies.find(x => x.id == editId); 
-            document.getElementById('modalHeadline').textContent = "Редактировать фильм"; 
-            document.getElementById('formMovieId').value = m.id; 
-            document.getElementById('formTitle').value = m.title; 
-            document.getElementById('formYear').value = m.year || ''; 
-            document.getElementById('formPoster').value = m.poster || ''; 
-            document.getElementById('formDesc').value = m.desc || ''; 
-            document.getElementById('formCollection').value = m.collection || ''; 
-            setFormRating(m.rating || 0); 
-            document.getElementById('movieDeleteBtn').style.display = 'flex';
-            const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
-            document.querySelectorAll('.movie-genre-checkbox').forEach(cb => {
-                cb.checked = movieGenres.includes(cb.value);
-            });
+        document.getElementById('modalHeadline').textContent = "Редактировать фильм";
+        document.getElementById('formMovieId').value = m.id;
+        document.getElementById('formTitle').value = m.title;
+        document.getElementById('formYear').value = m.year || '';
+        document.getElementById('formPoster').value = m.poster || '';
+        document.getElementById('formDesc').value = m.desc || '';
+        setFormRating(m.rating || 0); 
+        
+        // ПРОВЕРКА ФРАНШИЗЫ: если у фильма уже вписан сборник, зажигаем галочку и разворачиваем поле
+        if (m.collection && m.collection.trim() !== '') {
+            document.getElementById('formHasCollection').checked = true;
+            toggleCollectionField(true);
+            document.getElementById('formCollection').value = m.collection;
         } else {
-            document.getElementById('modalHeadline').textContent = "Новый фильм"; 
-            document.getElementById('formMovieId').value = ''; 
-            document.getElementById('formTitle').value = ''; 
-            document.getElementById('formYear').value = ''; 
-            document.getElementById('formPoster').value = ''; 
-            document.getElementById('formDesc').value = ''; 
-            document.getElementById('formCollection').value = ''; 
-            setFormRating(0); 
-            document.getElementById('movieDeleteBtn').style.display = 'none';
-            document.querySelectorAll('.movie-genre-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('formHasCollection').checked = false;
+            toggleCollectionField(false);
+            document.getElementById('formCollection').value = '';
         }
-        document.getElementById('addMovieModal').classList.add('active');
+        
+        // Показываем кнопку удаления при редактировании
+        document.getElementById('movieDeleteBtn').style.display = 'flex';
+        
+        // Восстанавливаем галочки жанров фильма
+        const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
+        document.querySelectorAll('.movie-genre-checkbox').forEach(cb => {
+            cb.checked = movieGenres.includes(cb.value);
+        });
+    } else {
+        // ЛОГИКА ДЛЯ СОЗДАНИЯ СОВЕРШЕННО НОВОГО ФИЛЬМА
+        document.getElementById('modalHeadline').textContent = "Новый фильм";
+        document.getElementById('formMovieId').value = '';
+        document.getElementById('formTitle').value = '';
+        document.getElementById('formYear').value = '';
+        document.getElementById('formPoster').value = '';
+        document.getElementById('formDesc').value = '';
+        setFormRating(0); 
+        
+        // По умолчанию для нового фильма галочка снята и поле франшизы скрыто
+        document.getElementById('formHasCollection').checked = false;
+        toggleCollectionField(false);
+        document.getElementById('formCollection').value = '';
+        
+        // Прячем кнопку удаления для новой записи
+        document.getElementById('movieDeleteBtn').style.display = 'none';
+        
+        // Сбрасываем все галочки жанров
+        document.querySelectorAll('.movie-genre-checkbox').forEach(cb => cb.checked = false);
     }
+    
+    // Плавное открытие модального окна на экране
+    document.getElementById('addMovieModal').classList.add('active');
+}
+
 
     // 2. Обновленная функция сохранения фильма
     async function saveMovie() {
@@ -1296,7 +1342,11 @@ function openSeriesModal(editId = null) {
         // Прячем кнопку удаления для новой записи
         document.getElementById('seriesDeleteBtn').style.display = 'none';
     }
-    
+        // Сворачиваем спойлер жанров сериала по умолчанию при каждом открытии окна
+    const sDropdown = document.getElementById('seriesGenresCheckboxes');
+    const sArrow = document.getElementById('seriesGenreArrow');
+    if (sDropdown) sDropdown.style.display = 'none';
+    if (sArrow) sArrow.classList.remove('open');
     // Включаем класс активности для плавного появления модалки на экране
     document.getElementById('addSeriesModal').classList.add('active');
 }
@@ -1375,6 +1425,40 @@ function setSeriesFormRating(rating) {
             s.style.color = '#4a4a4a'; // Потухший серый
         }
     });
+}
+// --- ФУНКЦИЯ: РАСКРЫТИЕ И СКРЫТИЕ СПИСОКА ЖАНРОВ ПО КЛИКУ ---
+function toggleGenreDropdown(type) {
+    let dropdown, arrow;
+    
+    if (type === 'movie') {
+        dropdown = document.getElementById('movieGenresCheckboxes');
+        arrow = document.getElementById('movieGenreArrow');
+    } else {
+        dropdown = document.getElementById('seriesGenresCheckboxes');
+        arrow = document.getElementById('seriesGenreArrow');
+    }
+    
+    if (!dropdown) return;
+    
+    if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+        dropdown.style.display = 'block'; // Показываем список жанров
+        if (arrow) arrow.classList.add('open'); // Переворачиваем стрелочку вверх ▲
+    } else {
+        dropdown.style.display = 'none'; // Скрываем список
+        if (arrow) arrow.classList.remove('open'); // Возвращаем стрелочку вниз ▼
+    }
+}
+// --- ФУНКЦИЯ: ПОКАЗ/СКРЫТИЕ ПОЛЯ ФРАНШИЗЫ В ОКНЕ ФИЛЬМА ---
+function toggleCollectionField(hasCollection) {
+    const block = document.getElementById('movieCollectionBlock');
+    if (!block) return;
+    
+    if (hasCollection) {
+        block.style.display = 'block'; // Разворачиваем поле ввода франшизы
+    } else {
+        block.style.display = 'none';  // Прячем поле франшизы
+        document.getElementById('formCollection').value = ''; // Очищаем текст, если галочку сняли
+    }
 }
 
 
