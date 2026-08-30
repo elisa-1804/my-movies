@@ -958,3 +958,69 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     }
 }
 
+/* Контейнер списка частей на новой странице */
+.collection-list-container {
+    position: relative;
+    margin-top: 135px !important;    /* Отступ из-под закреплённой шапки */
+    margin-bottom: 100px !important; /* Отступ сверху от нижнего меню */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Горизонтальная карточка одной части фильма */
+.franchise-row-card {
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 8px;
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.franchise-row-card:hover {
+    background-color: #242429;
+    border-color: #06B6D4;
+}
+
+/* Постер слева в карточке */
+.franchise-row-poster {
+    width: 70px;
+    height: 105px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Правая контентная часть (информация в столбик) */
+.franchise-row-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрируем строчки по вертикали относительно постера */
+    gap: 6px;
+    overflow: hidden;
+}
+
+/* Название части */
+.franchise-row-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Мета-строки (год, жанр) */
+.franchise-row-meta {
+    font-size: 12px;
+    color: #8d8d99;
+}
+
+/* Звёздочки рейтинга */
+.franchise-row-stars {
+    font-size: 12px;
+    color: #fba94c;
+}
