@@ -1232,6 +1232,138 @@ function switchFavTab(tabType) {
 }
 
 
+// --- ФУНКЦИИ МОДАЛЬНОГО ОКНА СЕРИАЛОВ ---
+
+function openSeriesModal(editId = null) {
+    // 1. Принудительно генерируем список жанров и пустые звезды из базы
+    updateSeriesGenresCheckboxes();
+    initSeriesFormStars();
+    
+    if (editId) {
+        const s = series.find(x => x.id == editId);
+        if (!s) return;
+        document.getElementById('seriesModalHeadline').textContent = "Редактировать сериал";
+        document.getElementById('formSeriesId').value = s.id;
+        document.getElementById('formSeriesTitle').value = s.title;
+        document.getElementById('formSeriesYear').value = s.year || '';
+        document.getElementById('formSeriesSeasonsTotal').value = s.seasons_total || '';
+        document.getElementById('formSeriesCurrentSeason').value = s.current_season || '';
+        document.getElementById('formSeriesCurrentEpisode').value = s.current_episode || '';
+        document.getElementById('formSeriesCurrentTime').value = s.current_time || '';
+        
+        // Подсвечиваем правильную плашку статуса
+        toggleSeriesStatus(s.is_finished || false);
+        
+        setSeriesFormRating(s.rating || 0);
+        document.getElementById('formSeriesPoster').value = s.poster || '';
+        document.getElementById('formSeriesDesc').value = s.desc || '';
+        
+        // Восстанавливаем галочки жанров сериала
+        const seriesGenres = Array.isArray(s.genre) ? s.genre : (s.genre ? [s.genre] : []);
+        document.querySelectorAll('.series-genre-checkbox').forEach(cb => {
+            cb.checked = seriesGenres.includes(cb.value);
+        });
+        
+        document.getElementById('seriesDeleteBtn').style.display = 'flex';
+    } else {
+        document.getElementById('seriesModalHeadline').textContent = "Новый сериал";
+        document.getElementById('formSeriesId').value = '';
+        document.getElementById('formSeriesTitle').value = '';
+        document.getElementById('formSeriesYear').value = '';
+        document.getElementById('formSeriesSeasonsTotal').value = '';
+        document.getElementById('formSeriesCurrentSeason').value = '';
+        document.getElementById('formSeriesCurrentEpisode').value = '';
+        document.getElementById('formSeriesCurrentTime').value = '';
+        
+        // По умолчанию принудительно ставим плашку "В процессе" (false)
+        toggleSeriesStatus(false);
+        
+        setSeriesFormRating(0);
+        document.getElementById('formSeriesPoster').value = '';
+        document.getElementById('formSeriesDesc').value = '';
+        
+        document.querySelectorAll('.series-genre-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById('seriesDeleteBtn').style.display = 'none';
+    }
+    
+    // Включаем класс активности для отображения модалки на экране!
+    document.getElementById('addSeriesModal').classList.add('active');
+}
+
+function closeSeriesModal() {
+    document.getElementById('addSeriesModal').classList.remove('active');
+}
+
+// --- ИНТЕРАКТИВНОЕ ПЕРЕКЛЮЧЕНИЕ ПЛАШЕК СТАТУСА ---
+function toggleSeriesStatus(isFinished) {
+    document.getElementById('formSeriesIsFinished').value = isFinished;
+    
+    const finishedTab = document.getElementById('statusTabFinished');
+    const watchingTab = document.getElementById('statusTabWatching');
+    const progressBlock = document.getElementById('seriesWatchingProgressBlock');
+    
+    if (finishedTab) finishedTab.classList.remove('active');
+    if (watchingTab) watchingTab.classList.remove('active');
+    
+    if (isFinished) {
+        if (finishedTab) finishedTab.classList.add('active');
+        if (progressBlock) progressBlock.style.display = 'none'; // Прячем блок прогресса
+    } else {
+        if (watchingTab) watchingTab.classList.add('active');
+        if (progressBlock) progressBlock.style.display = 'block'; // Показываем блок прогресса
+    }
+}
+
+// --- ДИНАМИЧЕСКАЯ ГЕНЕРАЦИЯ ГАЛОЧЕК ЖАНРОВ ДЛЯ СЕРИАЛОВ ---
+function updateSeriesGenresCheckboxes() {
+    const container = document.getElementById('seriesGenresCheckboxes');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    genres.forEach(g => {
+        const label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '8px';
+        label.style.marginBottom = '6px';
+        label.style.fontSize = '13px';
+        label.style.color = '#e1e1e6';
+        label.style.cursor = 'pointer';
+        
+        label.innerHTML = `
+            <input type="checkbox" class="series-genre-checkbox" value="${g}" style="accent-color: #06B6D4; width:16px; height:16px;">
+            <span>${g}</span>
+        `;
+        container.appendChild(label);
+    });
+}
+
+// --- ОЦЕНКА ЗВЕЗДАМИ В ОКНЕ СЕРИАЛОВ ---
+function initSeriesFormStars() {
+    const container = document.getElementById('seriesFormStars');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        const span = document.createElement('span');
+        span.textContent = '★';
+        span.dataset.value = i;
+        span.onclick = function() { setSeriesFormRating(i); };
+        container.appendChild(span);
+    }
+}
+
+function setSeriesFormRating(rating) {
+    document.getElementById('formSeriesRating').value = rating;
+    const stars = document.querySelectorAll('#seriesFormStars span');
+    stars.forEach((s, idx) => {
+        if (idx < rating) {
+            s.style.color = '#fba94c'; // Твой сочный золотой
+        } else {
+            s.style.color = '#4a4a4a'; // Потухший серый
+        }
+    });
+}
 
 
 
