@@ -375,15 +375,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     transition: background-color 0.3s; 
 }
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
-/* Общий контейнер шапки деталей, закрепленный вверху */
-/* Общий контейнер шапки деталей, закрепленный вверху */
+/* Шапка на странице ДЕТАЛЕЙ фильма */
 .details-fixed-header {
     position: fixed;            
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     background-color: #121214;  
     z-index: 150;               
+    height: 110px; /* Зафиксировали высоту */
 }
 
 /* Заголовок "О фильме" — как на главной */
@@ -406,19 +404,19 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     padding: 0 20px 5px 20px;  
 }
 
-/* Карточка самого фильма (Исправлено!) */
+/* Карточка деталей фильма */
 .details-container { 
     background-color: #202024; 
     border-radius: 12px; 
-    padding: 20px; /* Чистый аккуратный отступ внутри панели, без пустого места снизу */
+    padding: 20px; 
+    position: relative; 
     
-    position: relative; /* Вернули в нормальный поток страницы */
+    /* НАСТРОЙКА ОТСТУПА: Высота шапки 110px + 20px воздуха = 130px от верха экрана */
+    margin-top: 130px !important;    
+    margin-bottom: 100px !important; 
     
-    /* ИСПРАВЛЕНИЕ ГЕОМЕТРИИ И СКРОЛЛА: */
-    margin-top: 15px !important;    /* Твоё идеальное расстояние от кнопок до начала карточки */
-    margin-bottom: 15px !important; /* Внешний отступ снизу! Карточка прокрутится целиком и не залезет под меню */
-    
-    transition: background-color 0.3s; 
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /* Элементы внутри карточки */
@@ -957,7 +955,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     }
 }
 
-/* --- СТРАНИЦА СПИСКА ЧАСТЕЙ ФРАНШИЗЫ --- */
+/* Контейнер списка горизонтальных карточек франшизы */
 .collection-list-container {
     position: relative;
     display: flex;
@@ -965,9 +963,9 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     gap: 15px;
     width: 100%;
     
-    /* ИСПРАВЛЕНИЕ: Зажимаем отступ здесь, чтобы убрать огромную пустоту */
-    margin-top: 125px !important;    /* Подгоняем под высоту шапки */
-    margin-bottom: 100px !important; /* Отступ от нижнего меню */
+    /* НАСТРОЙКА ОТСТУПА: Высота шапки 110px + 15px воздуха = 125px от верха экрана */
+    margin-top: 125px !important;    
+    margin-bottom: 100px !important; 
 }
 
 /* Горизонтальная карточка одной части фильма */
@@ -1024,4 +1022,14 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .franchise-row-stars {
     font-size: 12px;
     color: #fba94c;
+}
+/* Шапка на странице СПИСКА ЧАСТЕЙ франшизы */
+.collection-fixed-header {
+    position: fixed;            
+    top: 0; 
+    left: 0; 
+    right: 0;
+    background-color: #121214;  
+    z-index: 150;               
+    height: 110px; /* Зафиксировали высоту */
 }
