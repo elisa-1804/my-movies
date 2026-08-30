@@ -403,7 +403,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .details-fixed-header {
     position: fixed;            
     top: 0; left: 0; right: 0;
-    background-color: #121214;  
+    background-color: #121214 !important;  
     z-index: 150;               
     height: 110px; /* Зафиксировали высоту */
 }
@@ -1055,7 +1055,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     top: 0; 
     left: 0; 
     right: 0;
-    background-color: #121214;  
+    background-color: #121214 !important;  
     z-index: 150;               
     height: 20px; /* Зафиксировали высоту */
 }
