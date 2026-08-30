@@ -278,6 +278,9 @@
    
     let currentUser = null, movies = [], genres = [], currentFormRating = 0, isSignUpMode = false;
     const defaultPoster = "https://unsplash.com";
+    let previousPageId = 'allMoviesPage'; // По умолчанию предыдущая страница — "Все фильмы"
+    let previousPageTitle = 'Все фильмы';
+
 
     function toggleAuthMode() {
         isSignUpMode = !isSignUpMode;
@@ -639,7 +642,26 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
 
         function showDetails(id) {
         const m = movies.find(x => x.id == id); if(!m) return; 
+        
+        // 1. ЗАПОМИНАЕМ ИСТОРИЮ: откуда пришёл пользователь
+        const currentActivePage = document.querySelector('.page.active');
+        if (currentActivePage && currentActivePage.id === 'collectionPage') {
+            previousPageId = 'collectionPage';
+            previousPageTitle = m.collection || 'Франшиза'; 
+        } else {
+            previousPageId = 'allMoviesPage';
+            previousPageTitle = 'Все фильмы';
+        }
+
         switchPage('detailsPage', 'О фильме'); 
+        
+        // 2. МАГИЯ: принудительно меняем действие кнопки "Назад" в шапке под текущую историю
+        const backBtn = document.querySelector('#detailsPage .back-btn');
+        if (backBtn) {
+            backBtn.onclick = function() {
+                switchPage(previousPageId, previousPageTitle);
+            };
+        }
         document.getElementById('movieEditBtn').onclick = function() { openModal(m.id); };
         
         const c = document.getElementById('detailsContainer'); 
