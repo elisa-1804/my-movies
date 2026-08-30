@@ -370,7 +370,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     
     /* ЧЁТКИЕ ОТСТУПЫ: */
     margin-top: 145px !important;    /* Этот маржин опустит карточку ровно из-под закреплённых кнопок */
-    margin-bottom: 100px !important; /* Внешний отступ снизу спасает от заезда под нижнее меню */
+    margin-bottom: 10px !important; /* Внешний отступ снизу спасает от заезда под нижнее меню */
     
     margin-left: 0 !important;
     margin-right: 0 !important;
