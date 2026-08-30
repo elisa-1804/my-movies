@@ -1238,13 +1238,14 @@ function switchFavTab(tabType) {
 // --- ФУНКЦИИ МОДАЛЬНОГО ОКНА СЕРИАЛОВ ---
 
 function openSeriesModal(editId = null) {
-    // 1. Принудительно генерируем список жанров и пустые звезды из базы
+    // 1. Принудительно генерируем список жанров и пустые звезды из базы при открытии окна
     updateSeriesGenresCheckboxes();
     initSeriesFormStars();
     
     if (editId) {
         const s = series.find(x => x.id == editId);
         if (!s) return;
+        
         document.getElementById('seriesModalHeadline').textContent = "Редактировать сериал";
         document.getElementById('formSeriesId').value = s.id;
         document.getElementById('formSeriesTitle').value = s.title;
@@ -1254,9 +1255,10 @@ function openSeriesModal(editId = null) {
         document.getElementById('formSeriesCurrentEpisode').value = s.current_episode || '';
         document.getElementById('formSeriesCurrentTime').value = s.current_time || '';
         
-        // Подсвечиваем правильную плашку статуса
+        // Восстанавливаем сохраненный статус просмотра (Просмотрено/В процессе)
         toggleSeriesStatus(s.is_finished || false);
         
+        // Восстанавливаем оценку звездами
         setSeriesFormRating(s.rating || 0);
         document.getElementById('formSeriesPoster').value = s.poster || '';
         document.getElementById('formSeriesDesc').value = s.desc || '';
@@ -1267,8 +1269,10 @@ function openSeriesModal(editId = null) {
             cb.checked = seriesGenres.includes(cb.value);
         });
         
+        // Показываем кнопку удаления при редактировании
         document.getElementById('seriesDeleteBtn').style.display = 'flex';
     } else {
+        // ЛОГИКА ДЛЯ НОВОГО СЕРИАЛА
         document.getElementById('seriesModalHeadline').textContent = "Новый сериал";
         document.getElementById('formSeriesId').value = '';
         document.getElementById('formSeriesTitle').value = '';
@@ -1278,20 +1282,25 @@ function openSeriesModal(editId = null) {
         document.getElementById('formSeriesCurrentEpisode').value = '';
         document.getElementById('formSeriesCurrentTime').value = '';
         
-        // По умолчанию принудительно ставим плашку "В процессе" (false)
-        toggleSeriesStatus(false);
+        // ИСПРАВЛЕНИЕ: По умолчанию принудительно зажигаем овальный тег "Просмотрено" (true),
+        // благодаря чему блок доп. полей будет аккуратно спрятан при открытии!
+        toggleSeriesStatus(true);
         
         setSeriesFormRating(0);
         document.getElementById('formSeriesPoster').value = '';
         document.getElementById('formSeriesDesc').value = '';
         
+        // Сбрасываем все галочки жанров
         document.querySelectorAll('.series-genre-checkbox').forEach(cb => cb.checked = false);
+        
+        // Прячем кнопку удаления для новой записи
         document.getElementById('seriesDeleteBtn').style.display = 'none';
     }
     
-    // Включаем класс активности для отображения модалки на экране!
+    // Включаем класс активности для плавного появления модалки на экране
     document.getElementById('addSeriesModal').classList.add('active');
 }
+
 
 function closeSeriesModal() {
     document.getElementById('addSeriesModal').classList.remove('active');
