@@ -103,19 +103,17 @@
             <div class="movies-grid" id="seriesGrid"></div>
         </div>
 
-                <!-- 4. СТРАНИЦА ИЗБРАННОГО С ЛЕВЫМ ЗАГОЛОВКОМ И ВКЛАДКАМИ -->
+                <!-- 4. СТРАНИЦА ИЗБРАННОГО (ФИНАЛЬНЫЙ ОТРЕГУЛИРОВАННЫЙ ВАРИАНТ) -->
         <div id="favoritesPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
-                <!-- Вернули обычный класс, чтобы заголовок встал ПО ЛЕВОМУ КРАЮ -->
                 <h1 class="page-fixed-header-title">Избранное</h1>
-                
-                <!-- Контейнер вкладок ниже заголовка -->
                 <div class="fav-tabs-container">
                     <div class="fav-tab movie active" id="favTabMovie" onclick="switchFavTab('movie')">Фильмы</div>
                     <div class="fav-tab series" id="favTabSeries" onclick="switchFavTab('series')">Сериалы</div>
                 </div>
             </div>
-            <!-- Сетка избранного -->
+            
+            <!-- ИСПРАВЛЕНИЕ: Жёстко закрепили ID и класс, под которые написан наш CSS и JS! -->
             <div class="movies-grid" id="favoritesGrid"></div>
         </div>
 
