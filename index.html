@@ -377,15 +377,17 @@
     if (pageId === 'allMoviesPage') document.getElementById('navAllMovies').classList.add('active');
     if (pageId === 'favoritesPage') document.getElementById('navFav').classList.add('active');
 
-    // 4. Управляем оригинальной шапкой (прячем на странице деталей фильма)
+        // 4. Управляем оригинальной шапкой (прячем на странице деталей фильма И на странице списка частей)
     const mainHeader = document.querySelector('#appContent > header');
     if (mainHeader) {
-        if (pageId === 'detailsPage') {
-            mainHeader.style.display = 'none';
+        // ИСПРАВЛЕНИЕ: Прячем главную шапку сайта на экранах деталей и списка франшизы, чтобы заголовки не накладывались
+        if (pageId === 'detailsPage' || pageId === 'collectionPage') {
+            mainHeader.style.display = 'none'; // Полностью отключаем оригинальный верхний заголовок
         } else {
-            mainHeader.style.display = 'flex';
+            mainHeader.style.display = 'flex'; // Возвращаем шапку на главной, во всех фильмах и избранном
         }
     }
+
 
     // 5. Меняем заголовок в шапке
     if (pageId === 'homePage') {
