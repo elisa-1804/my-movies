@@ -1286,3 +1286,14 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 #favoritesPage .movies-grid {
     margin-top: 155px; 
 }
+/* Железобетонная подсветка текста и иконки новой кнопки Сериалов в нижнем меню */
+.bottom-nav button#navAllSeries.nav-item.active {
+    color: #06B6D4 !important; /* Твой фирменный акцентный голубой */
+}
+
+/* Железобетонное появление и раздвижение голубой полосочки снизу */
+.bottom-nav button#navAllSeries.nav-item.active .nav-line {
+    width: 20px !important;
+    opacity: 1 !important;
+    background-color: #06B6D4 !important;
+}
