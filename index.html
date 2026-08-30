@@ -665,41 +665,45 @@ function showDetails(id) {
         editBtn.onclick = function() { openModal(m.id); };
     }
 
-    // 4. Генерируем внутреннее содержимое карточки фильма с ВОЗВРАТОМ ВСЕХ ОРИГИНАЛЬНЫХ КЛАССОВ
+    // 4. Генерируем внутреннее содержимое карточки фильма С ТВОИМИ ОРИГИНАЛЬНЫМИ КЛАССАМИ
     const c = document.getElementById('detailsContainer'); 
     c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
     
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-    // Возвращаем исходную HTML-структуру (details-flex, details-poster-block, чеплашки мета-строк и т.д.)
+    // ВОЗВРАЩЕНА ТВОЯ РОДНАЯ СТРУКТУРА КАРТОЧКИ:
     c.innerHTML = `
-        <div class="details-flex">
-            <div class="details-poster-block">
-                <img class="details-poster-img" src="${m.poster || defaultPoster}" alt="${m.title}">
+        <div class="details-grid-block">
+            <div class="details-poster-wrap">
+                <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
                 <button class="heart-btn" onclick="toggleFavInDetails(${m.id})">
                     <img src="fav.png" class="heart-icon-img" alt="Избранное">
                 </button>
             </div>
-            <div class="details-info-block">
-                <h2 class="details-movie-title">${m.title}</h2>
-                <div class="details-meta-row">📅 <span>${m.year || '—'}</span></div>
-                <div class="details-meta-row">🎭 <span>${genreText}</span></div>
-                <div class="details-rating-stars">${getStarsHtml(m.rating || 0)}</div>
-                <p class="details-description-text">${m.desc || 'Описание отсутствует.'}</p>
+            <div class="movie-details-info">
+                <h2 class="details-title">${m.title}</h2>
+                <div class="meta-item"><span>Год:</span> <strong>${m.year || '—'}</strong></div>
+                <div class="meta-item"><span>Жанр:</span> <strong>${genreText}</strong></div>
+                <div class="details-rating">${getStarsHtml(m.rating || 0)}</div>
+                <div class="details-desc-block">
+                    <h3>Описание</h3>
+                    <p class="details-desc">${m.desc || 'Описание отсутствует.'}</p>
+                </div>
             </div>
         </div>
     `;
 
-    // 5. Назначаем клик кнопке "Назад" и принудительно ЗАКРЫВАЕМ модалку, если она висела
+    // 5. Назначаем клик кнопке "Назад" и принудительно закрываем модалку, если уходим
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
-            closeModal(); // ИСПРАВЛЕНИЕ: закрываем окно редактирования при уходе назад
+            closeModal(); // Закрываем окно редактирования при уходе назад
             switchPage(previousPageId, previousPageTitle);
         };
     }
 }
+
 
 
 
