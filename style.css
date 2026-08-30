@@ -408,6 +408,15 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
+/* Возвращаем панель для правильной работы вложенности и стилей */
+.details-header-panel { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
 /* Шапка на странице ДЕТАЛЕЙ фильма (Компактная, 70px, с ультимативным фоном и z-index) */
 .details-fixed-header {
