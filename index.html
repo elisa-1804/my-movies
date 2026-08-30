@@ -431,8 +431,9 @@
     // 5. Автоматически запускаем отрисовку данных на нужных экранах
     if (pageId === 'allMoviesPage') renderMoviesGrid('moviesGrid', movies);
     if (pageId === 'genresPage') renderGenresList();
-    if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
-    if (pageId === 'moviePartsPage') renderCollectionsGrid();
+if (pageId === 'favoritesPage') {
+        renderFavGrid(); // ТЕПЕРЬ ОНА БУДЕТ ЗАПУСКАТЬСЯ АВТОМАТИЧЕСКИ ПРИ ПЕРЕХОДЕ В ИЗБРАННОЕ
+    }    if (pageId === 'moviePartsPage') renderCollectionsGrid();
     if (pageId === 'recommendationsPage') loadRecommendations();
 }
 
@@ -1073,6 +1074,49 @@ async function deleteMovieFromModal() {
             alert("Ошибка при удалении фильма из базы данных!");
         }
     }
+}
+// --- ФУНКЦИЯ: УМНАЯ ОТРИСОВКА СЕТКИ ИЗБРАННОГО (ФИЛЬМЫ / СЕРИАЛЫ) ---
+function renderFavGrid() {
+    const container = document.getElementById('favoritesGrid');
+    if (!container) return;
+    
+    // Полностью очищаем сетку перед выводом, чтобы карточки не накладывались
+    container.innerHTML = '';
+    
+    if (currentFavTab === 'movie') {
+        // 1. Фильтруем ТОЛЬКО ФИЛЬМЫ со статусом favorite
+        const favMovies = movies.filter(m => m.favorite);
+        
+        if (favMovies.length === 0) {
+            container.innerHTML = '<div class="empty-section-message">Нет избранных фильмов 🎬</div>';
+            return;
+        }
+        
+        // Вызываем твою оригинальную функцию отрисовки сетки
+        renderMoviesGrid('favoritesGrid', favMovies);
+    } else {
+        // 2. Сюда мы добавим вывод избранных сериалов на следующем шаге, когда напишем для них рендер!
+        container.innerHTML = '<div class="empty-section-message">Тут будут твои избранные сериалы! 🍿</div>';
+    }
+}
+
+// --- ФУНКЦИЯ: ИНТЕРАКТИВНОЕ ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК В ИЗБРАННОМ ---
+function switchFavTab(tabType) {
+    currentFavTab = tabType;
+    
+    // Снимаем класс active со всех вкладок браузерного стиля
+    document.getElementById('favTabMovie').classList.remove('active');
+    document.getElementById('favTabSeries').classList.remove('active');
+    
+    // Подсвечиваем нужным неоновым цветом только ту вкладку, на которую нажали
+    if (tabType === 'movie') {
+        document.getElementById('favTabMovie').classList.add('active');
+    } else {
+        document.getElementById('favTabSeries').classList.add('active');
+    }
+    
+    // Перерисовываем экран Избранного под выбранную вкладку
+    renderFavGrid();
 }
 
 
