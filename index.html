@@ -103,20 +103,22 @@
             <div class="movies-grid" id="seriesGrid"></div>
         </div>
 
-        <!-- ОБНОВЛЕННАЯ 4. СТРАНИЦА ИЗБРАННОГО С ДВУМЯ ВКЛАДКАМИ ВВЕРХУ -->
+                <!-- 4. СТРАНИЦА ИЗБРАННОГО С ЛЕВЫМ ЗАГОЛОВКОМ И ВКЛАДКАМИ -->
         <div id="favoritesPage" class="page" style="position: relative;">
-            <div class="collection-fixed-header" style="height: 120px !important;">
-                <h2 class="details-page-center-title" style="margin-bottom: 12px; margin-top: 10px;">Избранное</h2>
+            <div class="collection-fixed-header">
+                <!-- Вернули обычный класс, чтобы заголовок встал ПО ЛЕВОМУ КРАЮ -->
+                <h1 class="page-fixed-header-title">Избранное</h1>
                 
-                <!-- Две переключающиеся вкладки (фиолетовый и розовый как в реках) -->
+                <!-- Контейнер вкладок ниже заголовка -->
                 <div class="fav-tabs-container">
                     <div class="fav-tab movie active" id="favTabMovie" onclick="switchFavTab('movie')">Фильмы</div>
                     <div class="fav-tab series" id="favTabSeries" onclick="switchFavTab('series')">Сериалы</div>
                 </div>
             </div>
             <!-- Сетка избранного -->
-            <div class="movies-grid" id="favoritesGrid" style="margin-top: 140px !important;"></div>
+            <div class="movies-grid" id="favoritesGrid"></div>
         </div>
+
 
         <!-- 5. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
         <div id="moviePartsPage" class="page">
