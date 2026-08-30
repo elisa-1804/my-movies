@@ -192,6 +192,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     background-color: #06B6D4; /* Наш акцентный голубой */
     border-radius: 3px 3px 0 0;
     transition: transform 0.3s ease; /* Плавный эффект перетекания/появления */
+    flex: 1;        /* Заставляет ВСЕ три кнопки делиться местом абсолютно поровну */
+    min-width: 0; 
 }
 
 /* Состояние активности (Голубой цвет) */
