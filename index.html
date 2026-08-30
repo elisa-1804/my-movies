@@ -394,27 +394,33 @@
     currentUser = null;
     checkUser();
 }
-    async function loadData() {
-        if(!currentUser) return;
-        const t = localStorage.getItem("sb_token");
-        const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t };
+async function loadData() {
+    if(!currentUser) return;
+    const t = localStorage.getItem("sb_token");
+    const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t };
 
-        // Напрямую скачиваем жанры из облака
-        const gResponse = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers });
-        const gData = gResponse.ok ? await gResponse.json() : [];
-        genres = gData ? gData.map(function(g) { return g.name; }) : [];
-        
-        // Напрямую скачиваем фильмы из облака
-        const mResponse = await fetch(SUPABASE_URL + "/rest/v1/movies?select=*", { method: "GET", headers });
-        movies = mResponse.ok ? await mResponse.json() : [];
+    // 1. Напрямую скачиваем жанры из облака
+    const gResponse = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers });
+    const gData = gResponse.ok ? await gResponse.json() : [];
+    genres = gData ? gData.map(function(g) { return g.name; }) : [];
+    
+    // 2. Напрямую скачиваем фильмы из облака
+    const mResponse = await fetch(SUPABASE_URL + "/rest/v1/movies?select=*", { method: "GET", headers });
+    movies = mResponse.ok ? await mResponse.json() : [];
 
-        renderMoviesGrid('moviesGrid', movies); 
-        updateGenreSelect();
-        await loadRecommendations();
-        if (document.getElementById('favoritesPage').classList.contains('active')) {
-        renderFavGrid();
-    }
-        }
+    // 3. Напрямую скачиваем сериалы из твоей новой таблицы
+    const sResponse = await fetch(SUPABASE_URL + "/rest/v1/series?select=*", { method: "GET", headers });
+    series = sResponse.ok ? await sResponse.json() : [];
+
+    // 4. Запускаем рендеры и обновления интерфейса
+    renderMoviesGrid('moviesGrid', movies); 
+    updateGenreSelect();
+    await loadRecommendations();
+    
+    // ЖЕЛЕЗОБЕТОННЫЙ ФИКС: Принудительно отрисовываем Избранное сразу, как только данные загрузились!
+    renderFavGrid();
+}
+
 function switchPage(pageId, titleText) {
     // 1. Снимаем активный класс (скрываем) со ВСЕХ страниц приложения
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
