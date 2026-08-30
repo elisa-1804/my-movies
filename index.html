@@ -337,10 +337,11 @@
                 </div>
             </div>
 
-            <!-- МНОЖЕСТВЕННЫЙ ВЫБОР ЖАНРОВ ГАЛОЧКАМИ -->
+                        <!-- МНОЖЕСТВЕННЫЙ ВЫБОР ЖАНРОВ С ОГРАНИЧЕНИЕМ ПРОКРУТКИ -->
             <div class="form-group">
                 <label>Жанры сериала</label>
-                <div class="genres-checkboxes" id="seriesGenresCheckboxes" style="max-height: 120px; overflow-y: auto; background: #1a1a1e; padding: 10px; border-radius: 6px; border: 1px solid #29292e;">
+                <!-- Добавили класс custom-scroll для красивой прокрутки -->
+                <div class="genres-checkboxes custom-scroll" id="seriesGenresCheckboxes" style="max-height: 110px; overflow-y: auto; background: #1a1a1e; padding: 10px; border-radius: 6px; border: 1px solid #29292e; box-sizing: border-box;">
                     <!-- Сюда JS автоматически вставит галочки из твоей базы жанров -->
                 </div>
             </div>
@@ -354,25 +355,27 @@
                 <input type="hidden" id="formSeriesRating" value="0">
             </div>
 
-            <!-- ДВЕ ПЛАШКИ ПЕРЕКЛЮЧЕНИЯ СТАТУСА (Просмотрено / В процессе) -->
+            <!--ОВАЛЬНЫЕ ПЛАШКИ СТАТУСА БЕЗ СМАЙЛИКОВ -->
             <div class="form-group">
                 <label>Статус просмотра</label>
                 <div class="series-status-tabs" style="display: flex; gap: 15px; margin-top: 5px;">
-                    <div class="series-status-tab" id="statusTabFinished" onclick="toggleSeriesStatus(true)" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">Просмотрено 🍿</div>
-                    <div class="series-status-tab" id="statusTabWatching" onclick="toggleSeriesStatus(false)" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">В процессе 🎬</div>
+                    <div class="series-status-tab" id="statusTabFinished" onclick="toggleSeriesStatus(true)" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">Просмотрено</div>
+                    <div class="series-status-tab" id="statusTabWatching" onclick="toggleSeriesStatus(false)" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">В процессе</div>
                 </div>
-                <input type="hidden" id="formSeriesIsFinished" value="false">
+                <input type="hidden" id="formSeriesIsFinished" value="true"> <!-- По умолчанию ставим true -->
             </div>
 
-            <!-- СКРЫВАЕМЫЙ БЛОК КОНТРОЛЯ ПРОСМОТРА (Показывается только если "В процессе") -->
+            <!-- ИСПРАВЛЕННЫЙ БЛОК КОНТРОЛЯ ПРОСМОТРА -->
             <div id="seriesWatchingProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed #29292e;">
-                <label style="display: block; font-size: 11px; color: #06B6D4; font-weight: 600; margin-bottom: 10px; text-transform: uppercase;">Где я остановилась смотреть:</label>
+                <!-- Убрали капс и увеличили отступ снизу до 14px -->
+                <label style="display: block; font-size: 12px; color: #06B6D4; font-weight: 600; margin-bottom: 14px;">Где я остановилась смотреть:</label>
                 <div class="form-row" style="display: flex; gap: 10px;">
                     <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Сезон</label><input type="number" id="formSeriesCurrentSeason" placeholder="1" style="padding: 8px;"></div>
                     <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Серия</label><input type="number" id="formSeriesCurrentEpisode" placeholder="1" style="padding: 8px;"></div>
                     <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Время</label><input type="text" id="formSeriesCurrentTime" placeholder="34:12" style="padding: 8px;"></div>
                 </div>
             </div>
+
 
             <div class="form-group">
                 <label>Ссылка на постер</label>
