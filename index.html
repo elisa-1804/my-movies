@@ -846,8 +846,7 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             alert("Ошибка при создании жанра: " + errText);
         }
     }
-    // --- РАЗДЕЛ: ФИЛЬМЫ ПО ЧАСТЯМ (ОТРИСОВКА СТОПОК) ---
-        // --- РАЗДЕЛ: ФИЛЬМЫ ПО ЧАСТЯМ (ИСПРАВЛЕННАЯ ОТРИСОВКА СТОПОК) ---
+       // --- РАЗДЕЛ: ФИЛЬМЫ ПО ЧАСТЯМ (УМНАЯ ГРУППИРОВКА БЕЗ ДУБЛЕЙ) ---
     function renderCollectionsGrid() {
         const gridContainer = document.getElementById('collectionsGrid');
         if (!gridContainer) return;
@@ -862,26 +861,33 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             return;
         }
         
-        // 2. Группируем фильмы по имени коллекции
+        // 2. Группируем фильмы
         const groups = {};
         partMovies.forEach(m => {
-            const name = m.collection.trim();
-            if (!groups[name]) groups[name] = [];
-            groups[name].push(m);
+            // Принудительно приводим к нижнему регистру для сравнения, чтобы "Гарри" и "гарри" склеивались
+            const key = m.collection.trim().toLowerCase();
+            if (!groups[key]) {
+                groups[key] = {
+                    displayName: m.collection.trim(), // Сохраняем красивое оригинальное имя для экрана
+                    list: []
+                };
+            }
+            groups[key].list.push(m);
         });
         
         // 3. Строим стопки для каждой франшизы
-        Object.keys(groups).forEach(collectionName => {
-            const list = groups[collectionName];
+        Object.keys(groups).forEach(key => {
+            const groupData = groups[key];
+            const list = groupData.list;
+            const collectionName = groupData.displayName;
             
-            // Сортируем фильмы внутри коллекции по году выпуска (от старых к новым)
+            // Сортируем фильмы внутри коллекции по году выпуска
             list.sort((a, b) => (a.year || 0) - (b.year || 0));
             
-            // ИСПРАВЛЕНИЕ: Берем СТРОГО ПЕРВЫЙ фильм из списка [0] для обложки франшизы
+            // Берем строго первый фильм для обложки франшизы
             const coverMovie = list[0]; 
             const defaultPoster = 'https://unsplash.com';
             
-            // Создаем обертку-контейнер, на которой в CSS висит эффект края книги (before/after)
             const wrapper = document.createElement('div');
             wrapper.className = 'movie-stack-wrapper';
             
@@ -898,6 +904,7 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             gridContainer.appendChild(wrapper);
         });
     }
+
 
 
 
