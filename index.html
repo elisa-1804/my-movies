@@ -674,7 +674,7 @@ function showDetails(id) {
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-              c.innerHTML = `
+                 c.innerHTML = `
         <div class="details-flex">
             <!-- Блок постера -->
             <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
@@ -689,11 +689,11 @@ function showDetails(id) {
 
                 <h2 class="details-title" style="margin-top: 0; margin-bottom: 12px; padding-right: 10px;">${m.title}</h2>
                 
-                <!-- Твои оригинальные квадратные чеплашки одинакового размера -->
-                <div class="details-tag"><span>Год:</span> <strong>${m.year || '—'}</strong></div>
-                <div class="details-tag"><span>Жанр:</span> <strong>${genreText}</strong></div>
+                <!-- ИСПРАВЛЕНО: Вернули смайлики обратно в чеплашки! -->
+                <div class="details-tag">📅 ${m.year || '—'}</div>
+                <div class="details-tag">🎭 ${genreText}</div>
                 
-                <!-- ВОЗВРАЩЕНО КАК БЫЛО: Родная чеплашка рейтинга со словом и звёздами -->
+                <!-- Рейтинг остаётся маленькой чеплашкой со словом Рейтинг и жёлтыми звёздами -->
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(m.rating || 0)}</strong></div>
                 
                 <!-- Блок описания -->
@@ -701,6 +701,7 @@ function showDetails(id) {
             </div>
         </div>
     `;
+
 
     // 5. Назначаем клик кнопке "Назад" в кружке и закрываем модалку, если уходим
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
