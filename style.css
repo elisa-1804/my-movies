@@ -138,6 +138,11 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     background-color: #3a1427 !important;
     border: 1px solid #EC4899;
 }
+/* Подсветка для горизонтальной плашки части фильма, если она в избранном */
+.franchise-row-card.is-fav { 
+    background-color: #3a1427 !important; 
+    border: 1px solid #EC4899 !important; 
+}
 
 /* Навигация внизу (Обновлено) */
 .bottom-nav { 
