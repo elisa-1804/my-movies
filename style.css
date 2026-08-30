@@ -445,21 +445,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 
-/* Карточка деталей фильма */
-.details-container { 
-    background-color: #202024; 
-    border-radius: 12px; 
-    padding: 20px; 
-    position: relative; 
-    
-    /* НАСТРОЙКА ОТСТУПА: Высота шапки 110px + 20px воздуха = 130px от верха экрана */
-    margin-top: 130px !important;    
-    margin-bottom: 100px !important; 
-    
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
 /* Элементы внутри карточки */
 .details-flex {
     display: flex; 
