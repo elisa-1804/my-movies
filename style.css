@@ -1354,32 +1354,34 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 /* Кастомный вид чекбоксов сериалов (ОБНОВЛЕНО: сделали крупными 22px!) */
-.series-genre-checkbox {
+/* ОБЪЕДИНИЛИ БАЗУ: делаем чекбоксы крупными и красивыми */
+#addSeriesModal .series-genre-checkbox,
+#addMovieModal .movie-genre-checkbox {
     -webkit-appearance: none;
     appearance: none;
-    width: 22px !important; /* Сделали крупнее для удобного тыкания пальцем */
-    height: 22px !important;
+    width: 22px; 
+    height: 22px;
     border: 1px solid #29292e;
-    border-radius: 6px; /* Чуть мягче скругление */
-    background: #121214;
+    background-color: #121214;
     cursor: pointer;
     position: relative;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 0;
 }
-.series-genre-checkbox:checked {
-    background: #06B6D4;
+
+/* Красим в фирменный голубой цвет при клике */
+#addSeriesModal .series-genre-checkbox:checked,
+#addMovieModal .movie-genre-checkbox:checked {
+    background-color: #06B6D4;
     border-color: #06B6D4;
 }
-.series-genre-checkbox:checked::after {
-    content: "✓";
-    color: #121214;
-    font-size: 13px; /* Под крупный чекбокс */
-    font-weight: bold;
-}
+
+
 
 /* ПАСТЕЛЬНАЯ ПОДСВЕТКА ОВАЛЬНЫХ ТЕГОВ СТАТУСА */
 /* "Просмотрено" — пастельно-зелёный */
