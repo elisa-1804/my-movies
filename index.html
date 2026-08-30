@@ -673,11 +673,11 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
             `;
         }); 
     }    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
- function openModal(editId = null) {
+function openModal(editId = null) {
     // 1. Принудительно генерируем список жанров для выбора
-    updateGenreSelect(); 
+    if (typeof updateGenreSelect === 'function') updateGenreSelect(); 
     
-    // 2. Сворачиваем спойлер жанров фильма по умолчанию при каждом открытии окна
+    // Безопасно сворачиваем спойлер жанров фильма по умолчанию при каждом открытии окна
     const mDropdown = document.getElementById('movieGenresCheckboxes');
     const mArrow = document.getElementById('movieGenreArrow');
     if (mDropdown) mDropdown.style.display = 'none';
@@ -694,21 +694,23 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         document.getElementById('formYear').value = m.year || '';
         document.getElementById('formPoster').value = m.poster || '';
         document.getElementById('formDesc').value = m.desc || '';
-        setFormRating(m.rating || 0); 
+        if (typeof setFormRating === 'function') setFormRating(m.rating || 0); 
         
         // ПРОВЕРКА ФРАНШИЗЫ: если у фильма уже вписан сборник, зажигаем галочку и разворачиваем поле
         if (m.collection && m.collection.trim() !== '') {
-            document.getElementById('formHasCollection').checked = true;
-            toggleCollectionField(true);
+            const hasCollCb = document.getElementById('formHasCollection');
+            if (hasCollCb) hasCollCb.checked = true;
+            if (typeof toggleCollectionField === 'function') toggleCollectionField(true);
             document.getElementById('formCollection').value = m.collection;
         } else {
-            document.getElementById('formHasCollection').checked = false;
-            toggleCollectionField(false);
+            const hasCollCb = document.getElementById('formHasCollection');
+            if (hasCollCb) hasCollCb.checked = false;
+            if (typeof toggleCollectionField === 'function') toggleCollectionField(false);
             document.getElementById('formCollection').value = '';
         }
         
-        // Показываем кнопку удаления при редактировании
-        document.getElementById('movieDeleteBtn').style.display = 'flex';
+        const delBtn = document.getElementById('movieDeleteBtn');
+        if (delBtn) delBtn.style.display = 'flex';
         
         // Восстанавливаем галочки жанров фильма
         const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
@@ -723,23 +725,30 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         document.getElementById('formYear').value = '';
         document.getElementById('formPoster').value = '';
         document.getElementById('formDesc').value = '';
-        setFormRating(0); 
+        if (typeof setFormRating === 'function') setFormRating(0); 
         
         // По умолчанию для нового фильма галочка снята и поле франшизы скрыто
-        document.getElementById('formHasCollection').checked = false;
-        toggleCollectionField(false);
+        const hasCollCb = document.getElementById('formHasCollection');
+        if (hasCollCb) hasCollCb.checked = false;
+        if (typeof toggleCollectionField === 'function') toggleCollectionField(false);
         document.getElementById('formCollection').value = '';
         
-        // Прячем кнопку удаления для новой записи
-        document.getElementById('movieDeleteBtn').style.display = 'none';
+        const delBtn = document.getElementById('movieDeleteBtn');
+        if (delBtn) delBtn.style.display = 'none';
         
         // Сбрасываем все галочки жанров
         document.querySelectorAll('.movie-genre-checkbox').forEach(cb => cb.checked = false);
     }
     
     // Плавное открытие модального окна на экране
-    document.getElementById('addMovieModal').classList.add('active');
+    const modal = document.getElementById('addMovieModal');
+    if (modal) {
+        modal.classList.add('active');
+    } else {
+        console.error("Ошибка: Модальное окно #addMovieModal не найдено в HTML!");
+    }
 }
+
 
 
     // 2. Обновленная функция сохранения фильма
