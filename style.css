@@ -384,28 +384,33 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
 
 /* --- СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА --- */
+/* ПОДТЯГИВАЕМ КОНТЕНТ ВВЕРХ: Так как шапка стала намного уже (70px вместо 110px), 
+   мы уменьшаем верхние маржины контейнеров, чтобы убрать огромные дыры! */
 .details-container { 
     background-color: #202024; 
     border-radius: 12px; 
     padding: 20px; 
     position: relative; 
-    
-    /* ИСПРАВЛЕНИЕ: Жестко задаем отступ, чтобы карточка опустилась из-под шапки */
-    margin-top: 130px !important;    /* Если нужно еще ниже, сделай 140px */
-    margin-bottom: 100px !important; /* Отступ от нижнего меню */
-    
+    margin-top: 90px !important;    /* Идеальный зазор (70px высота шапки + 20px воздуха) */
+    margin-bottom: 100px !important; 
     margin-left: 0 !important;
     margin-right: 0 !important;
-    transition: background-color 0.3s; 
 }
 .details-container.is-fav { background-color: #3a1427; border: 1px solid #EC4899; }
-/* Шапка на странице ДЕТАЛЕЙ фильма */
+/* Шапка на странице ДЕТАЛЕЙ фильма (Компактная, 70px, с ультимативным фоном и z-index) */
 .details-fixed-header {
     position: fixed;            
     top: 0; left: 0; right: 0;
-    background-color: #121214 !important;  
-    z-index: 150;               
-    height: 110px; /* Зафиксировали высоту */
+    height: 70px;                 /* Сжали высоту до компактных 70px */
+    background-color: #121214 !important; /* Плотный темный фон на 100% закроет просвечивающий контент */
+    z-index: 999 !important;      /* Самый высокий слой поверх любых карточек */
+    isolation: isolate;           /* Спасает контекст наложения в iOS Safari */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #1a1a1e; /* Легкая элегантная граница снизу */
 }
 
 /* Заголовок "О фильме" — как на главной */
@@ -418,15 +423,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     margin-bottom: 10px;         /* Небольшой отступ до кнопок */
 }
 
-
-/* Панель с кнопками */
-.details-header-panel { 
-    height: 40px;               
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 0 20px 5px 20px;  
-}
 
 /* Карточка деталей фильма */
 .details-container { 
@@ -988,9 +984,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    
-    /* НАСТРОЙКА ОТСТУПА: Высота шапки 110px + 15px воздуха = 125px от верха экрана */
-    margin-top: 125px !important;    
+    margin-top: 90px !important;    /* Подтягиваем список франшиз вплотную к шапке */
     margin-bottom: 100px !important; 
 }
 
@@ -1049,13 +1043,58 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-size: 12px;
     color: #fba94c;
 }
-/* Шапка на странице СПИСКА ЧАСТЕЙ франшизы */
+/* Шапка на странице СПИСКА ЧАСТЕЙ франшизы (Один в один как у деталей) */
 .collection-fixed-header {
     position: fixed;            
-    top: 0; 
-    left: 0; 
-    right: 0;
-    background-color: #121214 !important;  
-    z-index: 150;               
-    height: 20px; /* Зафиксировали высоту */
+    top: 0; left: 0; right: 0;
+    height: 70px; 
+    background-color: #121214 !important; 
+    z-index: 999 !important;      
+    isolation: isolate;           
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #1a1a1e;
+}
+/* Стиль для нового заголовка СТРОГО ПО ЦЕНТРУ экрана на одном уровне с кнопками */
+.details-page-center-title {
+    font-size: 17px;              /* Чуть-чуть уменьшили размер для изящности в одну строку */
+    font-weight: 600;
+    color: #E2E8F0;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    padding: 0 10px;
+}
+/* Круглая серая кнопка для стрелочки "Назад" (Симметрия с кнопкой редактирования) */
+.back-icon-btn {
+    background-color: #29292e;   
+    border: none; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%;          
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: background-color 0.2s;
+    outline: none;
+    padding: 0 !important;
+    margin: 0;
+    flex-shrink: 0;
+}
+.back-icon-btn:hover { background-color: #323238; }
+
+/* Белая PNG иконка стрелочки внутри серого кружка */
+.details-back-img {
+    width: 20px;  
+    height: 20px;
+    object-fit: contain;
+    pointer-events: none; 
+    display: block;
 }
