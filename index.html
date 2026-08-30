@@ -674,12 +674,12 @@ function showDetails(id) {
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-        c.innerHTML = `
+            c.innerHTML = `
         <div class="details-flex">
             <!-- Блок постера -->
             <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
             
-            <!-- Блок информации справа (position: relative задан прямо тут, чтобы сердечко не уплывало) -->
+            <!-- Блок информации справа -->
             <div class="details-content" style="position: relative; padding-right: 45px;">
                 
                 <!-- Анимированное сердечко Избранного строго на своём месте -->
@@ -693,8 +693,8 @@ function showDetails(id) {
                 <div class="details-tag">📅 ${m.year || '—'}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
                 
-                <!-- ВОЗВРАЩЕНЫ ЗВЁЗДОЧКИ РЕЙТИНГА -->
-                <div class="details-tag">⭐ ${getStarsHtml(m.rating || 0)}</div>
+                <!-- ИСПРАВЛЕНО: Твой родной блок рейтинга с жёлтыми звёздочками -->
+                <div class="details-rating">Рейтинг: ${getStarsHtml(m.rating || 0)}</div>
                 
                 <!-- Блок описания -->
                 <p class="details-desc">${m.desc || 'Описание отсутствует.'}</p>
