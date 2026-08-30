@@ -94,21 +94,20 @@
         </div>
 
 
-                <!-- НОВАЯ СТРАНИЦА: СПИСОК ЧАСТЕЙ ОПРЕДЕЛЕННОЙ ФРАНШИЗЫ -->
+                <!-- 3. СТРАНИЦА: СПИСОК ЧАСТЕЙ ОПРЕДЕЛЕННОЙ ФРАНШИЗЫ -->
         <div id="collectionPage" class="page" style="position: relative;">
-            <!-- Верхняя панель навигации (как на странице деталей, только кнопка возвращает в части фильмов) -->
-            <div class="details-fixed-header">
+            <!-- ИСПРАВЛЕНИЕ: Дали уникальный класс шапке, чтобы отступы не путались! -->
+            <div class="collection-fixed-header">
                 <h1 class="details-page-main-title" id="collectionPageTitle">Франшиза</h1>
                 <div class="details-header-panel">
                     <button class="back-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">← Назад</button>
-                    <!-- Карандаш тут не нужен, так как это просто список -->
                     <div></div> 
                 </div>
             </div>
             
-            <!-- Контейнер, куда JS выведет наши горизонтальные карточки частей -->
             <div class="collection-list-container" id="collectionListContainer"></div>
         </div>
+
 
 
                <!-- 2. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
@@ -389,7 +388,11 @@
     }
 
     // 5. Меняем заголовок в шапке
-    document.getElementById('pageTitle').textContent = titleText;
+    if (pageId === 'homePage') {
+        document.getElementById('pageTitle').textContent = 'Главная';
+    } else {
+        document.getElementById('pageTitle').textContent = titleText;
+    }
     
     // 6. ЖЕСТКОЕ И ЧИСТОЕ УПРАВЛЕНИЕ КНОПКОЙ ДОБАВЛЕНИЯ:
     // Показываем плюс ТОЛЬКО на странице "Все фильмы" (allMoviesPage)
