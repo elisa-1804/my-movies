@@ -674,7 +674,7 @@ function showDetails(id) {
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-            c.innerHTML = `
+           c.innerHTML = `
         <div class="details-flex">
             <!-- Блок постера -->
             <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
@@ -682,8 +682,8 @@ function showDetails(id) {
             <!-- Блок информации справа -->
             <div class="details-content" style="position: relative; padding-right: 45px;">
                 
-                <!-- Анимированное сердечко Избранного строго на своём месте -->
-                <button class="heart-btn" onclick="toggleFavInDetails(${m.id})">
+                <!-- Привязали клик строго к твоей рабочей функции toggleFav -->
+                <button class="heart-btn" onclick="toggleFav(${m.id})">
                     <img src="fav.png" class="heart-icon-img" alt="Избранное">
                 </button>
 
@@ -693,7 +693,7 @@ function showDetails(id) {
                 <div class="details-tag">📅 ${m.year || '—'}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
                 
-                <!-- ИСПРАВЛЕНО: Твой родной блок рейтинга с жёлтыми звёздочками -->
+                <!-- Твой родной блок рейтинга с жёлтыми звёздочками -->
                 <div class="details-rating">Рейтинг: ${getStarsHtml(m.rating || 0)}</div>
                 
                 <!-- Блок описания -->
