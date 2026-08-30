@@ -315,6 +315,86 @@
             </div>
         </div>
     </div>
+    <!-- МОДАЛЬНОЕ ОКНО: ДОБАВИТЬ / РЕДАКТИРОВАТЬ СЕРИАЛ -->
+    <div class="modal" id="addSeriesModal">
+        <div class="modal-content">
+            <h3 id="seriesModalHeadline">Новый сериал</h3>
+            <input type="hidden" id="formSeriesId">
+            
+            <div class="form-group">
+                <label>Название сериала</label>
+                <input type="text" id="formSeriesTitle" placeholder="Введите название...">
+            </div>
+            
+            <div class="form-row" style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Год выпуска</label>
+                    <input type="number" id="formSeriesYear" placeholder="2026">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Всего сезонов</label>
+                    <input type="number" id="formSeriesSeasonsTotal" placeholder="0">
+                </div>
+            </div>
+
+            <!-- МНОЖЕСТВЕННЫЙ ВЫБОР ЖАНРОВ ГАЛОЧКАМИ -->
+            <div class="form-group">
+                <label>Жанры сериала</label>
+                <div class="genres-checkboxes" id="seriesGenresCheckboxes" style="max-height: 120px; overflow-y: auto; background: #1a1a1e; padding: 10px; border-radius: 6px; border: 1px solid #29292e;">
+                    <!-- Сюда JS автоматически вставит галочки из твоей базы жанров -->
+                </div>
+            </div>
+
+            <!-- РЕЙТИНГ ЗВЕЗДАМИ -->
+            <div class="form-group">
+                <label>Моя оценка</label>
+                <div class="form-rating-stars" id="seriesFormStars" style="font-size: 24px; color: #4a4a4a; cursor: pointer; gap: 5px; display: flex;">
+                    <!-- Звездочки сгенерируются через JS -->
+                </div>
+                <input type="hidden" id="formSeriesRating" value="0">
+            </div>
+
+            <!-- ДВЕ ПЛАШКИ ПЕРЕКЛЮЧЕНИЯ СТАТУСА (Просмотрено / В процессе) -->
+            <div class="form-group">
+                <label>Статус просмотра</label>
+                <div class="series-status-tabs" style="display: flex; gap: 15px; margin-top: 5px;">
+                    <div class="series-status-tab" id="statusTabFinished" onclick="toggleSeriesStatus(true)" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">Просмотрено 🍿</div>
+                    <div class="series-status-tab" id="statusTabWatching" onclick="toggleSeriesStatus(false)" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">В процессе 🎬</div>
+                </div>
+                <input type="hidden" id="formSeriesIsFinished" value="false">
+            </div>
+
+            <!-- СКРЫВАЕМЫЙ БЛОК КОНТРОЛЯ ПРОСМОТРА (Показывается только если "В процессе") -->
+            <div id="seriesWatchingProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed #29292e;">
+                <label style="display: block; font-size: 11px; color: #06B6D4; font-weight: 600; margin-bottom: 10px; text-transform: uppercase;">Где я остановилась смотреть:</label>
+                <div class="form-row" style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Сезон</label><input type="number" id="formSeriesCurrentSeason" placeholder="1" style="padding: 8px;"></div>
+                    <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Серия</label><input type="number" id="formSeriesCurrentEpisode" placeholder="1" style="padding: 8px;"></div>
+                    <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Время</label><input type="text" id="formSeriesCurrentTime" placeholder="34:12" style="padding: 8px;"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ссылка на постер</label>
+                <input type="text" id="formSeriesPoster" placeholder="https://...">
+            </div>
+            
+            <div class="form-group">
+                <label>Описание / Заметки</label>
+                <textarea id="formSeriesDesc" rows="3" placeholder="Пару слов о сюжете..."></textarea>
+            </div>
+
+            <div class="form-buttons">
+                <button class="genre-del-icon-btn" id="seriesDeleteBtn" style="display: none;" onclick="deleteSeriesFromModal()">
+                    <img src="delete.png" alt="Удалить" class="genre-btn-img">
+                </button>
+                <button class="action-btn cancel-btn" onclick="closeSeriesModal()">Отмена</button>
+                <button class="genre-save-icon-btn" onclick="saveSeries()">
+                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                </button>
+            </div>
+        </div>
+    </div>
 
 
 
