@@ -333,56 +333,32 @@
         updateGenreSelect();
         await loadRecommendations();
     }
-    function switchPage(pageId, titleText) {
-    // 1. Снимаем активные классы со страниц и меню
+ function switchPage(pageId, titleText) {
+    // 1. Снимаем активный класс (скрываем) со ВСЕХ страниц приложения
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    
+    // 2. Снимаем подсветку со ВСЕХ кнопок нижнего меню
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     
-    // 2. Активируем текущую страницу
-    document.getElementById(pageId).classList.add('active');
+    // 3. Включаем (показываем) только ту страницу, на которую нажали
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+    }
     
-    // 3. Подсвечиваем нужную кнопку в нижнем меню
+    // 4. Подсвечиваем правильную иконку и полосочку в нижнем меню
     if (pageId === 'homePage') document.getElementById('navHome').classList.add('active');
     if (pageId === 'allMoviesPage') document.getElementById('navAllMovies').classList.add('active');
     if (pageId === 'favoritesPage') document.getElementById('navFav').classList.add('active');
-
-        // 4. Управляем оригинальной шапкой (прячем на странице деталей фильма И на странице списка частей)
-    const mainHeader = document.querySelector('#appContent > header');
-    if (mainHeader) {
-        // ИСПРАВЛЕНИЕ: Прячем главную шапку сайта на экранах деталей и списка франшизы, чтобы заголовки не накладывались
-        if (pageId === 'detailsPage' || pageId === 'collectionPage') {
-            mainHeader.style.display = 'none'; // Полностью отключаем оригинальный верхний заголовок
-        } else {
-            mainHeader.style.display = 'flex'; // Возвращаем шапку на главной, во всех фильмах и избранном
-        }
-    }
-
-
-    // 5. Меняем заголовок в шапке
-    if (pageId === 'homePage') {
-        document.getElementById('pageTitle').textContent = 'Главная';
-    } else {
-        document.getElementById('pageTitle').textContent = titleText;
-    }
     
-    // 6. ЖЕСТКОЕ И ЧИСТОЕ УПРАВЛЕНИЕ КНОПКОЙ ДОБАВЛЕНИЯ:
-    // Показываем плюс ТОЛЬКО на странице "Все фильмы" (allMoviesPage)
-    const plusBtn = document.getElementById('headerPlusBtn');
-    if (plusBtn) {
-        if (pageId === 'allMoviesPage') {
-            plusBtn.classList.remove('hidden');
-        } else {
-            plusBtn.classList.add('hidden');
-        }
-    }
-    
-    // 7. Отрисовка списков на нужных страницах
+    // 5. Автоматически запускаем отрисовку данных на нужных экранах
     if (pageId === 'allMoviesPage') renderMoviesGrid('moviesGrid', movies);
     if (pageId === 'genresPage') renderGenresList();
     if (pageId === 'favoritesPage') renderMoviesGrid('favoritesGrid', movies.filter(m => m.favorite));
-    if (pageId === 'recommendationsPage') loadRecommendations();
     if (pageId === 'moviePartsPage') renderCollectionsGrid();
+    if (pageId === 'recommendationsPage') loadRecommendations();
 }
+
 
 
 
