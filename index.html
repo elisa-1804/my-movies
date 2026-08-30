@@ -35,7 +35,7 @@
             <div class="page-fixed-header">
                 <h1>Главная</h1>
                 <button class="logout-btn" onclick="logout()">
-                    <img src="logout.png" alt="Выйти" class="header-icon-img">
+                    <img src="exit.png" alt="Выйти" class="header-icon-img">
                 </button>
             </div>
             
@@ -44,19 +44,19 @@
                 
                 <!-- Карточка 1. Фильмы по частям -->
                 <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
-                    <img src="parts_icon.png" alt="Части" class="hub-tile-icon">
+                    <img src="playlist.png" alt="Части" class="hub-tile-icon">
                     <span class="hub-tile-title">Фильмы по частям</span>
                 </div>
 
                 <!-- Карточка 2. Рекомендации к просмотру -->
                 <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
-                    <img src="recommend_icon.png" alt="Рекомендации" class="hub-tile-icon">
+                    <img src="bookmark.png" alt="Рекомендации" class="hub-tile-icon">
                     <span class="hub-tile-title">Рекомендации к просмотру</span>
                 </div>
 
                 <!-- Карточка 3. Жанры -->
                 <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
-                    <img src="genres_main_icon.png" alt="Жанры" class="hub-tile-icon">
+                    <img src="genres.png" alt="Жанры" class="hub-tile-icon">
                     <span class="hub-tile-title">Жанры</span>
                 </div>
 
@@ -73,7 +73,7 @@
                         <img src="add.png" alt="Добавить" class="header-icon-img">
                     </button>
                     <button class="logout-btn" onclick="logout()">
-                        <img src="logout.png" alt="Выйти" class="header-icon-img">
+                        <img src="exit.png" alt="Выйти" class="header-icon-img">
                     </button>
                 </div>
             </div>
@@ -677,7 +677,7 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
             <div class="details-poster-block">
                 <img class="details-poster-img" src="${m.poster || defaultPoster}" alt="${m.title}">
                 <button class="heart-btn" onclick="toggleFavInDetails(${m.id})">
-                    <img src="fav.png" class="heart-icon-img" alt="Избранное">
+                    <img src="favorites.png" class="heart-icon-img" alt="Избранное">
                 </button>
             </div>
             <div class="details-info-block">
