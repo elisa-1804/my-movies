@@ -868,10 +868,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 стопки в ряд на телефоне */
     gap: 30px 20px;                         /* Большой вертикальный зазор, чтобы верхние стопки не перекрывали нижние */
-    margin-top: 20px;
+    margin-top: 90px;
     width: 100%;
 }
-
+#recommendationsPage .add-rec-btn {
+    margin-top: 90px !important; /* Кнопка аккуратно опустится ниже шапки */
+}
 /* Контейнер-обертка для создания эффекта многослойности */
 .movie-stack-wrapper {
     position: relative;
