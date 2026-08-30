@@ -359,18 +359,16 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .cancel-btn { background-color: #29292e; color: #8d8d99; }
 .del-mini-btn { background-color: #f75a68; color: white; padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
 
-/* Страница просмотра фильма */
+/* --- СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА --- */
 .details-container { 
     background-color: #202024; 
     border-radius: 12px; 
     padding: 20px; 
+    position: relative; 
     
-    /* ИСПРАВЛЕНИЕ: Возвращаем в нормальный поток вместо абсолютного позиционирования */
-    position: relative;         
-    
-    /* ЧЁТКИЕ ОТСТУПЫ: */
-    margin-top: 145px !important;    /* Этот маржин опустит карточку ровно из-под закреплённых кнопок */
-    margin-bottom: 10px !important; /* Внешний отступ снизу спасает от заезда под нижнее меню */
+    /* ИСПРАВЛЕНИЕ: Жестко задаем отступ, чтобы карточка опустилась из-под шапки */
+    margin-top: 130px !important;    /* Если нужно еще ниже, сделай 140px */
+    margin-bottom: 100px !important; /* Отступ от нижнего меню */
     
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -394,9 +392,10 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-weight: 600; 
     color: #E2E8F0;
     padding: 20px 20px 0 20px; 
-    margin-top: 0;
-    margin-bottom: 10px; 
+    margin-top: 0 !important;    /* Жестко убираем верхний маржин */
+    margin-bottom: 10px;         /* Небольшой отступ до кнопок */
 }
+
 
 /* Панель с кнопками */
 .details-header-panel { 
@@ -958,15 +957,17 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     }
 }
 
-/* Контейнер списка частей на новой странице */
+/* --- СТРАНИЦА СПИСКА ЧАСТЕЙ ФРАНШИЗЫ --- */
 .collection-list-container {
     position: relative;
-    margin-top: 135px !important;    /* Отступ из-под закреплённой шапки */
-    margin-bottom: 100px !important; /* Отступ сверху от нижнего меню */
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
+    
+    /* ИСПРАВЛЕНИЕ: Зажимаем отступ здесь, чтобы убрать огромную пустоту */
+    margin-top: 125px !important;    /* Подгоняем под высоту шапки */
+    margin-bottom: 100px !important; /* Отступ от нижнего меню */
 }
 
 /* Горизонтальная карточка одной части фильма */
