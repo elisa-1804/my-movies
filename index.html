@@ -991,12 +991,12 @@ wrapper.onclick = () => showCollectionDetails(collectionName, list);
             gridContainer.appendChild(wrapper);
         });
     }
-    // --- ФУНКЦИЯ: ОТРЕСОВКА ВСЕХ ЧАСТЕЙ ВЫБРАННОЙ ФРАНШИЗЫ СПИСКОМ ---
+    // --- ФУНКЦИЯ: ОТРИСОВКА ВСЕХ ЧАСТЕЙ ФРАНШИЗЫ (С ПОДДЕРЖКОЙ ИЗБРАННОГО) ---
     function showCollectionDetails(collectionName, partsList) {
-        // Переключаем экран на нашу новую страницу списка
+        // Переключаем экран на страницу списка частей
         switchPage('collectionPage', collectionName);
         
-        // Меняем динамический текст в фиксированном заголовке шапки
+        // Меням заголовок в зафиксированной шапке
         document.getElementById('collectionPageTitle').textContent = collectionName;
         
         const container = document.getElementById('collectionListContainer');
@@ -1005,15 +1005,18 @@ wrapper.onclick = () => showCollectionDetails(collectionName, list);
         container.innerHTML = '';
         const defaultPoster = 'https://unsplash.com';
         
-        // Перебираем все части франшизы, которые уже отсортированы по году
+        // Перебираем части франшизы
         partsList.forEach(m => {
             const card = document.createElement('div');
-            card.className = 'franchise-row-card';
             
-            // При клике на конкретную часть франшизы — проваливаемся в её полное описание!
+            // МАГИЯ: Проверяем, в Избранном ли эта конкретная часть.
+            // Если да — добавляем класс is-fav, чтобы применились твои фирменные цвета!
+            card.className = 'franchise-row-card' + (m.favorite ? ' is-fav' : '');
+            
+            // При клике проваливаемся в полное описание фильма
             card.onclick = () => showDetails(m.id);
             
-            // Превращаем массив жанров в строку через запятую
+            // Собираем жанры в строку
             const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий');
             
             card.innerHTML = `
@@ -1029,6 +1032,7 @@ wrapper.onclick = () => showCollectionDetails(collectionName, list);
             container.appendChild(card);
         });
     }
+
 
 
 
