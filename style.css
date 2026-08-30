@@ -1291,3 +1291,60 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     padding-top: 20px; /* Фиксированный внутренний отступ сверху */
     width: 100%;
 }
+/* КРАСИВАЯ ПОЛОСА ПРОКРУТКИ ДЛЯ СЕРИАЛЬНЫХ ЖАНРОВ */
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: #121214;
+    border-radius: 6px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #29292e;
+    border-radius: 6px;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #3e3e44;
+}
+
+/* Кастомный вид чекбоксов сериалов под цвет твоего сайта */
+.series-genre-checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #29292e;
+    border-radius: 4px;
+    background: #121214;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.series-genre-checkbox:checked {
+    background: #06B6D4;
+    border-color: #06B6D4;
+}
+.series-genre-checkbox:checked::after {
+    content: "✓";
+    color: #121214;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* ПАСТЕЛЬНАЯ ПОДСВЕТКА ОВАЛЬНЫХ ТЕГОВ СТАТУСА */
+/* "Просмотрено" — пастельно-зелёный */
+.series-status-tab#statusTabFinished.active {
+    background-color: rgba(74, 222, 128, 0.12) !important;
+    border-color: rgba(74, 222, 128, 0.4) !important;
+    color: #86efac !important;
+}
+
+/* "В процессе" — пастельно-оранжевый (ближе к телесному) */
+.series-status-tab#statusTabWatching.active {
+    background-color: rgba(251, 146, 60, 0.12) !important; 
+    border-color: rgba(251, 146, 60, 0.4) !important;   
+    color: #fdba74 !important;                           
+}
