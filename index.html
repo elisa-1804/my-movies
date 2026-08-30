@@ -236,19 +236,21 @@
                 <label>Описание фильма</label>
                 <textarea id="formDesc" rows="3"></textarea>
             </div>
-            <!-- ИНТЕРАКТИВНАЯ ГАЛОЧКА ФРАНШИЗЫ (Твоя новая задумка) -->
+            <!-- ОБНОВЛЕННАЯ СТРОКА ФРАНШИЗЫ (Чистый HTML) -->
             <div class="form-group">
-                <div style="display: flex; align-items: center; gap: 12px; margin: 15px 0; cursor: pointer; user-select: none;">
-                    <input type="checkbox" id="formHasCollection" onchange="toggleCollectionField(this.checked)" style="width: 22px; height: 22px; cursor: pointer; accent-color: #06B6D4;">
-                    <label for="formHasCollection" style="font-size: 15px; color: #e1e1e6; cursor: pointer; margin: 0;">Это часть франшизы / сборника</label>
+                <div class="movie-franchise-row" id="franchiseRowToggle" onclick="document.getElementById('formHasCollection').click();">
+                    <span class="franchise-label">Франшиза?</span>
+                    <input type="checkbox" id="formHasCollection" onchange="toggleCollectionField(this.checked); toggleFranchiseRowStyle(this.checked)" onclick="event.stopPropagation();">
                 </div>
             </div>
 
-            <!-- СКРЫВАЕМОЕ ПОЛЕ НАЗВАНИЯ ФРАНШИЗЫ -->
-            <div class="form-group" id="movieCollectionBlock" style="display: none; background: #1a1a1e; padding: 12px; border-radius: 6px; border: 1px dashed #29292e;">
-                <label style="font-size: 12px; color: #06B6D4; margin-bottom: 8px;">Название франшизы (стопки)</label>
+            <!-- СКРЫВАЕМОЕ ПОЛЕ НАЗВАНИЯ ФРАНШИЗЫ (Чистый HTML) -->
+            <div class="form-group" id="movieCollectionBlock" style="display: none;">
+                <label class="movie-collection-label">Название франшизы (стопки):</label>
                 <input type="text" id="formCollection" placeholder="Например: Гарри Поттер">
             </div>
+
+
             <div class="form-buttons">
                 <!-- Кнопка удаления (по умолчанию скрыта, JS включит её только при редактировании) -->
                 <button class="genre-del-icon-btn" id="movieDeleteBtn" style="display: none;" onclick="deleteMovieFromModal()">
@@ -684,17 +686,15 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         }); 
     }    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
 function openModal(editId = null) {
-    // 1. Принудительно генерируем список жанров для выбора
     if (typeof updateGenreSelect === 'function') updateGenreSelect(); 
     
-    // Безопасно сворачиваем спойлер жанров фильма по умолчанию при каждом открытии окна
+    // Сворачиваем спойлер жанров фильма по умолчанию при открытии
     const mDropdown = document.getElementById('movieGenresCheckboxes');
     const mArrow = document.getElementById('movieGenreArrow');
     if (mDropdown) mDropdown.style.display = 'none';
     if (mArrow) mArrow.classList.remove('open');
     
     if (editId) {
-        // ЛОГИКА ДЛЯ РЕДАКТИРОВАНИЯ СУЩЕСТВУЮЩЕГО ФИЛЬМА
         const m = movies.find(x => x.id == editId); 
         if (!m) return;
         
@@ -706,29 +706,27 @@ function openModal(editId = null) {
         document.getElementById('formDesc').value = m.desc || '';
         if (typeof setFormRating === 'function') setFormRating(m.rating || 0); 
         
-        // ПРОВЕРКА ФРАНШИЗЫ: если у фильма уже вписан сборник, зажигаем галочку и разворачиваем поле
+        // Проверка франшизы при редактировании
         if (m.collection && m.collection.trim() !== '') {
-            const hasCollCb = document.getElementById('formHasCollection');
-            if (hasCollCb) hasCollCb.checked = true;
-            if (typeof toggleCollectionField === 'function') toggleCollectionField(true);
+            document.getElementById('formHasCollection').checked = true;
+            toggleCollectionField(true);
+            if (typeof toggleFranchiseRowStyle === 'function') toggleFranchiseRowStyle(true); 
             document.getElementById('formCollection').value = m.collection;
         } else {
-            const hasCollCb = document.getElementById('formHasCollection');
-            if (hasCollCb) hasCollCb.checked = false;
-            if (typeof toggleCollectionField === 'function') toggleCollectionField(false);
+            document.getElementById('formHasCollection').checked = false;
+            toggleCollectionField(false);
+            if (typeof toggleFranchiseRowStyle === 'function') toggleFranchiseRowStyle(false); 
             document.getElementById('formCollection').value = '';
         }
         
         const delBtn = document.getElementById('movieDeleteBtn');
         if (delBtn) delBtn.style.display = 'flex';
         
-        // Восстанавливаем галочки жанров фильма
         const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
         document.querySelectorAll('.movie-genre-checkbox').forEach(cb => {
             cb.checked = movieGenres.includes(cb.value);
         });
     } else {
-        // ЛОГИКА ДЛЯ СОЗДАНИЯ СОВЕРШЕННО НОВОГО ФИЛЬМА
         document.getElementById('modalHeadline').textContent = "Новый фильм";
         document.getElementById('formMovieId').value = '';
         document.getElementById('formTitle').value = '';
@@ -737,27 +735,22 @@ function openModal(editId = null) {
         document.getElementById('formDesc').value = '';
         if (typeof setFormRating === 'function') setFormRating(0); 
         
-        // По умолчанию для нового фильма галочка снята и поле франшизы скрыто
-        const hasCollCb = document.getElementById('formHasCollection');
-        if (hasCollCb) hasCollCb.checked = false;
-        if (typeof toggleCollectionField === 'function') toggleCollectionField(false);
+        // По умолчанию для нового фильма всё сброшено и скрыто
+        document.getElementById('formHasCollection').checked = false;
+        toggleCollectionField(false);
+        if (typeof toggleFranchiseRowStyle === 'function') toggleFranchiseRowStyle(false); 
         document.getElementById('formCollection').value = '';
         
         const delBtn = document.getElementById('movieDeleteBtn');
         if (delBtn) delBtn.style.display = 'none';
         
-        // Сбрасываем все галочки жанров
         document.querySelectorAll('.movie-genre-checkbox').forEach(cb => cb.checked = false);
     }
     
-    // Плавное открытие модального окна на экране
     const modal = document.getElementById('addMovieModal');
-    if (modal) {
-        modal.classList.add('active');
-    } else {
-        console.error("Ошибка: Модальное окно #addMovieModal не найдено в HTML!");
-    }
+    if (modal) modal.classList.add('active');
 }
+
 
 
 
@@ -1477,6 +1470,16 @@ function toggleCollectionField(hasCollection) {
     } else {
         block.style.display = 'none';  // Прячем поле франшизы
         document.getElementById('formCollection').value = ''; // Очищаем текст, если галочку сняли
+    }
+}
+function toggleFranchiseRowStyle(isChecked) {
+    const row = document.getElementById('franchiseRowToggle');
+    if (!row) return;
+    
+    if (isChecked) {
+        row.classList.add('active');
+    } else {
+        row.classList.remove('active');
     }
 }
 
