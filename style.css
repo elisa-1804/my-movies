@@ -29,7 +29,7 @@ body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
 .hub-grid, 
 #allMoviesPage .movies-grid, 
 #favoritesPage .movies-grid {
-    margin-top: 90px !important; /* 70px высота шапки + 20px воздуха */
+    margin-top: 170px !important; /* 70px высота шапки + 20px воздуха */
 }
 
 /* Отдельный отступ для страницы жанров (так как там кнопка идет первой) */
