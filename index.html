@@ -411,12 +411,14 @@
         renderMoviesGrid('moviesGrid', movies); 
         updateGenreSelect();
         await loadRecommendations();
+        if (document.getElementById('favoritesPage').classList.contains('active')) {
+        renderFavGrid();
     }
- function switchPage(pageId, titleText) {
+function switchPage(pageId, titleText) {
     // 1. Снимаем активный класс (скрываем) со ВСЕХ страниц приложения
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     
-    // 2. Снимаем подсветку со ВСЕХ кнопок нижнего меню
+    // 2. Снимаем подсветку абсолютно со ВСЕХ кнопок нижнего меню (чистим всё!)
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     
     // 3. Включаем (показываем) только ту страницу, на которую нажали
@@ -425,19 +427,35 @@
         targetPage.classList.add('active');
     }
     
-    // 4. Подсвечиваем правильную иконку и полосочку в нижнем меню
-    if (pageId === 'homePage') document.getElementById('navHome').classList.add('active');
-    if (pageId === 'allMoviesPage') document.getElementById('navAllMovies').classList.add('active');
-    if (pageId === 'favoritesPage') document.getElementById('navFav').classList.add('active');
+    // 4. ИСПРАВЛЕНИЕ: Жёстко подсвечиваем нужную иконку в нижнем меню
+    if (pageId === 'homePage') {
+        const btn = document.getElementById('navHome');
+        if (btn) btn.classList.add('active');
+    }
+    if (pageId === 'allMoviesPage') {
+        const btn = document.getElementById('navAllMovies');
+        if (btn) btn.classList.add('active');
+    }
+    if (pageId === 'allSeriesPage') {
+        const btn = document.getElementById('navAllSeries');
+        if (btn) btn.classList.add('active'); // Включаем класс активности для сериалов!
+    }
     
     // 5. Автоматически запускаем отрисовку данных на нужных экранах
     if (pageId === 'allMoviesPage') renderMoviesGrid('moviesGrid', movies);
+    if (pageId === 'allSeriesPage') {
+        if (typeof renderSeriesGrid === 'function') renderSeriesGrid();
+    }
     if (pageId === 'genresPage') renderGenresList();
-if (pageId === 'favoritesPage') {
-        renderFavGrid(); // ТЕПЕРЬ ОНА БУДЕТ ЗАПУСКАТЬСЯ АВТОМАТИЧЕСКИ ПРИ ПЕРЕХОДЕ В ИЗБРАННОЕ
-    }    if (pageId === 'moviePartsPage') renderCollectionsGrid();
+    if (pageId === 'moviePartsPage') renderCollectionsGrid();
     if (pageId === 'recommendationsPage') loadRecommendations();
+    
+    // ИСПРАВЛЕНИЕ: Принудительно вызываем умный рендер Избранного
+    if (pageId === 'favoritesPage') {
+        renderFavGrid(); 
+    }
 }
+
 
 
 
