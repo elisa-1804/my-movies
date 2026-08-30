@@ -667,38 +667,33 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 
 
-/* Сетка для квадратных плиток на Главной */
+/* --- ИДЕАЛЬНАЯ СЕТКА ГЛАВНОЙ 2 НА 2 --- */
 .hub-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* На телефонах разбиваем на 2 колонки */
-    gap: 15px;                             /* Расстояние между квадратами */
-    margin-top: 20px;
-    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* 2 колонки на телефонах */
+    gap: 15px !important;
+    margin-top: 90px !important;
+    width: 100% !important;
 }
 
-/* На телефонах делаем третью плитку (Жанры) во всю ширину, чтобы сетка была гармоничной */
-.hub-tile-card:nth-child(3) {
-    grid-column: span 2;
-}
-
-/* Стиль самой квадратной плитки */
+/* Все 4 плитки становятся одинаковыми квадратами без исключений! */
 .hub-tile-card {
     background-color: #202024;
     border: 1px solid #29292e;
     border-radius: 12px;
-    aspect-ratio: 1 / 1;       /* Магия CSS: делает карточку ИДЕАЛЬНО квадратной */
+    aspect-ratio: 1 / 1 !important; /* Делает ИДЕАЛЬНЫЙ квадрат */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;   /* Центрируем иконку и текст внутри квадрата */
+    justify-content: center;   
     text-align: center;
     padding: 15px;
     cursor: pointer;
     transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
     user-select: none;
     box-sizing: border-box;
+    height: auto !important;         /* Сбрасываем фиксированную высоту */
 }
-
 /* Если плитка растянута во всю ширину (как Жанры), квадрат ломать не нужно, делаем её аккуратным прямоугольником */
 .hub-tile-card:nth-child(3) {
     aspect-ratio: unset;
