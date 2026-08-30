@@ -1075,30 +1075,37 @@ async function deleteMovieFromModal() {
         }
     }
 }
-// --- ФУНКЦИЯ: УМНАЯ ОТРИСОВКА СЕТКИ ИЗБРАННОГО (ФИЛЬМЫ / СЕРИАЛЫ) ---
-function renderFavGrid() {
+// --- ИСПРАВЛЕННАЯ АСИНХРОННАЯ ОТРИСОВКА ИЗБРАННОГО ---
+async function renderFavGrid() {
     const container = document.getElementById('favoritesGrid');
     if (!container) return;
     
-    // Полностью очищаем сетку перед выводом, чтобы карточки не накладывались
     container.innerHTML = '';
     
+    // Если массив фильмов пуст (данные еще скачиваются), принудительно запрашиваем loadData
+    if (movies.length === 0) {
+        const t = localStorage.getItem("sb_token");
+        if (t) {
+            const mResponse = await fetch(SUPABASE_URL + "/rest/v1/movies?select=*", { 
+                method: "GET", 
+                headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t } 
+            });
+            if (mResponse.ok) movies = await mResponse.json();
+        }
+    }
+    
     if (currentFavTab === 'movie') {
-        // 1. Фильтруем ТОЛЬКО ФИЛЬМЫ со статусом favorite
         const favMovies = movies.filter(m => m.favorite);
-        
         if (favMovies.length === 0) {
             container.innerHTML = '<div class="empty-section-message">Нет избранных фильмов 🎬</div>';
             return;
         }
-        
-        // Вызываем твою оригинальную функцию отрисовки сетки
         renderMoviesGrid('favoritesGrid', favMovies);
     } else {
-        // 2. Сюда мы добавим вывод избранных сериалов на следующем шаге, когда напишем для них рендер!
         container.innerHTML = '<div class="empty-section-message">Тут будут твои избранные сериалы! 🍿</div>';
     }
 }
+
 
 // --- ФУНКЦИЯ: ИНТЕРАКТИВНОЕ ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК В ИЗБРАННОМ ---
 function switchFavTab(tabType) {
