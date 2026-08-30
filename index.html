@@ -103,7 +103,7 @@
             <div class="movies-grid" id="seriesGrid"></div>
         </div>
 
-                <!-- 4. СТРАНИЦА ИЗБРАННОГО (ФИНАЛЬНЫЙ ОТРЕГУЛИРОВАННЫЙ ВАРИАНТ) -->
+            <!-- 4. СТРАНИЦА ИЗБРАННОГО -->
         <div id="favoritesPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
                 <h1 class="page-fixed-header-title">Избранное</h1>
@@ -113,9 +113,12 @@
                 </div>
             </div>
             
-            <!-- ИСПРАВЛЕНИЕ: Жёстко закрепили ID и класс, под которые написан наш CSS и JS! -->
-            <div class="movies-grid" id="favoritesGrid"></div>
+            <!-- ИСПРАВЛЕНИЕ: Обернули сетку в изолирующий контейнер-обертку -->
+            <div class="fav-content-wrap">
+                <div class="movies-grid" id="favoritesGrid"></div>
+            </div>
         </div>
+
 
 
         <!-- 5. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
@@ -455,9 +458,14 @@ function switchPage(pageId, titleText) {
     if (pageId === 'moviePartsPage') renderCollectionsGrid();
     if (pageId === 'recommendationsPage') loadRecommendations();
     
-    // ИСПРАВЛЕНИЕ: Принудительно вызываем умный рендер Избранного
     if (pageId === 'favoritesPage') {
-        renderFavGrid(); 
+        currentFavTab = 'movie'; // Принудительно сбрасываем вкладку на Фильмы при входе
+        
+        // Сразу вытаскиваем избранные фильмы из готового массива
+        const favMovies = movies.filter(function(m) { return m.favorite; });
+        
+        // Напрямую вызываем твою родную рабочую функцию отрисовки!
+        renderMoviesGrid('favoritesGrid', favMovies);
     }
 }
 
