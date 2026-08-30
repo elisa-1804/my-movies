@@ -1285,3 +1285,9 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 #favoritesPage .movies-grid {
     margin-top: 160px; 
 }
+/* Изолирующий контейнер принудительно опускает всю сетку вместе с карточками вниз */
+#favoritesPage .fav-content-wrap {
+    display: block;
+    padding-top: 160px; /* Фиксированный внутренний отступ сверху */
+    width: 100%;
+}
