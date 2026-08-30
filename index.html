@@ -679,7 +679,7 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         genres.forEach(g => { 
             container.innerHTML += `
                 <label class="genre-checkbox-item">
-                    <input type="checkbox" value="${g}" class="movie-genre-checkbox">
+<input type="checkbox" class="series-genre-checkbox" value="${g}">
                     <span>${g}</span>
                 </label>
             `;
@@ -723,7 +723,7 @@ function openModal(editId = null) {
         if (delBtn) delBtn.style.display = 'flex';
         
         const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
-        document.querySelectorAll('.movie-genre-checkbox').forEach(cb => {
+        document.querySelectorAll('.series-genre-checkbox').forEach(cb => {
             cb.checked = movieGenres.includes(cb.value);
         });
     } else {
