@@ -964,7 +964,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     width: 100%;
     
     /* НАСТРОЙКА ОТСТУПА: Высота шапки 110px + 15px воздуха = 125px от верха экрана */
-    margin-top: 15px !important;    
+    margin-top: 20px !important;    
     margin-bottom: 100px !important; 
 }
 
@@ -1031,5 +1031,5 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     right: 0;
     background-color: #121214;  
     z-index: 150;               
-    height: 10px; /* Зафиксировали высоту */
+    height: 20px; /* Зафиксировали высоту */
 }
