@@ -94,6 +94,23 @@
         </div>
 
 
+                <!-- НОВАЯ СТРАНИЦА: СПИСОК ЧАСТЕЙ ОПРЕДЕЛЕННОЙ ФРАНШИЗЫ -->
+        <div id="collectionPage" class="page" style="position: relative;">
+            <!-- Верхняя панель навигации (как на странице деталей, только кнопка возвращает в части фильмов) -->
+            <div class="details-fixed-header">
+                <h1 class="details-page-main-title" id="collectionPageTitle">Франшиза</h1>
+                <div class="details-header-panel">
+                    <button class="back-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">← Назад</button>
+                    <!-- Карандаш тут не нужен, так как это просто список -->
+                    <div></div> 
+                </div>
+            </div>
+            
+            <!-- Контейнер, куда JS выведет наши горизонтальные карточки частей -->
+            <div class="collection-list-container" id="collectionListContainer"></div>
+        </div>
+
+
                <!-- 2. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
         <div id="recommendationsPage" class="page">
             <!-- Кнопка "Пополнить реки" строго под заголовком -->
@@ -892,8 +909,7 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             wrapper.className = 'movie-stack-wrapper';
             
             // При клике открываем описание первой части
-            wrapper.onclick = () => showDetails(coverMovie.id);
-            
+wrapper.onclick = () => showCollectionDetails(collectionName, list);            
             wrapper.innerHTML = `
                 <div class="collection-cover-card">
                     <img src="${coverMovie.poster || defaultPoster}" alt="${collectionName}">
@@ -902,6 +918,44 @@ c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m
             `;
             
             gridContainer.appendChild(wrapper);
+        });
+    }
+    // --- ФУНКЦИЯ: ОТРЕСОВКА ВСЕХ ЧАСТЕЙ ВЫБРАННОЙ ФРАНШИЗЫ СПИСКОМ ---
+    function showCollectionDetails(collectionName, partsList) {
+        // Переключаем экран на нашу новую страницу списка
+        switchPage('collectionPage', collectionName);
+        
+        // Меняем динамический текст в фиксированном заголовке шапки
+        document.getElementById('collectionPageTitle').textContent = collectionName;
+        
+        const container = document.getElementById('collectionListContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        const defaultPoster = 'https://unsplash.com';
+        
+        // Перебираем все части франшизы, которые уже отсортированы по году
+        partsList.forEach(m => {
+            const card = document.createElement('div');
+            card.className = 'franchise-row-card';
+            
+            // При клике на конкретную часть франшизы — проваливаемся в её полное описание!
+            card.onclick = () => showDetails(m.id);
+            
+            // Превращаем массив жанров в строку через запятую
+            const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий');
+            
+            card.innerHTML = `
+                <img class="franchise-row-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
+                <div class="franchise-row-info">
+                    <div class="franchise-row-title">${m.title}</div>
+                    <div class="franchise-row-meta">📅 ${m.year || '—'}</div>
+                    <div class="franchise-row-meta">🎭 ${genreText}</div>
+                    <div class="franchise-row-stars">${getStarsHtml(m.rating || 0)}</div>
+                </div>
+            `;
+            
+            container.appendChild(card);
         });
     }
 
