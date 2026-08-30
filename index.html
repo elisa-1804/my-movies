@@ -120,28 +120,40 @@
             <ul class="genre-list" id="genreList"></ul>
         </div>
 
-        <!-- 5. СТРАНИЦА: СПИСОК ЧАСТЕЙ ФРАНШИЗЫ -->
+                <!-- 5. СТРАНИЦА: СПИСОК ЧАСТЕЙ ФРАНШИЗЫ -->
         <div id="collectionPage" class="page" style="position: relative;">
+            <!-- Единая компактная фиксированная шапка -->
             <div class="collection-fixed-header">
-                <h1 class="details-page-main-title" id="collectionPageTitle">Франшиза</h1>
-                <div class="details-header-panel">
-                    <button class="back-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">← Назад</button>
-                    <div></div> 
-                </div>
+                <!-- Кнопка Назад слева -->
+                <button class="back-icon-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
+                    <img src="back.png" alt="Назад" class="details-back-img">
+                </button>
+                
+                <!-- Заголовок франшизы СТРОГО ПО ЦЕНТРУ экрана -->
+                <h2 class="details-page-center-title" id="collectionPageTitle">Франшиза</h2>
+                
+                <!-- Пустышка справа для идеальной центровки текста флексом -->
+                <div style="width: 40px;"></div> 
             </div>
             <div class="collection-list-container" id="collectionListContainer"></div>
         </div>
 
         <!-- 6. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
         <div id="detailsPage" class="page" style="position: relative;">
+            <!-- Единая компактная фиксированная шапка -->
             <div class="details-fixed-header">
-                <h1 class="details-page-main-title">О фильме</h1>
-                <div class="details-header-panel">
-                    <button class="back-btn" onclick="switchPage('allMoviesPage', 'Все фильмы')">← Назад</button>
-                    <button class="edit-icon-btn" id="movieEditBtn">
-                        <img src="edit.png" alt="Редактировать" class="details-edit-img">
-                    </button>
-                </div>
+                <!-- Кнопка Назад слева -->
+                <button class="back-icon-btn">
+                    <img src="back.png" alt="Назад" class="details-back-img">
+                </button>
+                
+                <!-- Заголовок "О фильме" СТРОГО ПО ЦЕНТРУ экрана -->
+                <h2 class="details-page-center-title">О фильме</h2>
+                
+                <!-- Карандаш редактирования справа -->
+                <button class="edit-icon-btn" id="movieEditBtn">
+                    <img src="edit.png" alt="Редактировать" class="details-edit-img">
+                </button>
             </div>
             <div class="details-container" id="detailsContainer"></div>
         </div>
