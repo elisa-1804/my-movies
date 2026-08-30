@@ -639,38 +639,66 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         } 
     }
 
-        function showDetails(id) {
-        const m = movies.find(x => x.id == id); if(!m) return; 
-        
-        // 1. ЗАПОМИНАЕМ ИСТОРИЮ: откуда пришёл пользователь
-        const currentActivePage = document.querySelector('.page.active');
-        if (currentActivePage && currentActivePage.id === 'collectionPage') {
-            previousPageId = 'collectionPage';
-            previousPageTitle = m.collection || 'Франшиза'; 
-        } else {
-            previousPageId = 'allMoviesPage';
-            previousPageTitle = 'Все фильмы';
-        }
-
-        switchPage('detailsPage', 'О фильме'); 
-        
-        // 2. МАГИЯ: принудительно меняем действие кнопки "Назад" в шапке под текущую историю
-        const backBtn = document.querySelector('#detailsPage .back-btn');
-        if (backBtn) {
-            backBtn.onclick = function() {
-                switchPage(previousPageId, previousPageTitle);
-            };
-        }
-        document.getElementById('movieEditBtn').onclick = function() { openModal(m.id); };
-        
-        const c = document.getElementById('detailsContainer'); 
-        c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
-        
-        // Переводим массив жанров в красивую строку с пробелами для страницы деталей
-        const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
-        
-c.innerHTML = '<div class="details-flex"><img class="details-poster" src="' + (m.poster || defaultPoster) + '"><div class="details-content"><div class="details-top-row"><h2 class="details-title">' + m.title + '</h2><button class="heart-btn" onclick="toggleFav(' + m.id + ')"><img src="favorites.png" class="heart-icon-img"></button></div><span class="details-tag">📅 ' + (m.year || '—') + '</span><span class="details-tag">🎭 ' + genreText + '</span><span class="details-tag" style="color:#fba94c">Рейтинг: ' + getStarsHtml(m.rating || 0) + '</span><p class="details-desc">' + (m.desc || 'Описание отсутствует.') + '</p></div></div>';
+      function showDetails(id) {
+    const m = movies.find(x => x.id == id); 
+    if(!m) return; 
+    
+    // 1. ЗАПОМИНАЕМ ИСТОРИЮ: проверяем, с какого экрана мы пришли
+    const currentActivePage = document.querySelector('.page.active');
+    if (currentActivePage && currentActivePage.id === 'collectionPage') {
+        previousPageId = 'collectionPage';
+        previousPageTitle = m.collection || 'Франшиза'; 
+    } else if (currentActivePage && currentActivePage.id === 'favoritesPage') {
+        previousPageId = 'favoritesPage';
+        previousPageTitle = 'Избранное';
+    } else {
+        previousPageId = 'allMoviesPage';
+        previousPageTitle = 'Все фильмы';
     }
+
+    // 2. Переключаем экран на страницу деталей
+    switchPage('detailsPage', 'О фильме'); 
+
+    // 3. Настраиваем кнопку карандаша редактирования
+    const editBtn = document.getElementById('movieEditBtn');
+    if (editBtn) {
+        editBtn.onclick = function() { openModal(m.id); };
+    }
+
+    // 4. Генерируем внутреннее содержимое карточки фильма
+    const c = document.getElementById('detailsContainer'); 
+    c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
+    
+    const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
+    const defaultPoster = 'https://unsplash.com';
+
+    c.innerHTML = `
+        <div class="details-flex">
+            <div class="details-poster-block">
+                <img class="details-poster-img" src="${m.poster || defaultPoster}" alt="${m.title}">
+                <button class="heart-btn" onclick="toggleFavInDetails(${m.id})">
+                    <img src="fav.png" class="heart-icon-img" alt="Избранное">
+                </button>
+            </div>
+            <div class="details-info-block">
+                <h2 class="details-movie-title">${m.title}</h2>
+                <div class="details-meta-row">📅 <span>${m.year || '—'}</span></div>
+                <div class="details-meta-row">🎭 <span>${genreText}</span></div>
+                <div class="details-rating-stars">${getStarsHtml(m.rating || 0)}</div>
+                <p class="details-description-text">${m.desc || 'Описание отсутствует.'}</p>
+            </div>
+        </div>
+    `;
+
+    // 5. ИСПРАВЛЕНИЕ: Назначаем клик кнопке "Назад" строго ПОСЛЕ того, как весь контент создался
+    const backBtn = document.querySelector('#detailsPage .back-icon-btn');
+    if (backBtn) {
+        backBtn.onclick = function() {
+            switchPage(previousPageId, previousPageTitle);
+        };
+    }
+}
+
 
 
     async function toggleFav(id) { 
