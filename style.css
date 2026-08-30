@@ -1289,3 +1289,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 #favoritesPage .movies-grid {
     margin-top: 145px; 
 }
+/* Включаем подсветку и появление голубой полосочки для новой кнопки Сериалов */
+#navAllSeries.nav-item.active {
+    color: #06B6D4; /* Фирменный акцентный голубой цвет */
+}
+
+#navAllSeries.nav-item.active .nav-line {
+    width: 20px; /* Полосочка красиво раздвигается до нужного размера */
+    opacity: 1;  /* Становится полностью видимой */
+}
