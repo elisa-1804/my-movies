@@ -1,18 +1,42 @@
 /* Настройки темы, сетка и шапка */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
 body { background-color: #121214; color: #e1e1e6; padding-bottom: 90px; }
-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 20px; 
-    
-    /* ЖЕСТКИЕ ПРАВИЛА ПРОТИВ СДВИГА КНОПОК: */
-    width: 100%;               /* Шапка всегда растянута на всю ширину экрана */
-    box-sizing: border-box;    /* Включает паддинги в общую ширину, чтобы ничего не вылезало */
-    flex-wrap: nowrap;         /* КАТЕГОРИЧЕСКИ ЗАПРЕЩАЕТ кнопкам падать на вторую строку */
-    gap: 15px;                 /* Безопасное расстояние между заголовком и блоком кнопок */
+/* Общий класс для всех новых зафиксированных шапок сайта */
+.page-fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;               /* Фиксированная аккуратная высота */
+    background-color: #121214;  /* Плотный темный фон */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 140;               /* Чуть ниже окон, но строго поверх списков */
+    box-sizing: border-box;
 }
+
+/* Стили заголовков h1 внутри этих шапок */
+.page-fixed-header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #E2E8F0;
+    margin: 0;
+}
+
+/* ИСПРАВЛЕНИЕ СКРОЛЛА: Добавляем отступы сверху для контента всех страниц, чтобы они не заезжали под фиксированную шапку */
+.hub-grid, 
+#allMoviesPage .movies-grid, 
+#favoritesPage .movies-grid {
+    margin-top: 90px !important; /* 70px высота шапки + 20px воздуха */
+}
+
+/* Отдельный отступ для страницы жанров (так как там кнопка идет первой) */
+#genresPage .add-rec-btn {
+    margin-top: 90px !important;
+}
+
 header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Кнопка добавления фильма */
 .add-movie-btn { 
