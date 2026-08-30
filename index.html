@@ -666,25 +666,27 @@ card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster)
         } 
     }
 // 1. Функция генерации чекбоксов вместо старого селекта
-    function updateGenreSelect() { 
+    function updateGenreSelect() {
     const container = document.getElementById('movieGenresCheckboxes'); 
-        if(!container) return; 
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    genres.forEach(function(g) {
+        const label = document.createElement('label');
+        // Даем строке твой родной класс из начала CSS!
+        label.className = 'genre-checkbox-item'; 
         
-        container.innerHTML = ''; 
-        if (genres.length === 0) {
-            container.innerHTML = '<span style="color:#8d8d99; font-size:13px;">Жанры не созданы</span>';
-            return;
-        }
-        
-        genres.forEach(g => { 
-            container.innerHTML += `
-                <label class="genre-checkbox-item">
-<input type="checkbox" class="series-genre-checkbox" value="${g}">
-                    <span>${g}</span>
-                </label>
-            `;
-        }); 
-    }    function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
+        label.innerHTML = `
+            <input type="checkbox" class="movie-genre-checkbox" value="${g}">
+            <span>${g}</span>
+        `;
+        container.appendChild(label);
+    });
+}
+
+
+function setFormRating(r) { currentFormRating = r; document.querySelectorAll('#formRatingStars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); }
 function openModal(editId = null) {
     if (typeof updateGenreSelect === 'function') updateGenreSelect(); 
     
@@ -1394,23 +1396,20 @@ function updateSeriesGenresCheckboxes() {
     if (!container) return;
     
     container.innerHTML = '';
-    genres.forEach(g => {
+    
+    genres.forEach(function(g) {
         const label = document.createElement('label');
-        label.style.display = 'flex';
-        label.style.alignItems = 'center';
-        label.style.gap = '8px';
-        label.style.marginBottom = '6px';
-        label.style.fontSize = '13px';
-        label.style.color = '#e1e1e6';
-        label.style.cursor = 'pointer';
+        // Сериалы тоже используют твой родной класс для кружков и галочек!
+        label.className = 'genre-checkbox-item'; 
         
         label.innerHTML = `
-            <input type="checkbox" class="series-genre-checkbox" value="${g}" style="accent-color: #06B6D4; width:16px; height:16px;">
+            <input type="checkbox" class="series-genre-checkbox" value="${g}">
             <span>${g}</span>
         `;
         container.appendChild(label);
     });
 }
+
 
 // --- ОЦЕНКА ЗВЕЗДАМИ В ОКНЕ СЕРИАЛОВ ---
 function initSeriesFormStars() {
