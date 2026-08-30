@@ -674,26 +674,27 @@ function showDetails(id) {
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-    c.innerHTML = `
+        c.innerHTML = `
         <div class="details-flex">
             <!-- Блок постера -->
             <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
             
-            <!-- Блок информации справа -->
-            <div class="details-content">
-                <div class="details-top-row">
-                    <h2 class="details-title">${m.title}</h2>
-                    
-                    <!-- Твое оригинальное анимированное сердечко -->
-                    <button class="heart-btn" onclick="toggleFavInDetails(${m.id})">
-                        <img src="fav.png" class="heart-icon-img" alt="Избранное">
-                    </button>
-                </div>
+            <!-- Блок информации справа (position: relative задан прямо тут, чтобы сердечко не уплывало) -->
+            <div class="details-content" style="position: relative; padding-right: 45px;">
                 
-                <!-- Твои квадратные чеплашки .details-tag -->
+                <!-- Анимированное сердечко Избранного строго на своём месте -->
+                <button class="heart-btn" onclick="toggleFavInDetails(${m.id})">
+                    <img src="fav.png" class="heart-icon-img" alt="Избранное">
+                </button>
+
+                <h2 class="details-title" style="margin-top: 0; margin-bottom: 12px; padding-right: 10px;">${m.title}</h2>
+                
+                <!-- Твои оригинальные квадратные чеплашки -->
                 <div class="details-tag">📅 ${m.year || '—'}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
-                <div class="details-tag">⭐ ${m.rating || 0}/5</div>
+                
+                <!-- ВОЗВРАЩЕНЫ ЗВЁЗДОЧКИ РЕЙТИНГА -->
+                <div class="details-tag">⭐ ${getStarsHtml(m.rating || 0)}</div>
                 
                 <!-- Блок описания -->
                 <p class="details-desc">${m.desc || 'Описание отсутствует.'}</p>
