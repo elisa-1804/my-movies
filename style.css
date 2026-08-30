@@ -1128,3 +1128,73 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     pointer-events: none !important;
 }
 
+/* --- СЕТКА ГЛАВНОЙ СТРАНИЦЫ (ТЕПЕРЬ 2 НА 2) --- */
+.hub-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+    margin-top: 90px !important;
+    width: 100% !important;
+}
+
+/* Сбрасываем старое растяжение третьей плитки — теперь все 4 одинаковые */
+.hub-tile-card:nth-child(3) {
+    grid-column: span 1 !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+}
+
+/* На ноутах все 4 плитки выстроятся в один горизонтальный ряд */
+@media (min-width: 768px) {
+    .hub-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        max-width: 650px !important;
+        margin: 90px auto 0 auto !important;
+    }
+}
+
+/* КОНТЕЙНЕР ДЛЯ ВЕРХНИХ ВКЛАДОК В ИЗБРАННОМ */
+.fav-tabs-container {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+/* Кнопки-вкладки */
+.fav-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    background-color: #1e1e22;
+    border: 1px solid #29292e;
+    color: #8d8d99;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* Активный Фильм (Фиолетовое неоновое свечение как в реках) */
+.fav-tab.movie.active {
+    background-color: rgba(139, 92, 246, 0.15) !important;
+    border-color: #8b5cf6 !important;
+    color: #c084fc !important;
+}
+
+/* Активный Сериал (Розовое неоновое свечение как в реках) */
+.fav-tab.series.active {
+    background-color: rgba(236, 72, 153, 0.15) !important;
+    border-color: #ec4899 !important;
+    color: #f472b6 !important;
+}
+
+/* Фиксированный верхний отступ для новой сетки сериалов */
+#allSeriesPage .movies-grid {
+    margin-top: 90px !important;
+}
+
