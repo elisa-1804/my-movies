@@ -223,7 +223,19 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 
 /* Окна форм (Модальные) */
-.modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal { 
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background-color: rgba(0,0,0,0.85); 
+    
+    /* ИСПРАВЛЕНИЕ: Подняли выше фиксированной шапки (было 200, стало 2000) */
+    z-index: 2000 !important; 
+    
+    align-items: center; 
+    justify-content: center; 
+    padding: 20px; 
+}
 .modal.active { display: flex; }
 .modal-content { 
     background-color: #202024; 
