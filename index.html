@@ -29,16 +29,40 @@
         <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
     <div id="appContent" style="display: none;">
         
-        <!-- 1. ГЛАВНАЯ СТРАНИЦА (ХАБ) -->
+                <!-- 1. ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ КВАДРАТАМИ) -->
         <div id="homePage" class="page active">
+            <!-- Зафиксированная шапка -->
             <div class="page-fixed-header">
                 <h1>Главная</h1>
                 <button class="logout-btn" onclick="logout()">
                     <img src="logout.png" alt="Выйти" class="header-icon-img">
                 </button>
             </div>
-            <div class="hub-grid" id="hubGrid"></div>
+            
+            <!-- Возвращаем наши крутые квадратные плитки -->
+            <div class="hub-grid" id="hubGrid">
+                
+                <!-- Карточка 1. Фильмы по частям -->
+                <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
+                    <img src="parts_icon.png" alt="Части" class="hub-tile-icon">
+                    <span class="hub-tile-title">Фильмы по частям</span>
+                </div>
+
+                <!-- Карточка 2. Рекомендации к просмотру -->
+                <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
+                    <img src="recommend_icon.png" alt="Рекомендации" class="hub-tile-icon">
+                    <span class="hub-tile-title">Рекомендации к просмотру</span>
+                </div>
+
+                <!-- Карточка 3. Жанры -->
+                <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
+                    <img src="genres_main_icon.png" alt="Жанры" class="hub-tile-icon">
+                    <span class="hub-tile-title">Жанры</span>
+                </div>
+
+            </div>
         </div>
+
 
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (С ПЛЮСИКОМ И ВЫХОДОМ) -->
         <div id="allMoviesPage" class="page">
