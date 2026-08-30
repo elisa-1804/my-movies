@@ -1106,3 +1106,20 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     pointer-events: none; 
     display: block;
 }
+
+/* Полный сброс мобильных рамок вокруг кнопки Избранного */
+.heart-btn, 
+.details-container .heart-btn,
+.details-container.is-fav .heart-btn {
+    -webkit-tap-highlight-color: transparent !important; 
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.heart-icon-img {
+    pointer-events: none !important;
+}
+
