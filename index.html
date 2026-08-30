@@ -27,44 +27,46 @@
     </div>
 
         <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
+    <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
     <div id="appContent" style="display: none;">
         
-                <!-- 1. ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ КВАДРАТАМИ) -->
+        <!-- 1. ГЛАВНАЯ СТРАНИЦА (ХАБ ТЕПЕРЬ ИЗ 4-Х КВАДРАТОВ) -->
         <div id="homePage" class="page active">
-            <!-- Зафиксированная шапка -->
             <div class="page-fixed-header">
                 <h1>Главная</h1>
                 <button class="logout-btn" onclick="logout()">
-                    <img src="exit.png" alt="Выйти" class="header-icon-img">
+                    <img src="logout.png" alt="Выйти" class="header-icon-img">
                 </button>
             </div>
             
-            <!-- Возвращаем наши крутые квадратные плитки -->
             <div class="hub-grid" id="hubGrid">
-                
                 <!-- Карточка 1. Фильмы по частям -->
                 <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
-                    <img src="playlist.png" alt="Части" class="hub-tile-icon">
+                    <img src="parts_icon.png" alt="Части" class="hub-tile-icon">
                     <span class="hub-tile-title">Фильмы по частям</span>
                 </div>
 
                 <!-- Карточка 2. Рекомендации к просмотру -->
                 <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
-                    <img src="bookmark.png" alt="Рекомендации" class="hub-tile-icon">
+                    <img src="recommend_icon.png" alt="Рекомендации" class="hub-tile-icon">
                     <span class="hub-tile-title">Рекомендации к просмотру</span>
                 </div>
 
                 <!-- Карточка 3. Жанры -->
                 <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
-                    <img src="genres.png" alt="Жанры" class="hub-tile-icon">
+                    <img src="genres_main_icon.png" alt="Жанры" class="hub-tile-icon">
                     <span class="hub-tile-title">Жанры</span>
                 </div>
 
+                <!-- Карточка 4. Избранное (Переехало сюда!) -->
+                <div class="hub-tile-card" onclick="switchPage('favoritesPage', 'Избранное')">
+                    <img src="fav.png" alt="Избранное" class="hub-tile-icon">
+                    <span class="hub-tile-title">Избранное</span>
+                </div>
             </div>
         </div>
 
-
-        <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (С ПЛЮСИКОМ И ВЫХОДОМ) -->
+        <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ -->
         <div id="allMoviesPage" class="page">
             <div class="page-fixed-header">
                 <h1>Все фильмы</h1>
@@ -73,44 +75,65 @@
                         <img src="add.png" alt="Добавить" class="header-icon-img">
                     </button>
                     <button class="logout-btn" onclick="logout()">
-                        <img src="exit.png" alt="Выйти" class="header-icon-img">
+                        <img src="logout.png" alt="Выйти" class="header-icon-img">
                     </button>
                 </div>
             </div>
             <div class="movies-grid" id="moviesGrid"></div>
         </div>
 
-        <!-- 3. СТРАНИЦА ИЗБРАННОГО -->
-        <div id="favoritesPage" class="page">
+        <!-- НОВАЯ 3. СТРАНИЦА ВСЕХ СЕРИАЛОВ -->
+        <div id="allSeriesPage" class="page">
             <div class="page-fixed-header">
-                <h1>Избранное</h1>
-                <div></div> <!-- Пустой блок для симметрии флекса -->
+                <h1>Все сериалы</h1>
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <!-- Для сериалов откроем отдельную модалку, которую сделаем в след. шаге -->
+                    <button class="add-movie-btn" id="headerSeriesPlusBtn" onclick="openSeriesModal()">
+                        <img src="add.png" alt="Добавить" class="header-icon-img">
+                    </button>
+                    <button class="logout-btn" onclick="logout()">
+                        <img src="logout.png" alt="Выйти" class="header-icon-img">
+                    </button>
+                </div>
             </div>
-            <div class="movies-grid" id="favoritesGrid"></div>
+            <div class="movies-grid" id="seriesGrid"></div>
         </div>
-        <!-- 3. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ (ВОЗВРАЩЕНА НА МЕСТО) -->
+
+        <!-- ОБНОВЛЕННАЯ 4. СТРАНИЦА ИЗБРАННОГО С ДВУМЯ ВКЛАДКАМИ ВВЕРХУ -->
+        <div id="favoritesPage" class="page" style="position: relative;">
+            <div class="collection-fixed-header" style="height: 120px !important;">
+                <h2 class="details-page-center-title" style="margin-bottom: 12px; margin-top: 10px;">Избранное</h2>
+                
+                <!-- Две переключающиеся вкладки (фиолетовый и розовый как в реках) -->
+                <div class="fav-tabs-container">
+                    <div class="fav-tab movie active" id="favTabMovie" onclick="switchFavTab('movie')">Фильмы</div>
+                    <div class="fav-tab series" id="favTabSeries" onclick="switchFavTab('series')">Сериалы</div>
+                </div>
+            </div>
+            <!-- Сетка избранного -->
+            <div class="movies-grid" id="favoritesGrid" style="margin-top: 140px !important;"></div>
+        </div>
+
+        <!-- 5. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
         <div id="moviePartsPage" class="page">
             <div class="page-fixed-header">
                 <h1>Фильмы по частям</h1>
                 <div></div>
             </div>
-            <!-- Сетка стопок франшиз -->
             <div class="collections-grid" id="collectionsGrid"></div>
         </div>
 
-        <!-- 4. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ (ВОЗВРАЩЕНА НА МЕСТО) -->
+        <!-- 6. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
         <div id="recommendationsPage" class="page">
             <div class="page-fixed-header">
                 <h1>Рекомендации</h1>
                 <div></div>
             </div>
-            <!-- Голубая кнопка добавления -->
             <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
-            <!-- Список рекомендаций -->
             <ul class="rec-list" id="recList"></ul>
         </div>
 
-        <!-- 4. СТРАНИЦА ЖАНРОВ -->
+        <!-- 7. СТРАНИЦА ЖАНРОВ -->
         <div id="genresPage" class="page">
             <div class="page-fixed-header">
                 <h1>Жанры</h1>
@@ -120,37 +143,25 @@
             <ul class="genre-list" id="genreList"></ul>
         </div>
 
-                <!-- 5. СТРАНИЦА: СПИСОК ЧАСТЕЙ ФРАНШИЗЫ -->
+        <!-- 8. СТРАНИЦА: СПИСОК ЧАСТЕЙ ФРАНШИЗЫ -->
         <div id="collectionPage" class="page" style="position: relative;">
-            <!-- Единая компактная фиксированная шапка -->
             <div class="collection-fixed-header">
-                <!-- Кнопка Назад слева -->
                 <button class="back-icon-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
                     <img src="back.png" alt="Назад" class="details-back-img">
                 </button>
-                
-                <!-- Заголовок франшизы СТРОГО ПО ЦЕНТРУ экрана -->
                 <h2 class="details-page-center-title" id="collectionPageTitle">Франшиза</h2>
-                
-                <!-- Пустышка справа для идеальной центровки текста флексом -->
                 <div style="width: 40px;"></div> 
             </div>
             <div class="collection-list-container" id="collectionListContainer"></div>
         </div>
 
-        <!-- 6. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
+        <!-- 9. СТРАНИЦА ДЕТАЛЕЙ -->
         <div id="detailsPage" class="page" style="position: relative;">
-            <!-- Единая компактная фиксированная шапка -->
             <div class="details-fixed-header">
-                <!-- Кнопка Назад слева -->
                 <button class="back-icon-btn">
                     <img src="back.png" alt="Назад" class="details-back-img">
                 </button>
-                
-                <!-- Заголовок "О фильме" СТРОГО ПО ЦЕНТРУ экрана -->
-                <h2 class="details-page-center-title">О фильме</h2>
-                
-                <!-- Карандаш редактирования справа -->
+                <h2 class="details-page-center-title" id="detailsFixedTitle">О фильме</h2>
                 <button class="edit-icon-btn" id="movieEditBtn">
                     <img src="edit.png" alt="Редактировать" class="details-edit-img">
                 </button>
@@ -158,9 +169,9 @@
             <div class="details-container" id="detailsContainer"></div>
         </div>
 
-        <!-- НИЖНЕЕ НАВИГАЦИОННОЕ МЕНЮ -->
+        <!-- НОВОЕ НИЖНЕЕ МЕНЮ (ИЗБРАННОГО НЕТ, ЕСТЬ СЕРИАЛЫ) -->
         <nav class="bottom-nav">
-             <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Киноман')">
+            <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Главная')">
                 <img src="home.png" alt="Главная" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
@@ -168,8 +179,8 @@
                 <img src="video.png" alt="Все фильмы" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
-            <button class="nav-item" id="navFav" onclick="switchPage('favoritesPage', 'Избранное')">
-                <img src="favorites.png" alt="Избранное" class="nav-icon-img">
+            <button class="nav-item" id="navAllSeries" onclick="switchPage('allSeriesPage', 'Все сериалы')">
+                <img src="movies_icon.png" alt="Все сериалы" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
         </nav>
