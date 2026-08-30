@@ -26,77 +26,57 @@
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ (Показывается строго после входа) -->
+        <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
     <div id="appContent" style="display: none;">
         
-        <!-- ВЕРХНЯЯ ШАПКА САЙТА -->
-        <header>
-            <h1 id="pageTitle">Главная</h1>
-            <div style="display:flex; gap:15px; align-items:center;">
+        <!-- 1. ГЛАВНАЯ СТРАНИЦА (ХАБ) -->
+        <div id="homePage" class="page active">
+            <div class="page-fixed-header">
+                <h1>Главная</h1>
                 <button class="logout-btn" onclick="logout()">
-                    <img src="exit.png" alt="Выйти" class="header-icon-img">
+                    <img src="logout.png" alt="Выйти" class="header-icon-img">
                 </button>
             </div>
-        </header>
-
-                <!-- 1. НОВАЯ ГЛАВНАЯ СТРАНИЦА (ХАБ ИЗ 3-Х РАЗДЕЛОВ КВАДРАТАМИ) -->
-        <div id="homePage" class="page active">
-            <div class="hub-grid">
-                
-                <!-- Карточка 1. Фильмы по частям -->
-                <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
-                    <img src="playlist.png" alt="Части" class="hub-tile-icon">
-                    <span class="hub-tile-title">Фильмы по частям</span>
-                </div>
-
-                <!-- Карточка 2. Рекомендации к просмотру -->
-                <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
-                    <img src="bookmark.png" alt="Рекомендации" class="hub-tile-icon">
-                    <span class="hub-tile-title">Рекомендации к просмотру</span>
-                </div>
-
-                <!-- Карточка 3. Жанры -->
-                <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
-                    <img src="genres.png" alt="Жанры" class="hub-tile-icon">
-                    <span class="hub-tile-title">Жанры</span>
-                </div>
-
-            </div>
+            <div class="hub-grid" id="hubGrid"></div>
         </div>
 
-
-
-        <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (БЫВШАЯ ГЛАВНАЯ) -->
+        <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ (С ПЛЮСИКОМ И ВЫХОДОМ) -->
         <div id="allMoviesPage" class="page">
-            <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
-                    <img src="add.png" alt="Добавить" class="header-icon-img">
-                </button>
+            <div class="page-fixed-header">
+                <h1>Все фильмы</h1>
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
+                        <img src="add.png" alt="Добавить" class="header-icon-img">
+                    </button>
+                    <button class="logout-btn" onclick="logout()">
+                        <img src="logout.png" alt="Выйти" class="header-icon-img">
+                    </button>
+                </div>
+            </div>
             <div class="movies-grid" id="moviesGrid"></div>
         </div>
 
         <!-- 3. СТРАНИЦА ИЗБРАННОГО -->
         <div id="favoritesPage" class="page">
+            <div class="page-fixed-header">
+                <h1>Избранное</h1>
+                <div></div> <!-- Пустой блок для симметрии флекса -->
+            </div>
             <div class="movies-grid" id="favoritesGrid"></div>
         </div>
 
-                <!-- 4. СТРАНИЦА ЖАНРОВ (Только кнопка добавления и список) -->
+        <!-- 4. СТРАНИЦА ЖАНРОВ -->
         <div id="genresPage" class="page">
-            <!-- Красивая голубая кнопка на всю ширину -->
+            <div class="page-fixed-header">
+                <h1>Жанры</h1>
+                <div></div>
+            </div>
             <button class="add-rec-btn" onclick="openAddGenreModal()">Добавить жанр</button>
             <ul class="genre-list" id="genreList"></ul>
         </div>
 
-
-               <!-- 3. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ (СЭФФЕКТОМ КНИГИ) -->
-        <div id="moviePartsPage" class="page">
-            <!-- Сюда JS будет выводить наши крутые стопки франшиз -->
-            <div class="collections-grid" id="collectionsGrid"></div>
-        </div>
-
-
-                <!-- 3. СТРАНИЦА: СПИСОК ЧАСТЕЙ ОПРЕДЕЛЕННОЙ ФРАНШИЗЫ -->
+        <!-- 5. СТРАНИЦА: СПИСОК ЧАСТЕЙ ФРАНШИЗЫ -->
         <div id="collectionPage" class="page" style="position: relative;">
-            <!-- ИСПРАВЛЕНИЕ: Дали уникальный класс шапке, чтобы отступы не путались! -->
             <div class="collection-fixed-header">
                 <h1 class="details-page-main-title" id="collectionPageTitle">Франшиза</h1>
                 <div class="details-header-panel">
@@ -104,23 +84,10 @@
                     <div></div> 
                 </div>
             </div>
-            
             <div class="collection-list-container" id="collectionListContainer"></div>
         </div>
 
-
-
-               <!-- 2. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
-        <div id="recommendationsPage" class="page">
-            <!-- Кнопка "Пополнить реки" строго под заголовком -->
-            <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
-            
-            <!-- Сюда JS будет выводить список рекомендаций -->
-            <ul class="rec-list" id="recList"></ul>
-        </div>
-
-        
-        <!-- 5. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
+        <!-- 6. СТРАНИЦА ДЕТАЛЕЙ ФИЛЬМА -->
         <div id="detailsPage" class="page" style="position: relative;">
             <div class="details-fixed-header">
                 <h1 class="details-page-main-title">О фильме</h1>
@@ -134,9 +101,9 @@
             <div class="details-container" id="detailsContainer"></div>
         </div>
 
-        <!-- НИЖНЕЕ НАВИГАЦИОННОЕ МЕНЮ (НА САМОМ ДНЕ APPCONTENT) -->
+        <!-- НИЖНЕЕ НАВИГАЦИОННОЕ МЕНЮ -->
         <nav class="bottom-nav">
-            <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Киноман')">
+             <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Киноман')">
                 <img src="home.png" alt="Главная" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
@@ -149,7 +116,6 @@
                 <div class="nav-line"></div>
             </button>
         </nav>
-
     </div> <!-- КОНЕЦ БЛОКА appContent -->
 
 
