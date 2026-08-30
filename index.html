@@ -39,31 +39,35 @@
                 </button>
             </div>
             
+                       <!-- Сетка на Главной: идеальный порядок и симметрия 2х2 -->
             <div class="hub-grid" id="hubGrid">
-                <!-- Карточка 1. Фильмы по частям -->
+                
+                <!-- 1. Избранное (Верхний левый) -->
+                <div class="hub-tile-card" onclick="switchPage('favoritesPage', 'Избранное')">
+                    <img src="fav.png" alt="Избранное" class="hub-tile-icon">
+                    <span class="hub-tile-title">Избранное</span>
+                </div>
+
+                <!-- 2. Фильмы по частям (Верхний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
                     <img src="parts_icon.png" alt="Части" class="hub-tile-icon">
                     <span class="hub-tile-title">Фильмы по частям</span>
                 </div>
 
-                <!-- Карточка 2. Рекомендации к просмотру -->
+                <!-- 3. Рекомендации к просмотру (Нижний левый) -->
                 <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
                     <img src="recommend_icon.png" alt="Рекомендации" class="hub-tile-icon">
                     <span class="hub-tile-title">Рекомендации к просмотру</span>
                 </div>
 
-                <!-- Карточка 3. Жанры -->
+                <!-- 4. Жанры (Нижний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
                     <img src="genres_main_icon.png" alt="Жанры" class="hub-tile-icon">
                     <span class="hub-tile-title">Жанры</span>
                 </div>
 
-                <!-- Карточка 4. Избранное (Переехало сюда!) -->
-                <div class="hub-tile-card" onclick="switchPage('favoritesPage', 'Избранное')">
-                    <img src="fav.png" alt="Избранное" class="hub-tile-icon">
-                    <span class="hub-tile-title">Избранное</span>
-                </div>
             </div>
+
         </div>
 
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ -->
