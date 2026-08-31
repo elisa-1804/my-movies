@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Киноман</title>
+    <title>Нечего смотреть</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://yastatic.net"></script>
 </head>
@@ -12,7 +12,7 @@
     <!-- ЭКРАН АВТОРИЗАЦИИ (Показывается до входа) -->
     <div id="authPage" class="auth-container">
         <div class="auth-card">
-            <h2 id="authTitle">Войти в профиль</h2>
+            <h2 id="authTitle">Хьюстон, у нас проблемы</h2>
             <div class="form-group">
                 <label>Email</label>
                 <input type="email" id="authEmail" placeholder="example@mail.com">
@@ -22,18 +22,17 @@
                 <input type="password" id="authPassword" placeholder="Минимум 6 символов">
             </div>
             <button class="action-btn save-btn" style="width:100%; margin-top:10px;" id="authPrimaryBtn" onclick="handleAuth()">Войти</button>
-            <span class="auth-toggle" onclick="toggleAuthMode()">Нет аккаунта? Зарегистрироваться</span>
+            <span class="auth-toggle" onclick="toggleAuthMode()">Время не жалко? Регайся</span>
         </div>
     </div>
 
-        <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
     <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
     <div id="appContent" style="display: none;">
         
         <!-- 1. ГЛАВНАЯ СТРАНИЦА (ХАБ ТЕПЕРЬ ИЗ 4-Х КВАДРАТОВ) -->
         <div id="homePage" class="page active">
             <div class="page-fixed-header">
-                <h1>Главная</h1>
+                <h1>Шняга шняжная</h1>
                 <button class="logout-btn" onclick="logout()">
                     <img src="exit.png" alt="Выйти" class="header-icon-img">
                 </button>
@@ -45,19 +44,19 @@
                 <!-- 1. Избранное (Верхний левый) -->
                 <div class="hub-tile-card" onclick="switchPage('favoritesPage', 'Избранное')">
                     <img src="favorites.png" alt="Избранное" class="hub-tile-icon">
-                    <span class="hub-tile-title">Избранное</span>
+                    <span class="hub-tile-title">Ништяки</span>
                 </div>
 
                 <!-- 2. Фильмы по частям (Верхний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
                     <img src="playlist.png" alt="Части" class="hub-tile-icon">
-                    <span class="hub-tile-title">Фильмы по частям</span>
+                    <span class="hub-tile-title">Главное - семья</span>
                 </div>
 
                 <!-- 3. Рекомендации к просмотру (Нижний левый) -->
                 <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
                     <img src="rec.png" alt="Рекомендации" class="hub-tile-icon">
-                    <span class="hub-tile-title">Рекомендации к просмотру</span>
+                    <span class="hub-tile-title">Полка пыли</span>
                 </div>
 
                 <!-- 4. Жанры (Нижний правый) -->
@@ -73,7 +72,7 @@
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ -->
         <div id="allMoviesPage" class="page">
             <div class="page-fixed-header">
-                <h1>Все фильмы</h1>
+                <h1>Убитое время</h1>
                 <div style="display:flex; gap:15px; align-items:center;">
                     <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
                         <img src="add.png" alt="Добавить" class="header-icon-img">
@@ -89,7 +88,7 @@
         <!-- НОВАЯ 3. СТРАНИЦА ВСЕХ СЕРИАЛОВ -->
         <div id="allSeriesPage" class="page">
             <div class="page-fixed-header">
-                <h1>Все сериалы</h1>
+                <h1>Походу не спим</h1>
                 <div style="display:flex; gap:15px; align-items:center;">
                     <!-- Для сериалов откроем отдельную модалку, которую сделаем в след. шаге -->
                     <button class="add-movie-btn" id="headerSeriesPlusBtn" onclick="openSeriesModal()">
@@ -106,7 +105,7 @@
             <!-- 4. СТРАНИЦА ИЗБРАННОГО -->
         <div id="favoritesPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
-                <h1 class="page-fixed-header-title">Избранное</h1>
+                <h1 class="page-fixed-header-title">Ништяки</h1>
                 <div class="fav-tabs-container">
                     <div class="fav-tab movie active" id="favTabMovie" onclick="switchFavTab('movie')">Фильмы</div>
                     <div class="fav-tab series" id="favTabSeries" onclick="switchFavTab('series')">Сериалы</div>
@@ -124,7 +123,7 @@
         <!-- 5. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
         <div id="moviePartsPage" class="page">
             <div class="page-fixed-header">
-                <h1>Фильмы по частям</h1>
+                <h1>Главное - семья</h1>
                 <div></div>
             </div>
             <div class="collections-grid" id="collectionsGrid"></div>
@@ -133,7 +132,7 @@
         <!-- 6. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
         <div id="recommendationsPage" class="page">
             <div class="page-fixed-header">
-                <h1>Рекомендации</h1>
+                <h1>Полка пыли</h1>
                 <div></div>
             </div>
             <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
@@ -278,7 +277,7 @@
                 <button class="genre-del-icon-btn" onclick="deleteGenreFromModal()">
                     <img src="delete.png" alt="Удалить" class="genre-btn-img">
                 </button>
-                <button class="action-btn cancel-btn" onclick="closeGenreModal()">Отмена</button>
+                <button class="action-btn cancel-btn" onclick="closeGenreModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="saveGenreChanges()">
                     <img src="save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
@@ -289,7 +288,7 @@
     <!-- МОДАЛЬНОЕ ОКНО: ДОБАВИТЬ В РЕКОМЕНДАЦИИ -->
     <div class="modal" id="recModal">
         <div class="modal-content">
-            <h3 id="recModalHeadline">Новая рекомендация</h3>
+            <h3 id="recModalHeadline">Новый слой пыли</h3>
             <input type="hidden" id="editRecId">
             
             <div class="form-group">
@@ -311,7 +310,7 @@
                 <button class="genre-del-icon-btn" id="recDeleteBtn" style="display:none;" onclick="deleteRec()">
                     <img src="delete.png" alt="Удалить" class="genre-btn-img">
                 </button>
-                <button class="action-btn cancel-btn" onclick="closeRecModal()">Отмена</button>
+                <button class="action-btn cancel-btn" onclick="closeRecModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="saveRecommendation()">
                     <img src="save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
@@ -328,7 +327,7 @@
                 <input type="text" id="newGenreInput" placeholder="Например: Аниме, Триллер...">
             </div>
             <div class="form-buttons">
-                <button class="action-btn cancel-btn" onclick="closeAddGenreModal()">Отмена</button>
+                <button class="action-btn cancel-btn" onclick="closeAddGenreModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="submitNewGenre()">
                     <img src="save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
@@ -415,7 +414,7 @@
                 <button class="genre-del-icon-btn" id="seriesDeleteBtn" style="display: none;" onclick="deleteSeriesFromModal()">
                     <img src="delete.png" alt="Удалить" class="genre-btn-img">
                 </button>
-                <button class="action-btn cancel-btn" onclick="closeSeriesModal()">Отмена</button>
+                <button class="action-btn cancel-btn" onclick="closeSeriesModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="saveSeries()">
                     <img src="save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
