@@ -520,7 +520,7 @@ async function loadData() {
     series = sResponse.ok ? await sResponse.json() : [];
 
     // 4. Запускаем рендеры и обновления интерфейса
-    renderSeriesGrid();
+    renderSeriesGrid('seriesGrid', series);
     renderMoviesGrid('moviesGrid', movies); 
     updateGenreSelect();
     await loadRecommendations();
@@ -533,7 +533,7 @@ function switchPage(pageId, titleText) {
     // 1. Снимаем активный класс (скрываем) со ВСЕХ страниц приложения
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     
-    // 2. Снимаем подсветку абсолютно со ВСЕХ кнопок нижнего меню (чистим всё!)
+    // 2. Снимаем подсветку абсолютно со ВСЕХ кнопок нижнего меню
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     
     // 3. Включаем (показываем) только ту страницу, на которую нажали
@@ -542,7 +542,7 @@ function switchPage(pageId, titleText) {
         targetPage.classList.add('active');
     }
     
-    // 4. ИСПРАВЛЕНИЕ: Жёстко подсвечиваем нужную иконку в нижнем меню
+    // 4. Жёстко подсвечиваем нужную иконку в нижнем меню
     if (pageId === 'homePage') {
         const btn = document.getElementById('navHome');
         if (btn) btn.classList.add('active');
@@ -553,28 +553,51 @@ function switchPage(pageId, titleText) {
     }
     if (pageId === 'allSeriesPage') {
         const btn = document.getElementById('navAllSeries');
-        if (btn) btn.classList.add('active'); // Включаем класс активности для сериалов!
+        if (btn) btn.classList.add('active'); // Включаем класс активности для сериалов
     }
     
-    // 5. Автоматически запускаем отрисовку данных на нужных экранах
-    if (pageId === 'allMoviesPage') renderMoviesGrid('moviesGrid', movies);
-    if (pageId === 'allSeriesPage') {
-        if (typeof renderSeriesGrid === 'function') renderSeriesGrid();
+    // 5. Автоматически запускаем отрисовку данных на нужных экранах (БЕЗ ОШИБОК И СБОЕВ)
+    if (pageId === 'allMoviesPage' && typeof renderMoviesGrid === 'function') {
+        renderMoviesGrid('moviesGrid', movies);
     }
-    if (pageId === 'genresPage') renderGenresList();
-    if (pageId === 'moviePartsPage') renderCollectionsGrid();
-    if (pageId === 'recommendationsPage') loadRecommendations();
+    
+    if (pageId === 'allSeriesPage' && typeof renderSeriesGrid === 'function') {
+        renderSeriesGrid('seriesGrid', series); // ТЕПЕРЬ ПО ЕДИНОМУ СТАНДАРТУ С ПАРАМЕТРАМИ
+    }
+    
+    if (pageId === 'genresPage' && typeof renderGenresList === 'function') {
+        renderGenresList();
+    }
+    
+    if (pageId === 'moviePartsPage' && typeof renderCollectionsGrid === 'function') {
+        renderCollectionsGrid();
+    }
+    
+    if (pageId === 'recommendationsPage' && typeof loadRecommendations === 'function') {
+        loadRecommendations();
+    }
     
     if (pageId === 'favoritesPage') {
-        currentFavTab = 'movie'; // Принудительно сбрасываем вкладку на Фильмы при входе
+        // Защита: принудительно сбрасываем вкладку на Фильмы при входе в Избранное
+        if (typeof currentFavTab === 'undefined') {
+            window.currentFavTab = 'movie'; 
+        } else {
+            currentFavTab = 'movie'; 
+        }
         
-        // Сразу вытаскиваем избранные фильмы из готового массива
-        const favMovies = movies.filter(function(m) { return m.favorite; });
-        
-        // Напрямую вызываем твою родную рабочую функцию отрисовки!
-        renderMoviesGrid('favoritesGrid', favMovies);
+        // Переключаем активный класс на самой кнопке вкладки "Фильмы" внутри Избранного
+        const movieTab = document.getElementById('favTabMovie');
+        const seriesTab = document.getElementById('favTabSeries');
+        if (movieTab) movieTab.classList.add('active');
+        if (seriesTab) seriesTab.classList.remove('active');
+
+        // Вызываем твою рабочую функцию отрисовки Избранного
+        if (typeof renderFavGrid === 'function') {
+            renderFavGrid();
+        }
     }
 }
+
 
 
 
@@ -870,40 +893,42 @@ function showDetails(id) {
         <!-- ВЕРХНИЙ РЯД: Название слева, Сердечко справа -->
         <div class="details-main-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; width: 100%;">
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${m.title}</h2>
-            
             <button class="heart-btn" onclick="toggleFav(${m.id})" style="position: static; width: 36px; height: 36px; flex-shrink: 0;">
                 <img src="favorites.png" class="heart-icon-img" alt="Избранное">
             </button>
         </div>
 
         <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
-        <div class="details-flex" style="display: flex; gap: 20px; width: 100%;">
-            
-            <!-- Левая колонка: Только Постер для фильмов (без статуса просмотра) -->
+        <div class="details-flex" style="display: flex; gap: 20px; width: 100%; margin-bottom: 20px;">
             <div class="details-left-column" style="width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
             </div>
             
-            <!-- Правая колонка: Данные (Год, Жанр, Рейтинг, Описание) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${m.year || '—'}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(m.rating || 0)}</strong></div>
                 
-                <!-- Проверка на франшизу: если она есть, выводим красивой чеплашкой -->
                 ${m.collection && m.collection.trim() !== '' ? `
                     <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #06B6D4; color: #22d3ee; display: block; margin-top: 10px; width: fit-content;">
                         🎬 Франшиза: ${m.collection}
                     </div>
                 ` : ''}
-                
-                <!-- Описание в виде интерактивного раскрывающегося спойлера -->
-                <div class="details-desc-spoiler" onclick="this.classList.toggle('open')">
-                    <p class="details-desc">${m.desc || 'Описание отсутствует.'}</p>
-                </div>
+            </div>
+        </div>
+
+        <!-- СПОЙЛЕР ОПИСАНИЯ НА ВСЮ ШИРИНУ ПОД ПОСТЕРОМ -->
+        <div class="custom-desc-spoiler" onclick="toggleDetailsSpoiler(this)">
+            <div class="spoiler-header-trigger" style="display: flex; align-items: center; gap: 8px; color: #06B6D4; font-size: 13px; font-weight: 600; user-select: none; cursor: pointer; padding-bottom: 8px; border-bottom: 1px dashed #29292e;">
+                <span>Описание</span>
+                <span class="desc-arrow-icon" style="font-size: 10px; color: #8d8d99; transition: transform 0.2s;">▼</span>
+            </div>
+            <div class="spoiler-body-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                <p style="margin: 0; padding-top: 12px; line-height: 1.5; color: #c4c4cc; font-size: 14px;">${m.desc || 'Описание отсутствует.'}</p>
             </div>
         </div>
     `;
+
 
     // 6. Назначаем клик кнопке "Назад"
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
@@ -1539,29 +1564,29 @@ function toggleFranchiseRowStyle(isChecked) {
 // =======================================================
 
 // 1. Отрисовка сетки сериалов (Копия фильмов, но адаптированная под сериальные данные)
-function renderSeriesGrid() {
-    const grid = document.getElementById('seriesGrid');
+function renderSeriesGrid(gridId, list) {
+    const grid = document.getElementById(gridId);
     if (!grid) return;
     grid.innerHTML = '';
     
-    if (series.length === 0) {
+    // Проверяем, передан ли массив и есть ли в нём элементы
+    if (!list || list.length === 0) {
         grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список сериалов пуст 🎬</p>';
         return;
     }
     
-    series.forEach(s => {
+    list.forEach(s => {
         const card = document.createElement('div');
         card.className = 'movie-card' + (s.favorite ? ' is-fav' : '');
         
-        // Клик теперь открывает страницу "О сериале" (функцию создадим ниже)
-        card.onclick = function() { (s.id); };
+        // Вешаем клик на открытие страницы "О сериале"
+        card.onclick = function() { showSeriesDetails(s.id); };
         
-        // ТОЧЕЧНЫЙ ФИКС ЖАНРОВ ДЛЯ СЕРИАЛОВ:
+        // Форматируем жанры без скобок и кавычек
         let genresText = 'Общий';
         if (Array.isArray(s.genre)) {
             genresText = s.genre.join(', ');
         } else if (typeof s.genre === 'string') {
-            // Если пришла строка со скобками ["Драма","Комедия"], вычищаем её начисто
             genresText = s.genre.replace(/[\[\]"]/g, '').split(',').join(', ');
         }
 
@@ -1587,6 +1612,7 @@ function renderSeriesGrid() {
         grid.appendChild(card);
     });
 }
+
 
 
 // 2. Функция сохранения сериала (Сбор полей модалки и отправка в REST таблицу /series)
@@ -1730,50 +1756,52 @@ function showSeriesDetails(id) {
         progressInfo = `<div class="details-tag">✅ Просмотрено полностью</div>`;
     }
 
-  c.innerHTML = `
+    c.innerHTML = `
         <!-- ВЕРХНИЙ РЯД: Название слева, Сердечко справа -->
         <div class="details-main-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; width: 100%;">
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${s.title}</h2>
-            
             <button class="heart-btn" onclick="toggleSeriesFav(${s.id})" style="position: static; width: 36px; height: 36px; flex-shrink: 0;">
                 <img src="favorites.png" class="heart-icon-img" alt="Избранное">
             </button>
         </div>
 
         <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
-        <div class="details-flex" style="display: flex; gap: 20px; width: 100%;">
-            
-            <!-- Левая колонка: Постер и Статус ПОД НИМ -->
+        <div class="details-flex" style="display: flex; gap: 20px; width: 100%; margin-bottom: 20px;">
             <div class="details-left-column" style="display: flex; flex-direction: column; gap: 12px; width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${s.poster || defaultPoster}" alt="${s.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
                 
-                <!-- Тег статуса просмотра строго под постером в стиле модалки -->
                 ${s.is_finished === true || s.is_finished === 'true' 
-                    ? `<div class="series-status-tab active" id="statusTabFinished" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; width: 100%; box-sizing: border-box;">Просмотрено</div>`
-                    : `<div class="series-status-tab active" id="statusTabWatching" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box;">В процессе</div>`
+                    ? `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; width: 100%; box-sizing: border-box;">Просмотрено</div>`
+                    : `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box;">В процессе</div>`
                 }
             </div>
             
-            <!-- Правая колонка: Данные (Год, Жанр, Сезоны, Рейтинг, Описание) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${s.year || '—'}</div>
                 <div class="details-tag">🎭 ${genresText}</div>
                 <div class="details-tag">📺 Сезонов: ${s.seasons_total || '—'}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(s.rating || 0)}</strong></div>
                 
-                <!-- Информация об остановке, если сериал в процессе -->
                 ${s.is_finished === false || s.is_finished === 'false' ? `
                     <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content;">
                         🍿 Сезон ${s.current_season || 1}, Серия ${s.current_episode || 1} ${s.current_time ? `(${s.current_time})` : ''}
                     </div>
                 ` : ''}
-                
-<div class="details-desc-spoiler" onclick="this.classList.toggle('open')">
-    <p class="details-desc">${s.desc || 'Описание отсутствует.'}</p>
-</div>
+            </div>
+        </div>
+
+        <!-- СПОЙЛЕР ОПИСАНИЯ НА ВСЮ ШИРИНУ ПОД ПОСТЕРОМ -->
+        <div class="custom-desc-spoiler" onclick="toggleDetailsSpoiler(this)">
+            <div class="spoiler-header-trigger" style="display: flex; align-items: center; gap: 8px; color: #06B6D4; font-size: 13px; font-weight: 600; user-select: none; cursor: pointer; padding-bottom: 8px; border-bottom: 1px dashed #29292e;">
+                <span>Описание</span>
+                <span class="desc-arrow-icon" style="font-size: 10px; color: #8d8d99; transition: transform 0.2s;">▼</span>
+            </div>
+            <div class="spoiler-body-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                <p style="margin: 0; padding-top: 12px; line-height: 1.5; color: #c4c4cc; font-size: 14px;">${s.desc || 'Описание отсутствует.'}</p>
             </div>
         </div>
     `;
+
 
     // Корректный возврат назад по кнопке из шапки
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
@@ -1803,6 +1831,18 @@ async function toggleSeriesFav(id) {
         
         await loadData(); // Обновляем массивы в фоне
     } 
+}
+function toggleDetailsSpoiler(container) {
+    const body = container.querySelector('.spoiler-body-content');
+    const arrow = container.querySelector('.desc-arrow-icon');
+    
+    if (body.style.maxHeight === '0px' || body.style.maxHeight === '') {
+        body.style.maxHeight = '1000px'; // Открываем
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+    } else {
+        body.style.maxHeight = '0px'; // Закрываем
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
 }
            
 
