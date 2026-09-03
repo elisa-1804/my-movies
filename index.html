@@ -603,8 +603,6 @@ async function loadData() {
     if (typeof renderFavGrid === 'function') renderFavGrid();
 }
 
-
-
 function switchPage(pageId, titleText) {
     // 1. Снимаем активный класс (скрываем) со ВСЕХ страниц приложения
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -632,13 +630,17 @@ function switchPage(pageId, titleText) {
         if (btn) btn.classList.add('active'); // Включаем класс активности для сериалов
     }
     
-    // 5. Автоматически запускаем отрисовку данных на нужных экранах (БЕЗ ОШИБОК И СБОЕВ)
+    // 5. Автоматически запускаем отрисовку данных с очисткой полей поиска
     if (pageId === 'allMoviesPage' && typeof renderMoviesGrid === 'function') {
+        const input = document.getElementById('movieSearchInput');
+        if (input) input.value = ''; // Сбрасываем строку поиска фильмов
         renderMoviesGrid('moviesGrid', movies);
     }
     
     if (pageId === 'allSeriesPage' && typeof renderSeriesGrid === 'function') {
-        renderSeriesGrid('seriesGrid', series); // ТЕПЕРЬ ПО ЕДИНОМУ СТАНДАРТУ С ПАРАМЕТРАМИ
+        const input = document.getElementById('seriesSearchInput');
+        if (input) input.value = ''; // Сбрасываем строку поиска сериалов
+        renderSeriesGrid('seriesGrid', series);
     }
     
     if (pageId === 'genresPage' && typeof renderGenresList === 'function') {
@@ -654,30 +656,25 @@ function switchPage(pageId, titleText) {
     }
     
     if (pageId === 'favoritesPage') {
-        // Защита: принудительно сбрасываем вкладку на Фильмы при входе в Избранное
+        // Принудительно сбрасываем вкладку на Фильмы при входе в Избранное
         if (typeof currentFavTab === 'undefined') {
             window.currentFavTab = 'movie'; 
         } else {
             currentFavTab = 'movie'; 
         }
         
-        // Переключаем активный класс на самой кнопке вкладки "Фильмы" внутри Избранного
+        // Переключаем активные неоновые классы на кнопках вкладок внутри Избранного
         const movieTab = document.getElementById('favTabMovie');
         const seriesTab = document.getElementById('favTabSeries');
         if (movieTab) movieTab.classList.add('active');
         if (seriesTab) seriesTab.classList.remove('active');
 
-        // Вызываем твою рабочую функцию отрисовки Избранного
+        // Вызываем отрисовку Избранного
         if (typeof renderFavGrid === 'function') {
             renderFavGrid();
         }
     }
 }
-
-
-
-
-
 
     function getStarsHtml(r) { let h = ''; for(let i=1; i<=5; i++) { h += i <= r ? '★' : '☆'; } return h; }
     function renderMoviesGrid(gridId, list) {
@@ -2099,6 +2096,172 @@ async function saveQuickProgress(id) {
     } else {
         alert("Ошибка быстрого обновления серий!");
     }
+}
+let currentFilterType = 'movie'; 
+let movieSortDirection = 'desc'; // 'desc' - новые, 'asc' - старые
+let seriesSortDirection = 'desc';
+let movieSortDegrees = 0;
+let seriesSortDegrees = 0;
+
+// 1. Открытие шторки
+function openFilterDrawer(type) {
+    currentFilterType = type;
+    document.getElementById('filterOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Блокируем скролл фона
+
+    const statusBlock = document.getElementById('drawerStatusBlock');
+    if (statusBlock) {
+        statusBlock.style.display = type === 'series' ? 'block' : 'none';
+    }
+    
+    document.getElementById('drawerTitle').textContent = type === 'series' ? 'Фильтры сериалов' : 'Фильтры фильмов';
+    
+    const container = document.getElementById('drawerGenresContainer');
+    if (container && genres) {
+        container.innerHTML = '';
+        genres.forEach(g => {
+            const label = document.createElement('label');
+            label.className = 'genre-checkbox-item';
+            label.innerHTML = `
+                <input type="checkbox" class="drawer-genre-checkbox" value="${g}">
+                <span>${g}</span>
+            `;
+            container.appendChild(label);
+        });
+    }
+}
+
+// 2. Закрытие шторки
+function closeFilterDrawer() {
+    document.getElementById('filterOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// 3. Сброс фильтров
+function resetFilters() {
+    document.getElementById('filterYearMin').value = '';
+    document.getElementById('filterYearMax').value = '';
+    document.getElementById('filterRating').value = '0';
+    if(document.getElementById('filterStatus')) document.getElementById('filterStatus').value = 'all';
+    document.querySelectorAll('.drawer-genre-checkbox').forEach(cb => cb.checked = false);
+    
+    document.getElementById('movieSearchInput').value = '';
+    document.getElementById('seriesSearchInput').value = '';
+    
+    if (currentFilterType === 'movie') {
+        renderMoviesGrid('moviesGrid', movies);
+    } else {
+        renderSeriesGrid('seriesGrid', series);
+    }
+    closeFilterDrawer();
+}
+
+// 4. Текстовый поиск фильмов на лету
+function filterMovies() {
+    const query = document.getElementById('movieSearchInput').value.toLowerCase().trim();
+    const filtered = movies.filter(m => m.title.toLowerCase().includes(query));
+    renderMoviesGrid('moviesGrid', filtered);
+}
+
+// 5. Текстовый поиск сериалов на лету
+function filterSeries() {
+    const query = document.getElementById('seriesSearchInput').value.toLowerCase().trim();
+    const filtered = series.filter(s => s.title.toLowerCase().includes(query));
+    renderSeriesGrid('seriesGrid', filtered);
+}
+
+// 6. Кнопка сортировки: перекручивание и смена иконки
+function toggleSort(type) {
+    if (type === 'movie') {
+        const sortBtn = document.getElementById('movieSortBtn');
+        const sortImg = document.getElementById('movieSortImg');
+        movieSortDegrees += 180;
+        if (sortBtn) sortBtn.style.transform = `rotate(${movieSortDegrees}deg)`;
+        
+        if (movieSortDirection === 'desc') {
+            movieSortDirection = 'asc';
+            if (sortImg) sortImg.src = 'sort1.png';
+        } else {
+            movieSortDirection = 'desc';
+            if (sortImg) sortImg.src = 'sort2.png';
+        }
+        applyFilters(); 
+    } else {
+        const sortBtn = document.getElementById('seriesSortBtn');
+        const sortImg = document.getElementById('seriesSortImg');
+        seriesSortDegrees += 180;
+        if (sortBtn) sortBtn.style.transform = `rotate(${seriesSortDegrees}deg)`;
+        
+        if (seriesSortDirection === 'desc') {
+            seriesSortDirection = 'asc';
+            if (sortImg) sortImg.src = 'sort1.png';
+        } else {
+            seriesSortDirection = 'desc';
+            if (sortImg) sortImg.src = 'sort2.png';
+        }
+        applyFilters();
+    }
+}
+
+// 7. Комбинированный фильтр-движок
+function applyFilters() {
+    const minYear = parseInt(document.getElementById('filterYearMin').value, 10) || null;
+    const maxYear = parseInt(document.getElementById('filterYearMax').value, 10) || null;
+    const minRating = parseInt(document.getElementById('filterRating').value, 10) || 0;
+    
+    const selectedGenres = [];
+    document.querySelectorAll('.drawer-genre-checkbox:checked').forEach(cb => {
+        selectedGenres.push(cb.value);
+    });
+
+    if (currentFilterType === 'movie') {
+        const searchWord = document.getElementById('movieSearchInput').value.toLowerCase().trim();
+        let filtered = movies.filter(m => {
+            if (searchWord && !m.title.toLowerCase().includes(searchWord)) return false;
+            if (minYear && (m.year < minYear)) return false;
+            if (maxYear && (m.year > maxYear)) return false;
+            if (m.rating < minRating) return false;
+            if (selectedGenres.length > 0) {
+                const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
+                if (!selectedGenres.every(g => movieGenres.includes(g))) return false;
+            }
+            return true;
+        });
+        
+        filtered.sort((a, b) => {
+            const dateA = new Date(a.created_at || 0);
+            const dateB = new Date(b.created_at || 0);
+            return movieSortDirection === 'desc' ? dateB - dateA : dateA - dateB;
+        });
+        renderMoviesGrid('moviesGrid', filtered);
+    } else {
+        const searchWord = document.getElementById('seriesSearchInput').value.toLowerCase().trim();
+        const statusVal = document.getElementById('filterStatus').value;
+        let filtered = series.filter(s => {
+            if (searchWord && !s.title.toLowerCase().includes(searchWord)) return false;
+            if (minYear && (s.year < minYear)) return false;
+            if (maxYear && (s.year > maxYear)) return false;
+            if (s.rating < minRating) return false;
+            if (statusVal === 'finished' && !(s.is_finished === true || s.is_finished === 'true')) return false;
+            if (statusVal === 'watching' && (s.is_finished === true || s.is_finished === 'true')) return false;
+            if (selectedGenres.length > 0) {
+                let seriesGenres = [];
+                if (Array.isArray(s.genre)) seriesGenres = s.genre;
+                else if (typeof s.genre === 'string') seriesGenres = s.genre.replace(/[\[\]"]/g, '').split(',').map(g => g.trim());
+                if (!selectedGenres.every(g => seriesGenres.includes(g))) return false;
+            }
+            return true;
+        });
+        
+        filtered.sort((a, b) => {
+            const dateA = new Date(a.created_at || 0);
+            const dateB = new Date(b.created_at || 0);
+            return seriesSortDirection === 'desc' ? dateB - dateA : dateA - dateB;
+        });
+        renderSeriesGrid('seriesGrid', filtered);
+    }
+    document.getElementById('filterOverlay').style.display = 'none';
+    document.body.style.overflow = '';
 }
 
     checkUser();
