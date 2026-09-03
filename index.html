@@ -1819,7 +1819,7 @@ function showSeriesDetails(id) {
     switchPage('detailsPage', 'О сериале'); 
     document.getElementById('detailsFixedTitle').textContent = "О сериале";
 
-    // 3. Настраиваем кнопку карандаша редактирования (полная модалка)
+    // 3. Настраиваем кнопку карандаша редактирования
     const editBtn = document.getElementById('movieEditBtn');
     if (editBtn) {
         editBtn.onclick = function() { openSeriesModal(s.id); };
@@ -1835,21 +1835,22 @@ function showSeriesDetails(id) {
 
     const defaultPoster = 'https://unsplash.com';
 
-    // 5. ФОРМИРУЕМ ОДНОСТРОЧНЫЙ ПРОГРЕСС
+    // 5. ОДНОСТРОЧНЫЙ ПРОГРЕСС ПОД ПОСТЕРОМ
     let progressInfoHtml = '';
-    if (s.is_finished === false || s.is_finished === 'false') {
+    // Гибкая проверка статуса просмотра (и для текста, и для булевых значений)
+    if (s.is_finished === false || s.is_finished === 'false' || !s.is_finished) {
         const season = s.current_season || 1;
         const episode = s.current_episode || 1;
-        const timeText = s.current_time && s.current_time.trim() !== '' ? `, минута — ${s.current_time.trim()}` : '';
+        const timeText = s.current_time && s.current_time.trim() !== '' ? `, минута - ${s.current_time.trim()}` : '';
         
         progressInfoHtml = `
-            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #06B6D4; color: #22d3ee; display: block; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; padding: 8px 10px; font-size: 13px;">
-                🍿 сезон — ${season}, серия — ${episode}${timeText}
+            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; padding: 8px 10px; font-size: 13px; color: #e1e1e6;">
+                🍿 сезон - ${season}, серия - ${episode}${timeText}
             </div>
         `;
     }
 
-    // 6. ГЕНЕРИРУЕМ КОНТЕНТ В КАРТОЧКУ
+    // 6. ГЕНЕРИРУЕМ КОНТЕНТ
     const c = document.getElementById('detailsContainer'); 
     c.className = 'details-container' + (s.favorite ? ' is-fav' : '');
     
@@ -1862,21 +1863,20 @@ function showSeriesDetails(id) {
             </button>
         </div>
 
-        <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
+        <!-- ОСНОВНОЙ БЛОК -->
         <div class="details-flex" style="display: flex; gap: 20px; width: 100%;">
             
-            <!-- Левая колонка: Постер и КЛИКАБЕЛЬНЫЙ СТАТУС -->
+            <!-- Левая колонка: Постер и ТРИГГЕР-СТАТУС (открывает и закрывает) -->
             <div class="details-left-column" style="display: flex; flex-direction: column; gap: 12px; width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${s.poster || defaultPoster}" alt="${s.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
                 
-                <!-- Статус просмотра по клику открывает форму быстрой правки -->
                 ${s.is_finished === true || s.is_finished === 'true' 
                     ? `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; width: 100%; box-sizing: border-box; user-select: none;">Просмотрено</div>`
-                    : `<div class="series-status-tab active" onclick="document.getElementById('quickProgressBlock').style.display = 'block'" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box; user-select: none; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(251, 146, 60, 0.2)'" onmouseout="this.style.backgroundColor='rgba(251, 146, 60, 0.12)'">В процессе ✏️</div>`
+                    : `<div class="series-status-tab active" onclick="toggleQuickProgressBlock()" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box; user-select: none; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(251, 146, 60, 0.2)'" onmouseout="this.style.backgroundColor='rgba(251, 146, 60, 0.12)'">В процессе ✏️</div>`
                 }
             </div>
             
-            <!-- Правая колонка: Данные (Год, Жанр, Сезоны, Рейтинг) -->
+            <!-- Правая колонка -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${s.year || '—'}</div>
                 <div class="details-tag">🎭 ${genresText}</div>
@@ -1885,35 +1885,35 @@ function showSeriesDetails(id) {
             </div>
         </div>
 
-        <!-- ОДНОСТРОЧНЫЙ ПРОГРЕСС ПОД ПОСТЕРОМ -->
+        <!-- ОДНОСТРОЧНЫЙ ПРОГРЕСС -->
         ${progressInfoHtml}
 
-        <!-- МИНИ-ОКНО ДЛЯ БЫСТРОГО ИЗМЕНЕНИЯ ПРОГРЕССА (ПО УМОЛЧАНИЮ СКРЫТО) -->
-        <div id="quickProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px dashed #29292e; width: 100%; box-sizing: border-box;">
-            <div style="font-size: 12px; color: #06B6D4; font-weight: 600; margin-bottom: 12px;">Быстрая правка серий:</div>
+        <!-- ВОЗВРАЩЕНО МЕНЮ ИЗ МОДАЛКИ: СЕРЫЙ ПУНКТИР, АККУРАТНЫЕ ПОЛЯ -->
+        <div id="quickProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px; border: 1px dashed #29292e; width: 100%; box-sizing: border-box;">
+            <label style="display: block; font-size: 12px; color: #06B6D4; font-weight: 600; margin-bottom: 14px;">Где остановились:</label>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 60px;">
-                    <label style="font-size: 11px; color: #8d8d99; display: block; margin-bottom: 4px;">Сезон</label>
-                    <input type="number" id="quickSeason" value="${s.current_season || 1}" style="width: 100%; padding: 6px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; color: white; font-size: 13px; outline: none;">
+            <div class="form-row" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <div class="form-group" style="flex: 1; margin: 0; display: flex; flex-direction: column;">
+                    <label style="font-size: 11px; color: #8d8d99; margin-bottom: 6px;">Сезон</label>
+                    <input type="number" id="quickSeason" value="${s.current_season || 1}" style="padding: 8px; background-color: #121214; border: 1px solid #29292e; border-radius: 6px; color: white; font-size: 14px; outline: none; width: 100%; box-sizing: border-box;">
                 </div>
-                <div style="flex: 1; min-width: 60px;">
-                    <label style="font-size: 11px; color: #8d8d99; display: block; margin-bottom: 4px;">Серия</label>
-                    <input type="number" id="quickEpisode" value="${s.current_episode || 1}" style="width: 100%; padding: 6px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; color: white; font-size: 13px; outline: none;">
+                <div class="form-group" style="flex: 1; margin: 0; display: flex; flex-direction: column;">
+                    <label style="font-size: 11px; color: #8d8d99; margin-bottom: 6px;">Серия</label>
+                    <input type="number" id="quickEpisode" value="${s.current_episode || 1}" style="padding: 8px; background-color: #121214; border: 1px solid #29292e; border-radius: 6px; color: white; font-size: 14px; outline: none; width: 100%; box-sizing: border-box;">
                 </div>
-                <div style="flex: 1; min-width: 80px;">
-                    <label style="font-size: 11px; color: #8d8d99; display: block; margin-bottom: 4px;">Минута</label>
-                    <input type="text" id="quickTime" value="${s.current_time || ''}" placeholder="12:09" style="width: 100%; padding: 6px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; color: white; font-size: 13px; outline: none;">
+                <div class="form-group" style="flex: 1; margin: 0; display: flex; flex-direction: column;">
+                    <label style="font-size: 11px; color: #8d8d99; margin-bottom: 6px;">Минута позора</label>
+                    <input type="text" id="quickTime" value="${s.current_time || ''}" placeholder="34:12" style="padding: 8px; background-color: #121214; border: 1px solid #29292e; border-radius: 6px; color: white; font-size: 14px; outline: none; width: 100%; box-sizing: border-box;">
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button onclick="document.getElementById('quickProgressBlock').style.display = 'none'" style="padding: 6px 12px; background-color: #29292e; color: #8d8d99; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Отмена</button>
-                <button onclick="saveQuickProgress(${s.id})" style="padding: 6px 12px; background-color: #06B6D4; color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Сохранить</button>
+            <div class="form-buttons" style="display: flex; justify-content: flex-end; gap: 10px; margin: 0;">
+                <button class="action-btn cancel-btn" onclick="document.getElementById('quickProgressBlock').style.display = 'none'" style="padding: 8px 14px; background-color: #29292e; color: #8d8d99; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">Забей</button>
+                <button class="action-btn save-btn" onclick="saveQuickProgress(${s.id})" style="padding: 8px 14px; background-color: #06B6D4; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">Сохранить</button>
             </div>
         </div>
 
-        <!-- СПОЙЛЕР ОПИСАНИЯ НА ВСЮ ШИРИНУ ПОД ПРОГРЕССОМ -->
+        <!-- СПОЙЛЕР ОПИСАНИЯ -->
         <div class="custom-desc-spoiler" onclick="toggleDetailsSpoiler(this)">
             <div class="spoiler-header-trigger" style="display: flex; align-items: center; gap: 8px; color: #06B6D4; font-size: 13px; font-weight: 600; user-select: none; cursor: pointer; padding-bottom: 8px; border-bottom: 1px dashed #29292e;">
                 <span>Описание</span>
@@ -1933,6 +1933,19 @@ function showSeriesDetails(id) {
         };
     }
 }
+
+// 7. Функция-триггер: открывает и закрывает окошко по клику на статус
+function toggleQuickProgressBlock() {
+    const block = document.getElementById('quickProgressBlock');
+    if (!block) return;
+    
+    if (block.style.display === 'none' || block.style.display === '') {
+        block.style.display = 'block';
+    } else {
+        block.style.display = 'none';
+    }
+}
+
 
 
 
@@ -1977,7 +1990,6 @@ async function saveQuickProgress(id) {
         "Content-Type": "application/json" 
     };
     
-    // Вытаскиваем значения из мини-инпутов быстрой правки
     const seasonVal = parseInt(document.getElementById('quickSeason').value, 10) || 1;
     const episodeVal = parseInt(document.getElementById('quickEpisode').value, 10) || 1;
     const timeVal = document.getElementById('quickTime').value.trim();
@@ -1988,7 +2000,6 @@ async function saveQuickProgress(id) {
         current_time: timeVal || null
     };
 
-    // Отправляем точечное обновление в таблицу сериал
     const response = await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, { 
         method: "PATCH", 
         headers: headers, 
@@ -1996,8 +2007,12 @@ async function saveQuickProgress(id) {
     });
 
     if (response.ok) {
-        await loadData(); // Перезагружаем массивы в фоне, чтобы обновился и прогресс-бар на карточках
-        showSeriesDetails(id); // Моментально перерисовываем экран деталей с новыми цифрами!
+        // Скрываем окошко быстрой правки с экрана
+        const block = document.getElementById('quickProgressBlock');
+        if (block) block.style.display = 'none';
+        
+        await loadData(); // Качаем чистые данные из базы
+        showSeriesDetails(id); // Обновляем экран новыми цифрами
     } else {
         alert("Ошибка быстрого обновления серий!");
     }
