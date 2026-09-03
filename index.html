@@ -12,7 +12,7 @@
     <!-- ЭКРАН АВТОРИЗАЦИИ (Показывается до входа) -->
     <div id="authPage" class="auth-container">
         <div class="auth-card">
-            <h2 id="authTitle">Хьюстон, у нас проблемы</h2>
+            <h2 id="authTitle">Войти в профиль</h2>
             <div class="form-group">
                 <label>Email</label>
                 <input type="email" id="authEmail" placeholder="example@mail.com">
@@ -22,7 +22,7 @@
                 <input type="password" id="authPassword" placeholder="Минимум 6 символов">
             </div>
             <button class="action-btn save-btn" style="width:100%; margin-top:10px;" id="authPrimaryBtn" onclick="handleAuth()">Войти</button>
-            <span class="auth-toggle" onclick="toggleAuthMode()">Время не жалко? Регайся</span>
+            <span class="auth-toggle" onclick="toggleAuthMode()">Нет аккаунта? Зарегистрироваться</span>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
         <!-- 1. ГЛАВНАЯ СТРАНИЦА (ХАБ ТЕПЕРЬ ИЗ 4-Х КВАДРАТОВ) -->
         <div id="homePage" class="page active">
             <div class="page-fixed-header">
-                <h1>Шняга шняжная</h1>
+                <h1>Главная</h1>
                 <button class="logout-btn" onclick="logout()">
                     <img src="exit.png" alt="Выйти" class="header-icon-img">
                 </button>
@@ -44,19 +44,19 @@
                 <!-- 1. Избранное (Верхний левый) -->
                 <div class="hub-tile-card" onclick="switchPage('favoritesPage', 'Избранное')">
                     <img src="favorites.png" alt="Избранное" class="hub-tile-icon">
-                    <span class="hub-tile-title">Ништяки</span>
+                    <span class="hub-tile-title">Любимое</span>
                 </div>
 
                 <!-- 2. Фильмы по частям (Верхний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
                     <img src="playlist.png" alt="Части" class="hub-tile-icon">
-                    <span class="hub-tile-title">Главное - семья</span>
+                    <span class="hub-tile-title">Фильмы по частям</span>
                 </div>
 
                 <!-- 3. Рекомендации к просмотру (Нижний левый) -->
                 <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
                     <img src="rec.png" alt="Рекомендации" class="hub-tile-icon">
-                    <span class="hub-tile-title">Полка пыли</span>
+                    <span class="hub-tile-title">Рекомендации к просмотру</span>
                 </div>
 
                 <!-- 4. Жанры (Нижний правый) -->
@@ -72,7 +72,7 @@
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ -->
         <div id="allMoviesPage" class="page">
             <div class="page-fixed-header">
-                <h1>Убитое время</h1>
+                <h1>Фильмы</h1>
                 <div style="display:flex; gap:15px; align-items:center;">
                     <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
                         <img src="add.png" alt="Добавить" class="header-icon-img">
@@ -88,7 +88,7 @@
         <!-- НОВАЯ 3. СТРАНИЦА ВСЕХ СЕРИАЛОВ -->
         <div id="allSeriesPage" class="page">
             <div class="page-fixed-header">
-                <h1>Походу не спим</h1>
+                <h1>Сериалы</h1>
                 <div style="display:flex; gap:15px; align-items:center;">
                     <!-- Для сериалов откроем отдельную модалку, которую сделаем в след. шаге -->
                     <button class="add-movie-btn" id="headerSeriesPlusBtn" onclick="openSeriesModal()">
@@ -105,7 +105,7 @@
             <!-- 4. СТРАНИЦА ИЗБРАННОГО -->
         <div id="favoritesPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
-                <h1 class="page-fixed-header-title">Ништяки</h1>
+                <h1 class="page-fixed-header-title">Любимое</h1>
                 <div class="fav-tabs-container">
                     <div class="fav-tab movie active" id="favTabMovie" onclick="switchFavTab('movie')">Фильмы</div>
                     <div class="fav-tab series" id="favTabSeries" onclick="switchFavTab('series')">Сериалы</div>
@@ -123,7 +123,7 @@
         <!-- 5. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
         <div id="moviePartsPage" class="page">
             <div class="page-fixed-header">
-                <h1>Главное - семья</h1>
+                <h1>Фильмы по частям</h1>
                 <div></div>
             </div>
             <div class="collections-grid" id="collectionsGrid"></div>
@@ -132,10 +132,10 @@
         <!-- 6. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
         <div id="recommendationsPage" class="page">
             <div class="page-fixed-header">
-                <h1>Полка пыли</h1>
+                <h1>Рекомендации</h1>
                 <div></div>
             </div>
-            <button class="add-rec-btn" onclick="openRecModal()">Новый слой пыли</button>
+            <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
             <ul class="rec-list" id="recList"></ul>
         </div>
 
@@ -181,11 +181,11 @@
                 <img src="home.png" alt="Главная" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
-            <button class="nav-item" id="navAllMovies" onclick="switchPage('allMoviesPage', 'Все фильмы')">
+            <button class="nav-item" id="navAllMovies" onclick="switchPage('allMoviesPage', 'Фильмы')">
                 <img src="film.png" alt="Все фильмы" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
-            <button class="nav-item" id="navAllSeries" onclick="switchPage('allSeriesPage', 'Все сериалы')">
+            <button class="nav-item" id="navAllSeries" onclick="switchPage('allSeriesPage', 'Сериалы')">
                 <img src="serial.png" alt="Все сериалы" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
@@ -198,14 +198,14 @@
     <!-- МОДАЛКА: ДОБАВИТЬ/РЕДАКТИРОВАТЬ ФИЛЬМ -->
     <div class="modal" id="addMovieModal">
         <div class="modal-content">
-            <h3 id="modalHeadline">Чё за кинчик?</h3>
+            <h3 id="modalHeadline">Новый фильм</h3>
             <input type="hidden" id="formMovieId">
             <div class="form-group">
-                <label>Сюдааа, чиназес *</label>
+                <label>Название</label>
                 <input type="text" id="formTitle" required>
             </div>
             <div class="form-group">
-                <label>Эпоха?</label>
+                <label>Год</label>
                 <input type="number" id="formYear">
             </div>
        <!-- РАСКРЫВАЮЩИЙСЯ СПОЙЛЕР ЖАНРОВ ФИЛЬМА -->
@@ -222,30 +222,30 @@
             </div>
 
             <div class="form-group">
-                <label>Годно не?</label>
+                <label>Оценка</label>
                 <div class="rating-stars" id="formRatingStars">
                     <span onclick="setFormRating(1)">★</span><span onclick="setFormRating(2)">★</span><span onclick="setFormRating(3)">★</span><span onclick="setFormRating(4)">★</span><span onclick="setFormRating(5)">★</span>
                 </div>
             </div>
             <div class="form-group">
-                <label>Фейсконтроль</label>
+                <label>Ссылка на постер</label>
                 <input type="text" id="formPoster">
             </div>
             <div class="form-group">
-                <label>В чём сила, брат?</label>
+                <label>Описание</label>
                 <textarea id="formDesc" rows="3"></textarea>
             </div>
             <!-- ОБНОВЛЕННАЯ СТРОКА ФРАНШИЗЫ (Чистый HTML) -->
             <div class="form-group">
                 <div class="movie-franchise-row" id="franchiseRowToggle" onclick="document.getElementById('formHasCollection').click();">
-                    <span class="franchise-label">Семья?)</span>
+                    <span class="franchise-label">Франшиза?</span>
                     <input type="checkbox" id="formHasCollection" onchange="toggleCollectionField(this.checked); toggleFranchiseRowStyle(this.checked)" onclick="event.stopPropagation();">
                 </div>
             </div>
 
             <!-- СКРЫВАЕМОЕ ПОЛЕ НАЗВАНИЯ ФРАНШИЗЫ (Чистый HTML) -->
             <div class="form-group" id="movieCollectionBlock" style="display: none;">
-                <label class="movie-collection-label">Вин Дизель одобрит:</label>
+                <label class="movie-collection-label">Название:</label>
                 <input type="text" id="formCollection" placeholder="Например: Гарри Поттер">
             </div>
 
@@ -288,17 +288,17 @@
     <!-- МОДАЛЬНОЕ ОКНО: ДОБАВИТЬ В РЕКОМЕНДАЦИИ -->
     <div class="modal" id="recModal">
         <div class="modal-content">
-            <h3 id="recModalHeadline">Новый слой пыли</h3>
+            <h3 id="recModalHeadline">Новая рекомендация</h3>
             <input type="hidden" id="editRecId">
             
             <div class="form-group">
-                <label>О, новая пыль</label>
+                <label>Название</label>
                 <input type="text" id="recInput" placeholder="Что ты услышала...">
             </div>
             
             <!-- Выбор тега (выбрать можно только один) -->
             <div class="form-group">
-                <label>Убиваем время или не спим?</label>
+                <label>Категория</label>
                 <div class="rec-type-selector">
                     <div class="rec-type-pill movie active" id="typeMovie" onclick="selectRecType('movie')">Фильм</div>
                     <div class="rec-type-pill series" id="typeSeries" onclick="selectRecType('series')">Сериал</div>
@@ -341,17 +341,17 @@
             <input type="hidden" id="formSeriesId">
             
             <div class="form-group">
-                <label>О, чинааазес</label>
+                <label>Название</label>
                 <input type="text" id="formSeriesTitle" placeholder="Введите название...">
             </div>
             
             <div class="form-row" style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;">
-                    <label>Год болота?</label>
+                    <label>Год</label>
                     <input type="number" id="formSeriesYear" placeholder="2026">
                 </div>
                 <div class="form-group" style="flex: 1;">
-                    <label>Масштаб катастрофы</label>
+                    <label>Сколько сезонов</label>
                     <input type="number" id="formSeriesSeasonsTotal" placeholder="0">
                 </div>
             </div>
@@ -371,7 +371,7 @@
 
             <!-- РЕЙТИНГ ЗВЕЗДАМИ -->
             <div class="form-group">
-                <label>Годно не?</label>
+                <label>Оценка</label>
                 <div class="form-rating-stars" id="seriesFormStars" style="font-size: 24px; color: #4a4a4a; cursor: pointer; gap: 5px; display: flex;">
                     <!-- Звездочки сгенерируются через JS -->
                 </div>
@@ -380,10 +380,10 @@
 
             <!--ОВАЛЬНЫЕ ПЛАШКИ СТАТУСА БЕЗ СМАЙЛИКОВ -->
             <div class="form-group">
-                <label>Катастрофу пережили?</label>
+                <label>Статус просмотра</label>
                 <div class="series-status-tabs" style="display: flex; gap: 15px; margin-top: 5px;">
-                    <div class="series-status-tab" id="statusTabFinished" onclick="toggleSeriesStatus(true)" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">R.I.P.</div>
-                    <div class="series-status-tab" id="statusTabWatching" onclick="toggleSeriesStatus(false)" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">Еще не R.I.P.</div>
+                    <div class="series-status-tab" id="statusTabFinished" onclick="toggleSeriesStatus(true)" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">Просмотрено</div>
+                    <div class="series-status-tab" id="statusTabWatching" onclick="toggleSeriesStatus(false)" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #29292e; background: #1e1e22; color: #8d8d99; transition: all 0.2s;">В процессе</div>
                 </div>
                 <input type="hidden" id="formSeriesIsFinished" value="true"> <!-- По умолчанию ставим true -->
             </div>
@@ -391,7 +391,7 @@
             <!-- ИСПРАВЛЕННЫЙ БЛОК КОНТРОЛЯ ПРОСМОТРА -->
             <div id="seriesWatchingProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed #29292e;">
                 <!-- Убрали капс и увеличили отступ снизу до 14px -->
-                <label style="display: block; font-size: 12px; color: #06B6D4; font-weight: 600; margin-bottom: 14px;">Здесь мы уснули:</label>
+                <label style="display: block; font-size: 12px; color: #06B6D4; font-weight: 600; margin-bottom: 14px;">Где остановились:</label>
                 <div class="form-row" style="display: flex; gap: 10px;">
                     <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Сезон</label><input type="number" id="formSeriesCurrentSeason" placeholder="1" style="padding: 8px;"></div>
                     <div class="form-group" style="flex: 1; margin: 0;"><label style="font-size: 11px; color: #8d8d99;">Серия</label><input type="number" id="formSeriesCurrentEpisode" placeholder="1" style="padding: 8px;"></div>
@@ -401,12 +401,12 @@
 
 
             <div class="form-group">
-                <label>Фейсконтроль</label>
+                <label>Ссылка на постер</label>
                 <input type="text" id="formSeriesPoster" placeholder="https://...">
             </div>
             
             <div class="form-group">
-                <label>Суть болота</label>
+                <label>Описание</label>
                 <textarea id="formSeriesDesc" rows="3" placeholder="Пару слов о сюжете..."></textarea>
             </div>
 
