@@ -2111,7 +2111,7 @@ let currentFilterType = 'movie';
 let movieSortDirection = 'desc'; // По умолчанию ВСЕГДА desc (недавно добавленные)
 let seriesSortDirection = 'desc';
 
-// 1. Открытие шторки
+// 1. ПОЛНЫЙ КОД ОТКРЫТИЯ ШТОРКИ С АВТО-ГЕНЕРАЦИЕЙ ПРОКРУТКИ ЛЕТ
 function openFilterDrawer(type) {
     currentFilterType = type;
     document.getElementById('filterOverlay').style.display = 'flex';
@@ -2124,6 +2124,39 @@ function openFilterDrawer(type) {
     
     document.getElementById('drawerTitle').textContent = type === 'series' ? 'Фильтры сериалов' : 'Фильтры фильмов';
     
+    // --- ДИНАМИЧЕСКАЯ ГЕНЕРАЦИЯ ГОДОВ ДЛЯ ПРОКРУТКИ ---
+    const minSelect = document.getElementById('filterYearMin');
+    const maxSelect = document.getElementById('filterYearMax');
+    
+    if (minSelect && maxSelect) {
+        // Запоминаем, что выбрал пользователь до этого, чтобы не сбрасывать при открытии
+        const savedMin = minSelect.value;
+        const savedMax = maxSelect.value;
+        
+        // Зачищаем старые опции, оставляя только дефолтные "От" и "До"
+        minSelect.innerHTML = '<option value="0">От</option>';
+        maxSelect.innerHTML = '<option value="0">До</option>';
+        
+        // Генерируем диапазон лет от текущего года (2026) вниз до 1950
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 1950; year--) {
+            const optMin = document.createElement('option');
+            optMin.value = year;
+            optMin.textContent = year;
+            minSelect.appendChild(optMin);
+            
+            const optMax = document.createElement('option');
+            optMax.value = year;
+            optMax.textContent = year;
+            maxSelect.appendChild(optMax);
+        }
+        
+        // Восстанавливаем то, что было выбрано
+        minSelect.value = savedMin;
+        maxSelect.value = savedMax;
+    }
+    // --------------------------------------------------
+
     // Генерируем галочки жанров в шторке строго по твоему круглому стилю сериалов
     const container = document.getElementById('drawerGenresContainer');
     if (container && genres) {
@@ -2146,14 +2179,14 @@ function closeFilterDrawer() {
     document.body.style.overflow = '';
 }
 
-// 3. Сброс фильтров
+// 2. ПОЛНЫЙ КОД СБРОСА ФИЛЬТРОВ С УЧЕТОМ НОВЫХ СПИСКОВ ЛЕТ
 function resetFilters() {
-    document.getElementById('filterYearMin').value = '';
-    document.getElementById('filterYearMax').value = '';
+    // Сбрасываем выпадающие списки лет в значение "0"
+    document.getElementById('filterYearMin').value = '0';
+    document.getElementById('filterYearMax').value = '0';
     document.getElementById('filterRating').value = '0';
     if(document.getElementById('filterStatus')) document.getElementById('filterStatus').value = 'all';
     
-    // Принудительно возвращаем стрелочки сортировки в дефолтное состояние "недавно добавленные"
     movieSortDirection = 'desc';
     seriesSortDirection = 'desc';
     
@@ -2165,7 +2198,6 @@ function resetFilters() {
     document.getElementById('movieSearchInput').value = '';
     document.getElementById('seriesSearchInput').value = '';
     
-    // Перекачиваем и принудительно выстраиваем по дате добавления
     loadData();
     closeFilterDrawer();
 }
@@ -2225,8 +2257,12 @@ function toggleSort(type) {
 
 // 7. ИСПРАВЛЕННЫЙ УЛЬТИМАТИВНЫЙ ДВИЖОК ФИЛЬТРАЦИИ И КНОПКА ПРИМЕНИТЬ
 function applyFilters() {
-    const minYear = parseInt(document.getElementById('filterYearMin').value, 10) || null;
-    const maxYear = parseInt(document.getElementById('filterYearMax').value, 10) || null;
+    // Считываем значения из select. Если выбрано "0" (От/До) — ставим null
+    const minYearVal = document.getElementById('filterYearMin').value;
+    const maxYearVal = document.getElementById('filterYearMax').value;
+    
+    const minYear = minYearVal !== '0' ? parseInt(minYearVal, 10) : null;
+    const maxYear = maxYearVal !== '0' ? parseInt(maxYearVal, 10) : null;
     const targetRating = parseInt(document.getElementById('filterRating').value, 10) || 0;
     
     // Сбор жанров по правильному сериальному классу кружков
