@@ -1835,24 +1835,26 @@ function showSeriesDetails(id) {
 
     const defaultPoster = 'https://unsplash.com';
 
-    // 5. ОДНОСТРОЧНЫЙ ПРОГРЕСС ПОД ПОСТЕРОМ
+    // 5. ОДНОСТРОЧНЫР ПРОГРЕСС ПОД ПОСТЕРОМ
     let progressInfoHtml = '';
-    // Гибкая проверка статуса просмотра (и для текста, и для булевых значений)
     if (s.is_finished === false || s.is_finished === 'false' || !s.is_finished) {
         const season = s.current_season || 1;
         const episode = s.current_episode || 1;
-        const timeText = s.current_time && s.current_time.trim() !== '' ? `, минута - ${s.current_time.trim()}` : '';
+        const timeText = s.current_time && s.current_time.trim() !== '' ? `, минута — ${s.current_time.trim()}` : '';
         
         progressInfoHtml = `
-            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; padding: 8px 10px; font-size: 13px; color: #e1e1e6;">
-                🍿 сезон - ${season}, серия - ${episode}${timeText}
+            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; padding: 8px 10px; font-size: 13px; color: #e1e1e6; margin-bottom: 25px;">
+                🍿 сезон — ${season}, серия — ${episode}${timeText}
             </div>
         `;
     }
 
-    // 6. ГЕНЕРИРУЕМ КОНТЕНТ
+    // 6. ГЕНЕРИРУЕМ КОНТЕНТ (Добавили жесткий margin-bottom для разделения слоев)
     const c = document.getElementById('detailsContainer'); 
     c.className = 'details-container' + (s.favorite ? ' is-fav' : '');
+    
+    // ХИТРОСТЬ: Если прогресса нет (просмотрено), даем нижний отступ флексу, чтобы описание не липло
+    const flexBottomMargin = (s.is_finished === true || s.is_finished === 'true') ? 'margin-bottom: 25px;' : 'margin-bottom: 0;';
     
     c.innerHTML = `
         <!-- ВЕРХНИЙ РЯД: Название и Сердечко -->
@@ -1864,9 +1866,9 @@ function showSeriesDetails(id) {
         </div>
 
         <!-- ОСНОВНОЙ БЛОК -->
-        <div class="details-flex" style="display: flex; gap: 20px; width: 100%;">
+        <div class="details-flex" style="display: flex; gap: 20px; width: 100%; ${flexBottomMargin}">
             
-            <!-- Левая колонка: Постер и ТРИГГЕР-СТАТУС (открывает и закрывает) -->
+            <!-- Левая колонка -->
             <div class="details-left-column" style="display: flex; flex-direction: column; gap: 12px; width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${s.poster || defaultPoster}" alt="${s.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
                 
@@ -1888,8 +1890,8 @@ function showSeriesDetails(id) {
         <!-- ОДНОСТРОЧНЫЙ ПРОГРЕСС -->
         ${progressInfoHtml}
 
-        <!-- ВОЗВРАЩЕНО МЕНЮ ИЗ МОДАЛКИ: СЕРЫЙ ПУНКТИР, АККУРАТНЫЕ ПОЛЯ -->
-        <div id="quickProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px; border: 1px dashed #29292e; width: 100%; box-sizing: border-box;">
+        <!-- МЕНЮ БЫСТРОЙ ПРАВКИ -->
+        <div id="quickProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 25px; border: 1px dashed #29292e; width: 100%; box-sizing: border-box;">
             <label style="display: block; font-size: 12px; color: #06B6D4; font-weight: 600; margin-bottom: 14px;">Где остановились:</label>
             
             <div class="form-row" style="display: flex; gap: 10px; margin-bottom: 15px;">
@@ -1914,7 +1916,7 @@ function showSeriesDetails(id) {
         </div>
 
         <!-- СПОЙЛЕР ОПИСАНИЯ -->
-        <div class="custom-desc-spoiler" onclick="toggleDetailsSpoiler(this)">
+        <div class="custom-desc-spoiler" onclick="toggleDetailsSpoiler(this)" style="margin-top: 0;">
             <div class="spoiler-header-trigger" style="display: flex; align-items: center; gap: 8px; color: #06B6D4; font-size: 13px; font-weight: 600; user-select: none; cursor: pointer; padding-bottom: 8px; border-bottom: 1px dashed #29292e;">
                 <span>Описание</span>
                 <span class="desc-arrow-icon" style="font-size: 10px; color: #8d8d99; transition: transform 0.2s;">▼</span>
@@ -1933,6 +1935,7 @@ function showSeriesDetails(id) {
         };
     }
 }
+
 
 // 7. Функция-триггер: открывает и закрывает окошко по клику на статус
 function toggleQuickProgressBlock() {
