@@ -82,6 +82,19 @@
                     </button>
                 </div>
             </div>
+            <!-- СТРОКА ПОИСКА, ФИЛЬТР И СОРТИРОВКА ДЛЯ ФИЛЬМОВ -->
+<div class="search-filter-row movies-search-row">
+    <input type="text" id="movieSearchInput" oninput="filterMovies()" placeholder="Поиск фильма...">
+    
+    <button class="filter-icon-btn" onclick="openFilterDrawer('movie')">
+        <img src="settings.png" alt="Фильтры">
+    </button>
+
+    <button id="movieSortBtn" class="sort-icon-btn" onclick="toggleSort('movie')">
+        <img id="movieSortImg" src="sort2.png" alt="Сортировка">
+    </button>
+</div>
+
             <div class="movies-grid" id="moviesGrid"></div>
         </div>
 
@@ -99,6 +112,19 @@
                     </button>
                 </div>
             </div>
+            <!-- СТРОКА ПОИСКА, ФИЛЬТР И СОРТИРОВКА ДЛЯ СЕРИАЛОВ -->
+<div class="search-filter-row series-search-row">
+    <input type="text" id="seriesSearchInput" oninput="filterSeries()" placeholder="Поиск сериала...">
+    
+    <button class="filter-icon-btn" onclick="openFilterDrawer('series')">
+        <img src="settings.png" alt="Фильтры">
+    </button>
+
+    <button id="seriesSortBtn" class="sort-icon-btn" onclick="toggleSort('series')">
+        <img id="seriesSortImg" src="sort2.png" alt="Сортировка">
+    </button>
+</div>
+
             <div class="movies-grid" id="seriesGrid"></div>
         </div>
 
@@ -421,6 +447,57 @@
             </div>
         </div>
     </div>
+<!-- БОКОВАЯ ПАНЕЛЬ ФИЛЬТРОВ -->
+<div id="filterOverlay" class="filter-overlay" onclick="closeFilterDrawer()">
+    <div class="filter-drawer" onclick="event.stopPropagation()">
+        <div class="drawer-header">
+            <h3 id="drawerTitle">Фильтры</h3>
+            <span class="drawer-close-x" onclick="closeFilterDrawer()">✕</span>
+        </div>
+
+        <div class="form-group">
+            <label>Год выпуска</label>
+            <div class="drawer-year-inputs">
+                <input type="number" id="filterYearMin" placeholder="От">
+                <span class="drawer-dash">-</span>
+                <input type="number" id="filterYearMax" placeholder="До">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Минимальный рейтинг</label>
+            <select id="filterRating">
+                <option value="0">Любой рейтинг</option>
+                <option value="1">★☆☆☆☆ и выше</option>
+                <option value="2">★★☆☆☆ и выше</option>
+                <option value="3">★★★☆☆ и выше</option>
+                <option value="4">★★★★☆ и выше</option>
+                <option value="5">★★★★★</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="drawerStatusBlock">
+            <label>Статус просмотра</label>
+            <select id="filterStatus">
+                <option value="all">Все статусы</option>
+                <option value="watching">В процессе</option>
+                <option value="finished">Просмотрено</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Жанры</label>
+            <div class="genres-checkboxes custom-scroll" id="drawerGenresContainer">
+                <!-- Сюда JS вставит галочки -->
+            </div>
+        </div>
+
+        <div class="drawer-buttons-row">
+            <button class="action-btn cancel-btn" onclick="resetFilters()">Сбросить</button>
+            <button class="action-btn save-btn" onclick="applyFilters()">Применить</button>
+        </div>
+    </div>
+</div>
 
 
 
