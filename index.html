@@ -841,7 +841,6 @@ function openModal(editId = null) {
            
     function closeModal() { 
         document.getElementById('addMovieModal').classList.remove('active'); 
-    document.body.style.overflow = ''; // Возвращаем скролл сайту обратно
     }
            
     async function deleteMovieFromForm() { 
@@ -1453,7 +1452,6 @@ function openSeriesModal(editId = null) {
 
 function closeSeriesModal() {
     document.getElementById('addSeriesModal').classList.remove('active');
-    document.body.style.overflow = ''; // Возвращаем скролл сайту обратно
 }
 
 // --- ИНТЕРАКТИВНОЕ ПЕРЕКЛЮЧЕНИЕ ПЛАШЕК СТАТУСА ---
