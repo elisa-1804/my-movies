@@ -1841,7 +1841,7 @@ function showSeriesDetails(id) {
     if (s.is_finished === false || s.is_finished === 'false') {
         progressInfo = `
             <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content;">
-                🍿 Остановка: Сезон ${s.current_season || 1}, Серия ${s.current_episode || 1} ${s.current_time ? `(${s.current_time})` : ''}
+                🍿 Остановка:  ${s.current_season || 1}/  ${s.current_episode || 1} ${s.current_time ? `(${s.current_time})` : ''}
             </div>
         `;
     } else {
