@@ -1488,11 +1488,13 @@ function updateSeriesGenresCheckboxes() {
     
     container.innerHTML = '';
     
+    if (!genres || genres.length === 0) return;
+    
     genres.forEach(function(g) {
         const label = document.createElement('label');
-        // Сериалы тоже используют твой родной класс для кружков и галочек!
         label.className = 'genre-checkbox-item'; 
         
+        // ЖЕЛЕЗОБЕТОННЫЙ ФИКС: Добавили value="${g}"
         label.innerHTML = `
             <input type="checkbox" class="series-genre-checkbox" value="${g}">
             <span>${g}</span>
@@ -1500,6 +1502,7 @@ function updateSeriesGenresCheckboxes() {
         container.appendChild(label);
     });
 }
+
 
 
 // --- ОЦЕНКА ЗВЕЗДАМИ В ОКНЕ СЕРИАЛОВ ---
@@ -1642,33 +1645,29 @@ async function saveSeries() {
         "Content-Type": "application/json" 
     };
     
-    // Считываем текстовые и числовые поля из модалки
     const posterValue = document.getElementById('formSeriesPoster').value.trim();
     const descValue = document.getElementById('formSeriesDesc').value.trim();
     const yearValue = document.getElementById('formSeriesYear').value.trim();
     const seasonsTotalValue = document.getElementById('formSeriesSeasonsTotal').value.trim();
     
-    // Блок контроля просмотра («Где остановились»)
     const currentSeasonValue = document.getElementById('formSeriesCurrentSeason').value.trim();
     const currentEpisodeValue = document.getElementById('formSeriesCurrentEpisode').value.trim();
     const currentTimeValue = document.getElementById('formSeriesCurrentTime').value.trim();
     
-    // Статус просмотра (true/false) и рейтинг
     const isFinishedValue = document.getElementById('formSeriesIsFinished').value === 'true';
     const ratingValue = parseInt(document.getElementById('formSeriesRating').value, 10) || 0;
 
-    // ИСПРАВЛЕННЫЙ СБОР ЖАНРОВ: Ищем строго сериальные чекбоксы
+    // Сбор выбранных жанров по правильному классу
     const selectedGenres = [];
     document.querySelectorAll('.series-genre-checkbox:checked').forEach(cb => {
-        selectedGenres.push(cb.value);
+        selectedGenres.push(cb.value); // Теперь тут улетит нормальный текст жанра, а не "on"!
     });
 
-    // Формируем чистый объект для базы данных Supabase
     const sData = {
         title: title,
         year: yearValue ? parseInt(yearValue, 10) : null,
         seasons_total: seasonsTotalValue ? parseInt(seasonsTotalValue, 10) : null,
-        genre: selectedGenres.length > 0 ? selectedGenres : null, // Улетает чистым массивом, как у фильмов!
+        genre: selectedGenres.length > 0 ? selectedGenres : null, 
         rating: ratingValue,
         is_finished: isFinishedValue,
         current_season: !isFinishedValue && currentSeasonValue ? parseInt(currentSeasonValue, 10) : null,
@@ -1681,17 +1680,15 @@ async function saveSeries() {
 
     let response;
     if (id) {
-        // Обновляем старый сериал
         response = await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(sData) });
     } else {
-        // Создаем новый сериал
         sData.favorite = false;
         response = await fetch(SUPABASE_URL + "/rest/v1/series", { method: "POST", headers: headers, body: JSON.stringify(sData) });
     }
 
     if (response.ok) {
         closeSeriesModal();
-        await loadData(); // Перезагружаем массивы из облака
+        await loadData(); 
         if (typeof renderSeriesGrid === 'function') {
             renderSeriesGrid('seriesGrid', series);
         }
@@ -1701,6 +1698,7 @@ async function saveSeries() {
         alert("Ошибка сохранения сериала: " + errorText);
     }
 }
+
 
 
 // 3. Функция удаления сериала напрямую из модального окна
