@@ -1490,7 +1490,6 @@ function toggleFranchiseRowStyle(isChecked) {
 function renderSeriesGrid() {
     const grid = document.getElementById('seriesGrid');
     if (!grid) return;
-    
     grid.innerHTML = '';
     
     if (series.length === 0) {
@@ -1500,17 +1499,22 @@ function renderSeriesGrid() {
     
     series.forEach(s => {
         const card = document.createElement('div');
-        // Поддерживаем твой класс избранного, если сериал в любимых
         card.className = 'movie-card' + (s.favorite ? ' is-fav' : '');
         
-        // При клике открываем модалку редактирования (как у тебя задумано в HTML)
-        card.onclick = function() { openSeriesModal(s.id); };
+        // Клик теперь открывает страницу "О сериале" (функцию создадим ниже)
+        card.onclick = function() { showSeriesDetails(s.id); };
         
-        // Формируем мета-данные: Год, Жанры и Сезоны
-        const genresText = Array.isArray(s.genre) ? s.genre.join(', ') : (s.genre || 'Общий');
+        // ТОЧЕЧНЫЙ ФИКС ЖАНРОВ ДЛЯ СЕРИАЛОВ:
+        let genresText = 'Общий';
+        if (Array.isArray(s.genre)) {
+            genresText = s.genre.join(', ');
+        } else if (typeof s.genre === 'string') {
+            // Если пришла строка со скобками ["Драма","Комедия"], вычищаем её начисто
+            genresText = s.genre.replace(/[\[\]"]/g, '').split(',').join(', ');
+        }
+
         const seasonsText = s.seasons_total ? ` • Сезонов: ${s.seasons_total}` : '';
         
-        // Добавляем индикатор «В процессе», чтобы сразу видеть, где остановились
         let progressBadge = '';
         if (s.is_finished === false || s.is_finished === 'false') {
             const currentSeason = s.current_season || 1;
@@ -1531,6 +1535,7 @@ function renderSeriesGrid() {
         grid.appendChild(card);
     });
 }
+
 
 // 2. Функция сохранения сериала (Сбор полей модалки и отправка в REST таблицу /series)
 async function saveSeries() {
@@ -1625,6 +1630,103 @@ async function deleteSeriesFromModal() {
             alert("Ошибка при удалении сериала из базы данных!");
         }
     }
+}
+function showSeriesDetails(id) {
+    const s = series.find(x => x.id == id); 
+    if(!s) return; 
+    
+    // Запоминаем страницу, с которой пришли
+    const currentActivePage = document.querySelector('.page.active');
+    if (currentActivePage && currentActivePage.id === 'favoritesPage') {
+        previousPageId = 'favoritesPage';
+        previousPageTitle = 'Избранное';
+    } else {
+        previousPageId = 'allSeriesPage';
+        previousPageTitle = 'Все сериалы';
+    }
+
+    // Открываем экран деталей и пишем в шапке "О сериале"
+    switchPage('detailsPage', 'О сериале'); 
+    document.getElementById('detailsFixedTitle').textContent = "О сериале";
+
+    // Настраиваем карандаш шапки, чтобы он открывал модалку СЕРИАЛА
+    const editBtn = document.getElementById('movieEditBtn');
+    if (editBtn) {
+        editBtn.onclick = function() { openSeriesModal(s.id); };
+    }
+
+    // Чистим жанры для вывода на странице деталей
+    let genresText = '—';
+    if (Array.isArray(s.genre)) {
+        genresText = s.genre.join(', ');
+    } else if (typeof s.genre === 'string') {
+        genresText = s.genre.replace(/[\[\]"]/g, '').split(',').join(', ');
+    }
+
+    const c = document.getElementById('detailsContainer'); 
+    c.className = 'details-container' + (s.favorite ? ' is-fav' : '');
+    
+    // Блок прогресса серий
+    let progressInfo = '';
+    if (s.is_finished === false || s.is_finished === 'false') {
+        progressInfo = `
+            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content;">
+                🍿 Остановка: Сезон ${s.current_season || 1}, Серия ${s.current_episode || 1} ${s.current_time ? `(${s.current_time})` : ''}
+            </div>
+        `;
+    } else {
+        progressInfo = `<div class="details-tag">✅ Просмотрено полностью</div>`;
+    }
+
+    c.innerHTML = `
+        <div class="details-flex">
+            <img class="details-poster" src="${s.poster || defaultPoster}" alt="${s.title}">
+            <div class="details-content" style="position: relative; padding-right: 45px;">
+                
+                <!-- Кнопка лайка (функцию лайка добавим следом) -->
+                <button class="heart-btn" onclick="toggleSeriesFav(${s.id})">
+                    <img src="favorites.png" class="heart-icon-img" alt="Избранное">
+                </button>
+
+                <h2 class="details-title" style="margin-top: 0; margin-bottom: 12px; padding-right: 10px;">${s.title}</h2>
+                
+                <div class="details-tag">📅 ${s.year || '—'}</div>
+                <div class="details-tag">🎭 ${genresText}</div>
+                <div class="details-tag">📺 Сезонов: ${s.seasons_total || '—'}</div>
+                <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(s.rating || 0)}</strong></div>
+                
+                ${progressInfo}
+                <p class="details-desc">${s.desc || 'Описание отсутствует.'}</p>
+            </div>
+        </div>
+    `;
+
+    // Корректный возврат назад по кнопке из шапки
+    const backBtn = document.querySelector('#detailsPage .back-icon-btn');
+    if (backBtn) {
+        backBtn.onclick = function() {
+            closeSeriesModal(); 
+            switchPage(previousPageId, previousPageTitle);
+        };
+    }
+}
+
+// Функция лайка/избранного для сериалов, чтобы сердечко работало
+async function toggleSeriesFav(id) { 
+    const s = series.find(function(x) { return x.id == id; }); 
+    if(s) { 
+        const t = localStorage.getItem("sb_token");
+        const nextState = !s.favorite;
+        
+        await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, {
+            method: "PATCH",
+            headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" },
+            body: JSON.stringify({ favorite: nextState })
+        });
+        
+        await loadData(); 
+        showSeriesDetails(id); 
+    } 
 }
            
 
