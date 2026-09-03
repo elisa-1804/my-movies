@@ -1348,13 +1348,13 @@ function renderSeriesGridInContainer(containerId, list) {
         const seasonsText = s.seasons_total ? ` • Сезонов: ${s.seasons_total}` : '';
         
         let progressHtml = '';
-        if ((s.is_finished === false || s.is_finished === 'false') && s.seasons_total > 0) {
+        if ((s.is_finished === false || s.is_finished === 'false' || !s.is_finished) && s.seasons_total > 0) {
             let percent = Math.round((parseInt(s.current_season, 10) / parseInt(s.seasons_total, 10)) * 100);
             if (percent > 100) percent = 100;
             if (percent < 5) percent = 5;
             
             progressHtml = `
-                <div class="card-progress-container" style="margin-top: 8px; width: 100%; position: relative;">
+                <div class="card-progress-container" style="margin-top: 10px; width: 100%; position: relative; padding-top: 2px;">
                     <div class="card-progress-track" style="width: 100%; height: 4px; background-color: #29292e; border-radius: 2px; position: relative;">
                         <div class="card-progress-fill" style="width: ${percent}%; height: 100%; background-color: #06B6D4; border-radius: 2px; position: absolute; top: 0; left: 0;"></div>
                         <div class="card-progress-dot" style="width: 8px; height: 8px; background-color: #22d3ee; border-radius: 50%; position: absolute; top: -2px; left: calc(${percent}% - 4px); box-shadow: 0 0 6px #06B6D4;"></div>
@@ -1363,25 +1363,30 @@ function renderSeriesGridInContainer(containerId, list) {
             `;
         } else if (s.is_finished === true || s.is_finished === 'true') {
             progressHtml = `
-                <div class="card-progress-container" style="margin-top: 8px; width: 100%;">
+                <div class="card-progress-container" style="margin-top: 10px; width: 100%;">
                     <div style="width: 100%; height: 4px; background-color: rgba(74, 222, 128, 0.4); border-radius: 2px;"></div>
                 </div>
             `;
         }
         
+        const heartVisibility = (s.favorite === true || s.favorite === 'true') ? 'display: block;' : 'display: none;';
+        
         card.innerHTML = `
             <img class="movie-poster" src="${s.poster || defaultPoster}">
-            <img src="favorites.png" class="card-heart-img">
             <div class="movie-info">
                 <div class="movie-title">${s.title}</div>
                 <div class="movie-meta">${s.year || '—'} • ${genresText}${seasonsText}</div>
-                <div class="card-stars">${getStarsHtml(s.rating || 0)}</div>
+                <div class="rating-heart-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 14px;">
+                    <div class="card-stars" style="font-size: 11px; color: #fba94c;">${getStarsHtml(s.rating || 0)}</div>
+                    <img src="favorites.png" alt="Избранное" style="${heartVisibility} width: 14px; height: 14px; object-fit: contain; margin: 0; padding: 0; filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%);">
+                </div>
                 ${progressHtml}
             </div>
         `;
         grid.appendChild(card);
     });
 }
+
 
 
 
@@ -1642,7 +1647,7 @@ function renderSeriesGrid(gridId, list) {
         card.className = 'movie-card' + (s.favorite ? ' is-fav' : '');
         card.onclick = function() { showSeriesDetails(s.id); };
         
-        // Форматируем жанры
+        // Форматируем жанры без мусора
         let genresText = 'Общий';
         if (Array.isArray(s.genre)) {
             genresText = s.genre.join(', ');
@@ -1652,59 +1657,57 @@ function renderSeriesGrid(gridId, list) {
 
         const seasonsText = s.seasons_total ? ` • Сезонов: ${s.seasons_total}` : '';
         
-        // РАСЧЁТ И ИНТЕГРАЦИЯ УМНОГО ПРОГРЕСС-БАРА
+        // РАСЧЁТ ПРОГРЕСС-БАРА
         let progressHtml = '';
-        
-        // Показываем полоску только если сериал "В процессе" и у него есть сезоны
-        if ((s.is_finished === false || s.is_finished === 'false') && s.seasons_total > 0) {
+        if ((s.is_finished === false || s.is_finished === 'false' || !s.is_finished) && s.seasons_total > 0) {
             const totalSeasons = parseInt(s.seasons_total, 10);
             const currentSeason = parseInt(s.current_season, 10) || 1;
-            const currentEpisode = parseInt(s.current_episode, 10) || 1;
-            
-            // Грубый, но надёжный расчёт прогресса для карточки: 
-            // (Текущий сезон / Всего сезонов) * 100
             let percent = Math.round((currentSeason / totalSeasons) * 100);
             
-            // Страховка границ от 0% до 100%
             if (percent > 100) percent = 100;
-            if (percent < 5) percent = 5; // Минимальная длина, чтобы точку было видно в самом начале
+            if (percent < 5) percent = 5;
             
             progressHtml = `
-                <div class="card-progress-container" style="margin-top: 8px; width: 100%; position: relative;">
-                    <!-- Серая (остаточная) часть линии -->
+                <div class="card-progress-container" style="margin-top: 10px; width: 100%; position: relative; padding-top: 2px;">
                     <div class="card-progress-track" style="width: 100%; height: 4px; background-color: #29292e; border-radius: 2px; position: relative;">
-                        
-                        <!-- Акцентная голубая часть прогресса -->
                         <div class="card-progress-fill" style="width: ${percent}%; height: 100%; background-color: #06B6D4; border-radius: 2px; position: absolute; top: 0; left: 0;"></div>
-                        
-                        <!-- Светящаяся точка на конце голубой линии -->
                         <div class="card-progress-dot" style="width: 8px; height: 8px; background-color: #22d3ee; border-radius: 50%; position: absolute; top: -2px; left: calc(${percent}% - 4px); box-shadow: 0 0 6px #06B6D4;"></div>
-                    
                     </div>
                 </div>
             `;
         } else if (s.is_finished === true || s.is_finished === 'true') {
-            // Если сериал полностью просмотрен, можно вывести полную аккуратную полоску без точки
             progressHtml = `
-                <div class="card-progress-container" style="margin-top: 8px; width: 100%;">
+                <div class="card-progress-container" style="margin-top: 10px; width: 100%;">
                     <div style="width: 100%; height: 4px; background-color: rgba(74, 222, 128, 0.4); border-radius: 2px;"></div>
                 </div>
             `;
         }
         
+        // УПРАВЛЕНИЕ ОТОБРАЖЕНИЕМ МИНИ-СЕРДЕЧКА НА СТРОКЕ РЕЙТИНГА
+        // Если сериал в избранном — показываем его, если нет — прячем (или делаем полупрозрачным)
+        const heartVisibility = (s.favorite === true || s.favorite === 'true') ? 'display: block;' : 'display: none;';
+        
         card.innerHTML = `
             <img class="movie-poster" src="${s.poster || defaultPoster}">
-            <img src="favorites.png" class="card-heart-img">
             <div class="movie-info">
                 <div class="movie-title">${s.title}</div>
                 <div class="movie-meta">${s.year || '—'} • ${genresText}${seasonsText}</div>
-                <div class="card-stars">${getStarsHtml(s.rating || 0)}</div>
+                
+                <!-- СТРОКА РЕЙТИНГА: Звёздочки слева, Сердечко Избранного справа -->
+                <div class="rating-heart-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 14px;">
+                    <div class="card-stars" style="font-size: 11px; color: #fba94c;">${getStarsHtml(s.rating || 0)}</div>
+                    
+                    <img src="favorites.png" alt="Избранное" style="${heartVisibility} width: 14px; height: 14px; object-fit: contain; margin: 0; padding: 0; filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%);">
+                </div>
+                
+                <!-- Полоса прогресса идёт строго в самом низу инфо-блока -->
                 ${progressHtml}
             </div>
         `;
         grid.appendChild(card);
     });
 }
+
 
 
 
