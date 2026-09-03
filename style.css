@@ -235,14 +235,15 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     position: fixed; 
     top: 0; left: 0; right: 0; bottom: 0; 
     background-color: rgba(0,0,0,0.85); 
-    
-    /* ИСПРАВЛЕНИЕ: Подняли выше фиксированной шапки (было 200, стало 2000) */
-    z-index: 2000 !important; 
-    
+    z-index: 2000; 
     align-items: center; 
     justify-content: center; 
     padding: 20px; 
+    
+    /* ФИКС: Запрещаем прокрутке «пробивать» модалку и двигать задний фон */
+    overscroll-behavior: contain; 
 }
+
 .modal.active { display: flex; }
 .modal-content { 
     background-color: #202024; 
@@ -252,12 +253,16 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     max-width: 400px; 
     border: 1px solid #29292e; 
     
-    /* НАСТРОЙКИ ПРОКРУТКИ: */
-    max-height: 85vh;          /* Окно никогда не займет больше 85% высоты экрана */
-    overflow-y: auto;          /* Включает вертикальный скролл, если контент не влезает */
-    display: flex;             /* Помогает элементам внутри распределяться правильно */
+    max-height: 85vh;          
+    overflow-y: auto;          
+    display: flex;             
     flex-direction: column;
+    
+    /* ФИКС: Включаем плавный мобильный скролл и изолируем его внутри окна */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
 }
+
 /* Красивая тонкая прокрутка для окна, списка жанров и описания */
 .modal-content::-webkit-scrollbar,
 .genres-checkbox-list::-webkit-scrollbar,
@@ -306,8 +311,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     gap: 10px; 
     margin-top: 20px; 
     width: 100%; 
-    justify-content: flex-end; /* Кнопки красиво прижмутся к правому краю */
+    justify-content: flex-end; 
+    
+    /* ФИКС: Запрещаем кнопкам уменьшаться или прятаться при нехватке высоты */
+    flex-shrink: 0; 
 }
+
 
 /* Список жанров в модальном окне */
 .genres-checkbox-list {
