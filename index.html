@@ -1805,7 +1805,7 @@ function showSeriesDetails(id) {
     const s = series.find(x => x.id == id); 
     if(!s) return; 
     
-    // 1. ЗАПОМИНАЕМ ИСТОРИЮ: проверяем, с какого экрана мы пришли
+    // 1. ЗАПОМИНАЕМ ИСТОРИЮ
     const currentActivePage = document.querySelector('.page.active');
     if (currentActivePage && currentActivePage.id === 'favoritesPage') {
         previousPageId = 'favoritesPage';
@@ -1815,17 +1815,17 @@ function showSeriesDetails(id) {
         previousPageTitle = 'Все сериалы';
     }
 
-    // 2. Переключаем экран на страницу деталей и меняем текст в фиксированной шапке
+    // 2. Переключаем экран на страницу деталей
     switchPage('detailsPage', 'О сериале'); 
     document.getElementById('detailsFixedTitle').textContent = "О сериале";
 
-    // 3. Настраиваем кнопку карандаша редактирования, чтобы она открывала МОДАЛКУ СЕРИАЛА
+    // 3. Настраиваем кнопку карандаша редактирования (полная модалка)
     const editBtn = document.getElementById('movieEditBtn');
     if (editBtn) {
         editBtn.onclick = function() { openSeriesModal(s.id); };
     }
 
-    // 4. Очищаем и форматируем жанры без кавычек и скобок
+    // 4. Очищаем и форматируем жанры
     let genresText = '—';
     if (Array.isArray(s.genre)) {
         genresText = s.genre.join(', ');
@@ -1835,64 +1835,85 @@ function showSeriesDetails(id) {
 
     const defaultPoster = 'https://unsplash.com';
 
-    // 5. ВЕРНУЛИ РАЗВЁРНУТЫЙ ФОРМАТ ПРОГРЕССА (Строго построчно через тире)
-    let progressInfo = '';
+    // 5. ФОРМИРУЕМ ОДНОСТРОЧНЫЙ ПРОГРЕСС
+    let progressInfoHtml = '';
     if (s.is_finished === false || s.is_finished === 'false') {
         const season = s.current_season || 1;
         const episode = s.current_episode || 1;
-        const timeHtml = s.current_time && s.current_time.trim() !== '' 
-            ? `<div style="margin-bottom: 4px;">минута - ${s.current_time.trim()}</div>` 
-            : '';
+        const timeText = s.current_time && s.current_time.trim() !== '' ? `, минута — ${s.current_time.trim()}` : '';
         
-        progressInfo = `
-            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content; padding: 10px 14px; line-height: 1.4; font-size: 13px; color: #e1e1e6;">
-                <div style="margin-bottom: 4px;">сезон - ${season}</div>
-                <div style="margin-bottom: 4px;">серия - ${episode}</div>
-                ${timeHtml}
+        progressInfoHtml = `
+            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #06B6D4; color: #22d3ee; display: block; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; padding: 8px 10px; font-size: 13px;">
+                🍿 сезон — ${season}, серия — ${episode}${timeText}
             </div>
         `;
     }
 
-    // 6. ГЕНЕРИРУЕМ КОНТЕНТ (Симметричный дизайн)
+    // 6. ГЕНЕРИРУЕМ КОНТЕНТ В КАРТОЧКУ
     const c = document.getElementById('detailsContainer'); 
     c.className = 'details-container' + (s.favorite ? ' is-fav' : '');
     
     c.innerHTML = `
-        <!-- ВЕРХНИЙ РЯД: Название слева, Сердечко справа -->
+        <!-- ВЕРХНИЙ РЯД: Название и Сердечко -->
         <div class="details-main-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; width: 100%;">
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${s.title}</h2>
-            
             <button class="heart-btn" onclick="toggleSeriesFav(${s.id})" style="position: static; width: 36px; height: 36px; flex-shrink: 0;">
                 <img src="favorites.png" class="heart-icon-img" alt="Избранное">
             </button>
         </div>
 
         <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
-        <div class="details-flex" style="display: flex; gap: 20px; width: 100%; margin-bottom: 20px;">
+        <div class="details-flex" style="display: flex; gap: 20px; width: 100%;">
             
-            <!-- Левая колонка: Постер и овальный тег статуса строго под ним -->
+            <!-- Левая колонка: Постер и КЛИКАБЕЛЬНЫЙ СТАТУС -->
             <div class="details-left-column" style="display: flex; flex-direction: column; gap: 12px; width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${s.poster || defaultPoster}" alt="${s.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
                 
+                <!-- Статус просмотра по клику открывает форму быстрой правки -->
                 ${s.is_finished === true || s.is_finished === 'true' 
                     ? `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; width: 100%; box-sizing: border-box; user-select: none;">Просмотрено</div>`
-                    : `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box; user-select: none;">В процессе</div>`
+                    : `<div class="series-status-tab active" onclick="document.getElementById('quickProgressBlock').style.display = 'block'" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box; user-select: none; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(251, 146, 60, 0.2)'" onmouseout="this.style.backgroundColor='rgba(251, 146, 60, 0.12)'">В процессе ✏️</div>`
                 }
             </div>
             
-            <!-- Правая колонка: Данные (Год, Жанр, Сезоны, Рейтинг, Прогресс) -->
+            <!-- Правая колонка: Данные (Год, Жанр, Сезоны, Рейтинг) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${s.year || '—'}</div>
                 <div class="details-tag">🎭 ${genresText}</div>
                 <div class="details-tag">📺 Сезонов: ${s.seasons_total || '—'}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(s.rating || 0)}</strong></div>
-                
-                <!-- Подробный прогресс просмотра -->
-                ${progressInfo}
             </div>
         </div>
 
-        <!-- СПОЙЛЕР ОПИСАНИЯ НА ВСЮ ШИРИНУ ПОД ПОСТЕРОМ -->
+        <!-- ОДНОСТРОЧНЫЙ ПРОГРЕСС ПОД ПОСТЕРОМ -->
+        ${progressInfoHtml}
+
+        <!-- МИНИ-ОКНО ДЛЯ БЫСТРОГО ИЗМЕНЕНИЯ ПРОГРЕССА (ПО УМОЛЧАНИЮ СКРЫТО) -->
+        <div id="quickProgressBlock" style="display: none; background-color: #1a1a1e; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px dashed #29292e; width: 100%; box-sizing: border-box;">
+            <div style="font-size: 12px; color: #06B6D4; font-weight: 600; margin-bottom: 12px;">Быстрая правка серий:</div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 60px;">
+                    <label style="font-size: 11px; color: #8d8d99; display: block; margin-bottom: 4px;">Сезон</label>
+                    <input type="number" id="quickSeason" value="${s.current_season || 1}" style="width: 100%; padding: 6px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; color: white; font-size: 13px; outline: none;">
+                </div>
+                <div style="flex: 1; min-width: 60px;">
+                    <label style="font-size: 11px; color: #8d8d99; display: block; margin-bottom: 4px;">Серия</label>
+                    <input type="number" id="quickEpisode" value="${s.current_episode || 1}" style="width: 100%; padding: 6px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; color: white; font-size: 13px; outline: none;">
+                </div>
+                <div style="flex: 1; min-width: 80px;">
+                    <label style="font-size: 11px; color: #8d8d99; display: block; margin-bottom: 4px;">Минута</label>
+                    <input type="text" id="quickTime" value="${s.current_time || ''}" placeholder="12:09" style="width: 100%; padding: 6px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; color: white; font-size: 13px; outline: none;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button onclick="document.getElementById('quickProgressBlock').style.display = 'none'" style="padding: 6px 12px; background-color: #29292e; color: #8d8d99; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Отмена</button>
+                <button onclick="saveQuickProgress(${s.id})" style="padding: 6px 12px; background-color: #06B6D4; color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">Сохранить</button>
+            </div>
+        </div>
+
+        <!-- СПОЙЛЕР ОПИСАНИЯ НА ВСЮ ШИРИНУ ПОД ПРОГРЕССОМ -->
         <div class="custom-desc-spoiler" onclick="toggleDetailsSpoiler(this)">
             <div class="spoiler-header-trigger" style="display: flex; align-items: center; gap: 8px; color: #06B6D4; font-size: 13px; font-weight: 600; user-select: none; cursor: pointer; padding-bottom: 8px; border-bottom: 1px dashed #29292e;">
                 <span>Описание</span>
@@ -1904,7 +1925,6 @@ function showSeriesDetails(id) {
         </div>
     `;
 
-    // 7. Обновляем кнопку "Назад" в шапке
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
@@ -1913,6 +1933,7 @@ function showSeriesDetails(id) {
         };
     }
 }
+
 
 
 
@@ -1948,6 +1969,39 @@ function toggleDetailsSpoiler(container) {
     }
 }
            
+async function saveQuickProgress(id) {
+    const t = localStorage.getItem("sb_token");
+    const headers = { 
+        "apikey": SUPABASE_KEY, 
+        "Authorization": "Bearer " + t, 
+        "Content-Type": "application/json" 
+    };
+    
+    // Вытаскиваем значения из мини-инпутов быстрой правки
+    const seasonVal = parseInt(document.getElementById('quickSeason').value, 10) || 1;
+    const episodeVal = parseInt(document.getElementById('quickEpisode').value, 10) || 1;
+    const timeVal = document.getElementById('quickTime').value.trim();
+
+    const progressData = {
+        current_season: seasonVal,
+        current_episode: episodeVal,
+        current_time: timeVal || null
+    };
+
+    // Отправляем точечное обновление в таблицу сериал
+    const response = await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, { 
+        method: "PATCH", 
+        headers: headers, 
+        body: JSON.stringify(progressData) 
+    });
+
+    if (response.ok) {
+        await loadData(); // Перезагружаем массивы в фоне, чтобы обновился и прогресс-бар на карточках
+        showSeriesDetails(id); // Моментально перерисовываем экран деталей с новыми цифрами!
+    } else {
+        alert("Ошибка быстрого обновления серий!");
+    }
+}
 
     checkUser();
 
