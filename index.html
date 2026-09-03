@@ -506,28 +506,29 @@ async function loadData() {
     const t = localStorage.getItem("sb_token");
     const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t };
 
-    // 1. Напрямую скачиваем жанры из облака
     const gResponse = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers });
     const gData = gResponse.ok ? await gResponse.json() : [];
     genres = gData ? gData.map(function(g) { return g.name; }) : [];
     
-    // 2. Напрямую скачиваем фильмы из облака
     const mResponse = await fetch(SUPABASE_URL + "/rest/v1/movies?select=*", { method: "GET", headers });
     movies = mResponse.ok ? await mResponse.json() : [];
 
-    // 3. Напрямую скачиваем сериалы из твоей новой таблицы
     const sResponse = await fetch(SUPABASE_URL + "/rest/v1/series?select=*", { method: "GET", headers });
     series = sResponse.ok ? await sResponse.json() : [];
 
-    // 4. Запускаем рендеры и обновления интерфейса
-    renderSeriesGrid('seriesGrid', series);
-    renderMoviesGrid('moviesGrid', movies); 
-    updateGenreSelect();
-    await loadRecommendations();
-    
-    // ЖЕЛЕЗОБЕТОННЫЙ ФИКС: Принудительно отрисовываем Избранное сразу, как только данные загрузились!
-    renderFavGrid();
+    // ВЫВОД В КОНСОЛЬ ПРИ СКАЧИВАНИИ: смотрим, что реально вернула база
+    console.log("=== ДАННЫЕ СКАЧАНЫ ИЗ ОБЛАКА ===");
+    console.log("Все доступные жанры приложения:", genres);
+    console.log("Все фильмы из базы:", movies);
+    console.log("Все сериалы из базы (проверь тут поле genre):", series);
+
+    if (typeof renderMoviesGrid === 'function') renderMoviesGrid('moviesGrid', movies); 
+    if (typeof updateGenreSelect === 'function') updateGenreSelect();
+    if (typeof loadRecommendations === 'function') await loadRecommendations();
+    if (typeof renderSeriesGrid === 'function') renderSeriesGrid('seriesGrid', series);
+    if (typeof renderFavGrid === 'function') renderFavGrid();
 }
+
 
 function switchPage(pageId, titleText) {
     // 1. Снимаем активный класс (скрываем) со ВСЕХ страниц приложения
@@ -1657,10 +1658,10 @@ async function saveSeries() {
     const isFinishedValue = document.getElementById('formSeriesIsFinished').value === 'true';
     const ratingValue = parseInt(document.getElementById('formSeriesRating').value, 10) || 0;
 
-    // Сбор выбранных жанров по правильному классу
+    // Собираем жанры
     const selectedGenres = [];
     document.querySelectorAll('.series-genre-checkbox:checked').forEach(cb => {
-        selectedGenres.push(cb.value); // Теперь тут улетит нормальный текст жанра, а не "on"!
+        selectedGenres.push(cb.value);
     });
 
     const sData = {
@@ -1678,6 +1679,12 @@ async function saveSeries() {
         user_id: currentUser.id
     };
 
+    // ВЫВОД В КОНСОЛЬ ПЕРЕД ОТПРАВКОЙ: смотрим, что реально улетает в JS
+    console.log("=== ДАННЫЕ ДЛЯ ОТПРАВКИ В SUPABASE ===");
+    console.log("ID сериала:", id);
+    console.log("Собранные жанры:", selectedGenres);
+    console.log("Итоговый объект данных:", sData);
+
     let response;
     if (id) {
         response = await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(sData) });
@@ -1687,6 +1694,7 @@ async function saveSeries() {
     }
 
     if (response.ok) {
+        console.log("=== УСПЕШНО СОХРАНЕНО В БАЗУ НА СЕРВЕРЕ ===");
         closeSeriesModal();
         await loadData(); 
         if (typeof renderSeriesGrid === 'function') {
@@ -1695,9 +1703,13 @@ async function saveSeries() {
         switchPage('allSeriesPage', 'Сериалы');
     } else {
         const errorText = await response.text();
+        console.error("=== ОШИБКА ОТ СЕРВЕРА SUPABASE ===");
+        console.error("Статус ответа:", response.status);
+        console.error("Текст ошибки базы:", errorText);
         alert("Ошибка сохранения сериала: " + errorText);
     }
 }
+
 
 
 
