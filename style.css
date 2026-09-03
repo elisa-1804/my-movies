@@ -1511,7 +1511,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 .movies-search-row,
 .series-search-row {
-    margin-top: 85px; /* Сдвиг под фиксированную шапку */
+    margin-top: 85px;
 }
 
 .search-filter-row input[type="text"] {
@@ -1529,7 +1529,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     border-color: #06B6D4;
 }
 
-/* Иконки-кнопки */
+/* Кнопки-иконки БЕЗ ВРАЩЕНИЯ (мгновенная смена вида) */
 .filter-icon-btn,
 .sort-icon-btn {
     background: none;
@@ -1540,10 +1540,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-}
-
-.sort-icon-btn {
-    transition: transform 0.4s ease; /* Красивое плавное перекручивание */
 }
 
 .filter-icon-btn img,
@@ -1565,7 +1561,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 .filter-drawer {
-    background-color: #1a1a1e; /* Темнее основного фона сайта */
+    background-color: #1a1a1e;
     width: 60%;
     max-width: 320px;
     height: 100%;
@@ -1616,6 +1612,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     color: #8d8d99;
 }
 
+/* ИСПРАВЛЕННЫЙ КОНТЕЙНЕР ЖАНРОВ ШТОРКИ */
 #drawerGenresContainer {
     max-height: 180px;
     overflow-y: auto;
@@ -1624,6 +1621,67 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     border-radius: 6px;
     border: 1px solid #29292e;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ПРИВЯЗЫВАЕМ СТИЛЬ КРУГЛЫХ ЧЕКБОКСОВ ШТОРКИ К ТВОЕМУ ИДЕАЛЬНОМУ СТАНДАРТУ */
+#drawerGenresContainer .genre-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: #e1e1e6;
+    cursor: pointer;
+    padding: 4px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Превращаем инпут внутри шторки в такой же круг 22px */
+#drawerGenresContainer input.series-genre-checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #29292e;
+    background-color: #121214;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    transition: all 0.2s ease;
+}
+
+/* Включаем голубую заливку при клике в шторке */
+#drawerGenresContainer input.series-genre-checkbox:checked {
+    background-color: #06B6D4;
+    border-color: #06B6D4;
+}
+
+/* Рисуем галочку внутри кружка шторки */
+#drawerGenresContainer input.series-genre-checkbox::after {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 9px;
+    border: solid #121214;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.15s ease;
+}
+
+#drawerGenresContainer input.series-genre-checkbox:checked::after {
+    transform: rotate(45deg) scale(1);
 }
 
 .drawer-buttons-row {
@@ -1639,7 +1697,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-size: 13px;
 }
 
-/* Сброс старых огромных маржинов у сеток */
 #allMoviesPage .movies-grid,
 #allSeriesPage .movies-grid {
     margin-top: 20px !important; 
