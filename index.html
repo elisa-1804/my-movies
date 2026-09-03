@@ -1296,29 +1296,36 @@ function renderFavGrid() {
     const container = document.getElementById('favoritesGrid');
     if (!container) return;
     
-    container.innerHTML = ''; // Очищаем
+    container.innerHTML = ''; // Зачищаем контейнер перед рендером
     
+    // Проверяем, какой таб сейчас активен в Избранном
     if (currentFavTab === 'movie') {
-        const favMovies = movies.filter(m => m.favorite);
+        // Фильтруем фильмы со статусом favorite
+        const favMovies = movies.filter(function(m) { return m.favorite; });
+        
         if (favMovies.length === 0) {
-            container.innerHTML = '<div class="empty-section-message">Нет избранных фильмов 🎬</div>';
-            return;
-        }
-        renderMoviesGrid('favoritesGrid', favMovies);
-    } else {
-        // РЕНДЕР ЛЮБИМЫХ СЕРИАЛОВ:
-        // Фильтруем массив сериал по флагу favorite (поддерживаем оба варианта типов данных)
-        const favSeries = series.filter(s => s.favorite === true || s.favorite === 'true');
-        if (favSeries.length === 0) {
-            container.innerHTML = '<div class="empty-section-message">Нет избранных сериалов 🍿</div>';
+            container.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Нет избранных фильмов 🎬</p>';
             return;
         }
         
-        // Рисуем сериалы в сетку избранного, вызывая родной метод рендера сериалов
-        // Но чтобы renderSeriesGrid умела рисовать в разные контейнеры, мы адаптируем её ниже
-        renderSeriesGridInContainer('favoritesGrid', favSeries);
+        // Вызываем родную функцию рендера фильмов в сетку Избранного
+        renderMoviesGrid('favoritesGrid', favMovies);
+    } else {
+        // ОЖИВЛЯЕМ СЕРИАЛЫ: Фильтруем сериалы со статусом favorite
+        const favSeries = series.filter(function(s) { 
+            return s.favorite === true || s.favorite === 'true'; 
+        });
+        
+        if (favSeries.length === 0) {
+            container.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Нет избранных сериалов 🍿</p>';
+            return;
+        }
+        
+        // Вызываем универсальный рендер сериалов прямо в сетку Избранного!
+        renderSeriesGrid('favoritesGrid', favSeries);
     }
 }
+
 function renderSeriesGridInContainer(containerId, list) {
     const grid = document.getElementById(containerId);
     if (!grid) return;
@@ -1635,7 +1642,7 @@ async function saveSeries() {
         "Content-Type": "application/json" 
     };
     
-    // Считываем значения из текстовых и числовых полей
+    // Считываем текстовые и числовые поля из модалки
     const posterValue = document.getElementById('formSeriesPoster').value.trim();
     const descValue = document.getElementById('formSeriesDesc').value.trim();
     const yearValue = document.getElementById('formSeriesYear').value.trim();
@@ -1646,13 +1653,12 @@ async function saveSeries() {
     const currentEpisodeValue = document.getElementById('formSeriesCurrentEpisode').value.trim();
     const currentTimeValue = document.getElementById('formSeriesCurrentTime').value.trim();
     
-    // Статус просмотра (берем скрытый инпут, куда пишется true/false)
+    // Статус просмотра (true/false) и рейтинг
     const isFinishedValue = document.getElementById('formSeriesIsFinished').value === 'true';
     const ratingValue = parseInt(document.getElementById('formSeriesRating').value, 10) || 0;
 
-    // Сбор выбранных чекбоксов жанров для сериала
-   const selectedGenres = [];
-    // ИСПРАВЛЕНИЕ: Ищем строго сериальные чекбоксы!
+    // ИСПРАВЛЕННЫЙ СБОР ЖАНРОВ: Ищем строго сериальные чекбоксы
+    const selectedGenres = [];
     document.querySelectorAll('.series-genre-checkbox:checked').forEach(cb => {
         selectedGenres.push(cb.value);
     });
@@ -1662,7 +1668,7 @@ async function saveSeries() {
         title: title,
         year: yearValue ? parseInt(yearValue, 10) : null,
         seasons_total: seasonsTotalValue ? parseInt(seasonsTotalValue, 10) : null,
-        genre: selectedGenres.length > 0 ? selectedGenres : null, // ТЕПЕРЬ ЖАНРЫ ПРАВИЛЬНО УЛЕТЯТ В БАЗУ
+        genre: selectedGenres.length > 0 ? selectedGenres : null, // Улетает чистым массивом, как у фильмов!
         rating: ratingValue,
         is_finished: isFinishedValue,
         current_season: !isFinishedValue && currentSeasonValue ? parseInt(currentSeasonValue, 10) : null,
@@ -1672,26 +1678,30 @@ async function saveSeries() {
         desc: descValue || null,
         user_id: currentUser.id
     };
-    
+
     let response;
     if (id) {
         // Обновляем старый сериал
         response = await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(sData) });
     } else {
         // Создаем новый сериал
-        sData.favorite = false; // По умолчанию не в избранном
+        sData.favorite = false;
         response = await fetch(SUPABASE_URL + "/rest/v1/series", { method: "POST", headers: headers, body: JSON.stringify(sData) });
     }
 
     if (response.ok) {
         closeSeriesModal();
-        await loadData(); // Перезагружаем массивы из базы (внутри вызовется и renderSeriesGrid)
+        await loadData(); // Перезагружаем массивы из облака
+        if (typeof renderSeriesGrid === 'function') {
+            renderSeriesGrid('seriesGrid', series);
+        }
         switchPage('allSeriesPage', 'Сериалы');
     } else {
         const errorText = await response.text();
         alert("Ошибка сохранения сериала: " + errorText);
     }
 }
+
 
 // 3. Функция удаления сериала напрямую из модального окна
 async function deleteSeriesFromModal() {
