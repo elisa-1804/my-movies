@@ -1727,7 +1727,9 @@ function showSeriesDetails(id) {
                     </div>
                 ` : ''}
                 
-                <p class="details-desc" style="margin-top: 15px; line-height: 1.5; color: #c4c4cc;">${s.desc || 'Описание отсутствует.'}</p>
+<div class="details-desc-spoiler" onclick="this.classList.toggle('open')">
+    <p class="details-desc">${s.desc || 'Описание отсутствует.'}</p>
+</div>
             </div>
         </div>
     `;
