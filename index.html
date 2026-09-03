@@ -921,26 +921,27 @@ function showDetails(id) {
 
 
 
-    async function toggleFav(id) { 
-        const m = movies.find(function(x) { return x.id == id; }); 
-        if(m) { 
-            const t = localStorage.getItem("sb_token");
-            const nextState = !m.favorite;
-            
-            await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, {
-                method: "PATCH",
-                headers: { 
-                    "apikey": SUPABASE_KEY, 
-                    "Authorization": "Bearer " + t, 
-                    "Content-Type": "application/json" 
-                },
-                body: JSON.stringify({ favorite: nextState })
-            });
-            
-            await loadData(); 
-            showDetails(id); 
-        } 
-    }
+ async function toggleFav(id) { 
+    const m = movies.find(x => x.id == id); 
+    if(m) {
+        const t = localStorage.getItem("sb_token");
+        m.favorite = !m.favorite; // Меняем состояние локально сразу
+        
+        // Моментально переключаем стили контейнера на экране без перезагрузки
+        const c = document.getElementById('detailsContainer');
+        if (c) c.classList.toggle('is-fav', m.favorite);
+        
+        // Отправляем в базу
+        await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, {
+            method: "PATCH",
+            headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" },
+            body: JSON.stringify({ favorite: m.favorite })
+        });
+        
+        await loadData(); // Обновляем массивы в фоне
+    } 
+}
+
 
     // --- РАЗДЕЛ: РЕКОМЕНДАЦИИ К ПРОСМОТРУ ---
     
@@ -1267,23 +1268,63 @@ function renderFavGrid() {
     const container = document.getElementById('favoritesGrid');
     if (!container) return;
     
-    container.innerHTML = ''; // Полностью зачищаем перед рендером
+    container.innerHTML = ''; // Очищаем
     
     if (currentFavTab === 'movie') {
-        // Фильтруем фильмы со статусом favorite
-        const favMovies = movies.filter(function(m) { return m.favorite; });
-        
+        const favMovies = movies.filter(m => m.favorite);
         if (favMovies.length === 0) {
             container.innerHTML = '<div class="empty-section-message">Нет избранных фильмов 🎬</div>';
             return;
         }
-        
-        // Вызываем твою оригинальную функцию рендера grid
         renderMoviesGrid('favoritesGrid', favMovies);
     } else {
-        container.innerHTML = '<div class="empty-section-message">Тут будут твои избранные сериалы! 🍿</div>';
+        // РЕНДЕР ЛЮБИМЫХ СЕРИАЛОВ:
+        // Фильтруем массив сериал по флагу favorite (поддерживаем оба варианта типов данных)
+        const favSeries = series.filter(s => s.favorite === true || s.favorite === 'true');
+        if (favSeries.length === 0) {
+            container.innerHTML = '<div class="empty-section-message">Нет избранных сериалов 🍿</div>';
+            return;
+        }
+        
+        // Рисуем сериалы в сетку избранного, вызывая родной метод рендера сериалов
+        // Но чтобы renderSeriesGrid умела рисовать в разные контейнеры, мы адаптируем её ниже
+        renderSeriesGridInContainer('favoritesGrid', favSeries);
     }
 }
+function renderSeriesGridInContainer(containerId, list) {
+    const grid = document.getElementById(containerId);
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    list.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'movie-card' + (s.favorite ? ' is-fav' : '');
+        card.onclick = function() { showSeriesDetails(s.id); };
+        
+        let genresText = 'Общий';
+        if (Array.isArray(s.genre)) { genresText = s.genre.join(', '); }
+        else if (typeof s.genre === 'string') { genresText = s.genre.replace(/[\[\]"]/g, '').split(',').join(', '); }
+        const seasonsText = s.seasons_total ? ` • Сезонов: ${s.seasons_total}` : '';
+        
+        let progressBadge = '';
+        if (s.is_finished === false || s.is_finished === 'false') {
+            progressBadge = `<div style="font-size: 10px; color: #06B6D4; margin-top: 2px; font-weight: 600;">🍿 С1:${s.current_season || 1} Ср:${s.current_episode || 1}</div>`;
+        }
+        
+        card.innerHTML = `
+            <img class="movie-poster" src="${s.poster || defaultPoster}">
+            <img src="favorites.png" class="card-heart-img">
+            <div class="movie-info">
+                <div class="movie-title">${s.title}</div>
+                <div class="movie-meta">${s.year || '—'} • ${genresText}${seasonsText}</div>
+                <div class="card-stars">${getStarsHtml(s.rating || 0)}</div>
+                ${progressBadge}
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
 
 // --- ФУНКЦИЯ: ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК В ИЗБРАННОМ ---
 function switchFavTab(tabType) {
@@ -1746,19 +1787,21 @@ function showSeriesDetails(id) {
 
 // Функция лайка/избранного для сериалов, чтобы сердечко работало
 async function toggleSeriesFav(id) { 
-    const s = series.find(function(x) { return x.id == id; }); 
+    const s = series.find(x => x.id == id); 
     if(s) { 
         const t = localStorage.getItem("sb_token");
-        const nextState = !s.favorite;
+        s.favorite = !s.favorite; // Меняем состояние локально сразу
+        
+        const c = document.getElementById('detailsContainer');
+        if (c) c.classList.toggle('is-fav', s.favorite);
         
         await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, {
             method: "PATCH",
             headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t, "Content-Type": "application/json" },
-            body: JSON.stringify({ favorite: nextState })
+            body: JSON.stringify({ favorite: s.favorite })
         });
         
-        await loadData(); 
-        showSeriesDetails(id); 
+        await loadData(); // Обновляем массивы в фоне
     } 
 }
            
