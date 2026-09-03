@@ -850,6 +850,7 @@ function showDetails(id) {
 
     // 2. Переключаем экран на страницу деталей
     switchPage('detailsPage', 'О фильме'); 
+    document.getElementById('detailsFixedTitle').textContent = "О фильме";
 
     // 3. Настраиваем кнопку карандаша редактирования
     const editBtn = document.getElementById('movieEditBtn');
@@ -857,16 +858,15 @@ function showDetails(id) {
         editBtn.onclick = function() { openModal(m.id); };
     }
 
-    // 4. ГЕНЕРИРУЕМ КОНТЕНТ (Строго под твои оригинальные классы в CSS!)
-    const c = document.getElementById('detailsContainer'); 
-    
-    // Проверяем, чтобы класс контейнера менялся строго под твои стили is-fav
-    c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
-    
+    // 4. Очищаем и форматируем жанры
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-               c.innerHTML = `
+    // 5. ГЕНЕРИРУЕМ КОНТЕНТ (Строго под новые симметричные стили!)
+    const c = document.getElementById('detailsContainer'); 
+    c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
+    
+    c.innerHTML = `
         <!-- ВЕРХНИЙ РЯД: Название слева, Сердечко справа -->
         <div class="details-main-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; width: 100%;">
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${m.title}</h2>
@@ -879,12 +879,9 @@ function showDetails(id) {
         <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
         <div class="details-flex" style="display: flex; gap: 20px; width: 100%;">
             
-            <!-- Левая колонка: Постер и Статус ПОД НИМ -->
-            <div class="details-left-column" style="display: flex; flex-direction: column; gap: 12px; width: 140px; flex-shrink: 0;">
+            <!-- Левая колонка: Только Постер для фильмов (без статуса просмотра) -->
+            <div class="details-left-column" style="width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
-                
-                <!-- Тег статуса для фильмов (фильмы у тебя всегда просмотрены, раз они в базе) -->
-                <div class="series-status-tab active" id="statusTabFinished" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; width: 100%; box-sizing: border-box;">Просмотрено</div>
             </div>
             
             <!-- Правая колонка: Данные (Год, Жанр, Рейтинг, Описание) -->
@@ -900,12 +897,15 @@ function showDetails(id) {
                     </div>
                 ` : ''}
                 
-                <p class="details-desc" style="margin-top: 15px; line-height: 1.5; color: #c4c4cc;">${m.desc || 'Описание отсутствует.'}</p>
+                <!-- Описание в виде интерактивного раскрывающегося спойлера -->
+                <div class="details-desc-spoiler" onclick="this.classList.toggle('open')">
+                    <p class="details-desc">${m.desc || 'Описание отсутствует.'}</p>
+                </div>
             </div>
         </div>
     `;
 
-    // 5. Назначаем клик кнопке "Назад" в кружке и закрываем модалку, если уходим
+    // 6. Назначаем клик кнопке "Назад"
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
@@ -914,6 +914,7 @@ function showDetails(id) {
         };
     }
 }
+
 
 
 
