@@ -384,7 +384,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Элементы внутри карточки */
 .details-flex {
     display: flex; 
-    gap: 0px; 
+    gap: 20px; 
     flex-wrap: wrap; 
     margin-top: 0 !important;
 }
@@ -439,14 +439,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     background: none; 
     border: none; 
     cursor: pointer; 
-    position: absolute; 
-    top: 0; 
-    right: 0; 
     transition: transform 0.2s; 
     outline: none; 
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 /* Эффект пульсации при нажатии */
