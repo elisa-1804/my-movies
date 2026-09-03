@@ -2117,6 +2117,7 @@ function openFilterDrawer(type) {
     document.getElementById('filterOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden'; 
 
+    // ЗАЩИТА: проверяем, существует ли блок статуса, прежде чем менять ему стили
     const statusBlock = document.getElementById('drawerStatusBlock');
     if (statusBlock) {
         statusBlock.style.display = type === 'series' ? 'block' : 'none';
@@ -2124,21 +2125,20 @@ function openFilterDrawer(type) {
     
     document.getElementById('drawerTitle').textContent = type === 'series' ? 'Фильтры сериалов' : 'Фильтры фильмов';
     
-    // --- ДИНАМИЧЕСКАЯ ГЕНЕРАЦИЯ ГОДОВ ДЛЯ ПРОКРУТКИ ---
     const minSelect = document.getElementById('filterYearMin');
     const maxSelect = document.getElementById('filterYearMax');
     
     if (minSelect && maxSelect) {
-        // Запоминаем, что выбрал пользователь до этого, чтобы не сбрасывать при открытии
         const savedMin = minSelect.value;
         const savedMax = maxSelect.value;
         
-        // Зачищаем старые опции, оставляя только дефолтные "От" и "До"
         minSelect.innerHTML = '<option value="0">От</option>';
         maxSelect.innerHTML = '<option value="0">До</option>';
         
-        // Генерируем диапазон лет от текущего года (2026) вниз до 1950
-        const currentYear = new Date().getFullYear();
+        // Автоматически берем текущий год
+        const currentYear = new Date().getFullYear(); 
+        
+        // Генерируем года от текущего вниз до 1950
         for (let year = currentYear; year >= 1950; year--) {
             const optMin = document.createElement('option');
             optMin.value = year;
@@ -2151,13 +2151,11 @@ function openFilterDrawer(type) {
             maxSelect.appendChild(optMax);
         }
         
-        // Восстанавливаем то, что было выбрано
         minSelect.value = savedMin;
         maxSelect.value = savedMax;
     }
-    // --------------------------------------------------
 
-    // Генерируем галочки жанров в шторке строго по твоему круглому стилю сериалов
+    // Рендерим круглые чекбоксы жанров шторки
     const container = document.getElementById('drawerGenresContainer');
     if (container && genres) {
         container.innerHTML = '';
@@ -2172,6 +2170,7 @@ function openFilterDrawer(type) {
         });
     }
 }
+
 
 // 2. Закрытие шторки
 function closeFilterDrawer() {
