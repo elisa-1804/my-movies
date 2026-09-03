@@ -887,29 +887,23 @@ function showDetails(id) {
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-    // 5. ГЕНЕРИРУЕМ КОНТЕНТ (С новой кнопкой перехода к франшизе)
-    const c = document.getElementById('detailsContainer'); 
-    c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
-    
-    // Формируем кнопку перехода, если фильм принадлежит коллекции/франшизе
+    // 5. ФОРМИРУЕМ КНОПКУ ПЕРЕХОДА (Если фильм принадлежит франшизе)
     let franchiseLinkHtml = '';
     if (m.collection && m.collection.trim() !== '') {
-        // Фильтруем все фильмы этой франшизы, чтобы передать их в функцию отрисовки частей
         const collectionName = m.collection.trim();
-        const partsList = movies.filter(x => x.collection && x.collection.trim().toLowerCase() === collectionName.toLowerCase());
-        
-        // Сериализуем список в строку, чтобы безопасно передать в onclick
         franchiseLinkHtml = `
-            <div class="franchise-link-wrapper" style="margin-top: 14px;">
-                <button class="action-btn" onclick="showCollectionDetails('${collectionName.replace(/'/g, "\\'")}', movies.filter(x => x.collection && x.collection.trim().toLowerCase() === '${collectionName.toLowerCase().replace(/'/g, "\\'")}'))" 
-                        style="background-color: transparent; border: 1px solid #06B6D4; color: #22d3ee; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; user-select: none;"
-                        onmouseover="this.style.backgroundColor='rgba(6, 182, 212, 0.1)'" 
-                        onmouseout="this.style.backgroundColor='transparent'">
-                    <span>Смотреть другие части →</span>
-                </button>
-            </div>
+            <button class="action-btn" onclick="showCollectionDetails('${collectionName.replace(/'/g, "\\'")}', movies.filter(x => x.collection && x.collection.trim().toLowerCase() === '${collectionName.toLowerCase().replace(/'/g, "\\'")}'))" 
+                    style="background-color: transparent; border: 1px solid #06B6D4; color: #22d3ee; padding: 6px 0; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; transition: all 0.2s ease; user-select: none; box-sizing: border-box;"
+                    onmouseover="this.style.backgroundColor='rgba(6, 182, 212, 0.1)'" 
+                    onmouseout="this.style.backgroundColor='transparent'">
+                <span>Другие части →</span>
+            </button>
         `;
     }
+    
+    // 6. ГЕНЕРИРУЕМ КОНТЕНТ (Кнопка встает в левую колонку строго под постер)
+    const c = document.getElementById('detailsContainer'); 
+    c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
     
     c.innerHTML = `
         <!-- ВЕРХНИЙ РЯД: Название слева, Сердечко справа -->
@@ -924,19 +918,17 @@ function showDetails(id) {
         <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
         <div class="details-flex" style="display: flex; gap: 20px; width: 100%; margin-bottom: 20px;">
             
-            <!-- Левая колонка: Только Постер для фильмов -->
-            <div class="details-left-column" style="width: 140px; flex-shrink: 0;">
+            <!-- Левая колонка: Постер и кнопка франшизы СТРОГО ПОД НИМ -->
+            <div class="details-left-column" style="display: flex; flex-direction: column; gap: 12px; width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
+                ${franchiseLinkHtml}
             </div>
             
-            <!-- Правая колонка: Данные (Год, Жанр, Рейтинг, Ссылка на франшизу) -->
+            <!-- Правая колонка: Данные (Год, Жанр, Рейтинг) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${m.year || '—'}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(m.rating || 0)}</strong></div>
-                
-                <!-- Вставка интерактивной кнопки франшизы вместо старого пунктира -->
-                ${franchiseLinkHtml}
             </div>
         </div>
 
@@ -952,7 +944,7 @@ function showDetails(id) {
         </div>
     `;
 
-    // 6. Назначаем клик кнопке "Назад"
+    // 7. Назначаем клик кнопке "Назад"
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
@@ -961,12 +953,6 @@ function showDetails(id) {
         };
     }
 }
-
-
-
-
-
-
 
 
  async function toggleFav(id) { 
