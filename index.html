@@ -1651,7 +1651,8 @@ async function saveSeries() {
     const ratingValue = parseInt(document.getElementById('formSeriesRating').value, 10) || 0;
 
     // Сбор выбранных чекбоксов жанров для сериала
-    const selectedGenres = [];
+   const selectedGenres = [];
+    // ИСПРАВЛЕНИЕ: Ищем строго сериальные чекбоксы!
     document.querySelectorAll('.series-genre-checkbox:checked').forEach(cb => {
         selectedGenres.push(cb.value);
     });
@@ -1661,7 +1662,7 @@ async function saveSeries() {
         title: title,
         year: yearValue ? parseInt(yearValue, 10) : null,
         seasons_total: seasonsTotalValue ? parseInt(seasonsTotalValue, 10) : null,
-        genre: selectedGenres.length > 0 ? selectedGenres : null,
+        genre: selectedGenres.length > 0 ? selectedGenres : null, // ТЕПЕРЬ ЖАНРЫ ПРАВИЛЬНО УЛЕТЯТ В БАЗУ
         rating: ratingValue,
         is_finished: isFinishedValue,
         current_season: !isFinishedValue && currentSeasonValue ? parseInt(currentSeasonValue, 10) : null,
@@ -1671,7 +1672,7 @@ async function saveSeries() {
         desc: descValue || null,
         user_id: currentUser.id
     };
-
+    
     let response;
     if (id) {
         // Обновляем старый сериал
