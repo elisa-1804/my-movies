@@ -322,77 +322,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     padding: 10px;
 }
 
-/* Контейнер для строки жанра */
-.genre-checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #e1e1e6;
-    position: relative;
-    user-select: none;
-}
-
-/* Скрываем стандартный системный чекбокс */
-.genre-checkbox-item input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-/* Создаем наш собственный круглый ободок, привязав его к тегу span */
-.genre-checkbox-item span {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.genre-checkbox-item span::before {
-    content: "";
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #29292e; /* Цвет ободка в выключенном состоянии */
-    border-radius: 50%;        /* Идеальный круг */
-    background-color: #121214;
-    transition: background-color 0.2s, border-color 0.2s;
-    flex-shrink: 0;
-}
-
-/* Эффект при наведении (кружок подсвечивается) */
-.genre-checkbox-item:hover span::before {
-    border-color: #06B6D4;
-}
-
-/* КОГДА ЧЕКБОКС АКТИВЕН: красим кружок целиком в акцентный голубой */
-.genre-checkbox-item input[type="checkbox"]:checked + span::before {
-    background-color: #06B6D4;
-    border-color: #06B6D4;
-}
-
-/* Рисуем белую галочку строго по центру активного кружка */
-.genre-checkbox-item span::after {
-    content: "";
-    position: absolute;
-    left: 7px;
-    top: 4px;
-    width: 4px;
-    height: 8px;
-    border: solid #121214; /* Цвет галочки (темный на голубом фоне) */
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg) scale(0); /* Скрыта по умолчанию */
-    transition: transform 0.2s ease;
-}
-
-/* Показываем галочку при активации чекбокса */
-.genre-checkbox-item input[type="checkbox"]:checked + span::after {
-    transform: rotate(45deg) scale(1); /* Плавное появление галочки */
-}
-
-
 
 /* Звездочки и Кнопки */
 .rating-stars { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #29292e; }
@@ -1339,50 +1268,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     transform: rotate(180deg); /* Стрелочка красиво переворачивается вверх ▲ */
 }
 
-/* УВЕЛИЧЕНИЕ ОТСТУПОВ И ШРИФТА ДЛЯ ЖАНРОВ С ТЕЛЕФОНА */
-.genres-checkboxes label {
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;           /* Зазор между чекбоксом и текстом */
-    margin-bottom: 12px !important; /* УВЕЛИЧИЛИ РАССТОЯНИЕ МЕЖДУ СТРОКАМИ */
-    font-size: 15px !important;    /* Сделали шрифт крупнее и читаемее */
-    color: #e1e1e6 !important;
-    cursor: pointer !important;
-    padding: 4px 0 !important;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Кастомный вид чекбоксов сериалов (ОБНОВЛЕНО: сделали крупными 22px!) */
-/* ОБЪЕДИНИЛИ БАЗУ: делаем чекбоксы крупными и красивыми */
-#addSeriesModal .series-genre-checkbox,
-#addMovieModal .movie-genre-checkbox {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 22px; 
-    height: 22px;
-    border: 1px solid #29292e;
-    background-color: #121214;
-    cursor: pointer;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-    box-sizing: border-box;
-    padding: 0;
-}
-
-/* Красим в фирменный голубой цвет при клике */
-#addSeriesModal .series-genre-checkbox:checked,
-#addMovieModal .movie-genre-checkbox:checked {
-    background-color: #06B6D4;
-    border-color: #06B6D4;
-}
-
-
-
 /* ПАСТЕЛЬНАЯ ПОДСВЕТКА ОВАЛЬНЫХ ТЕГОВ СТАТУСА */
 /* "Просмотрено" — пастельно-зелёный */
 .series-status-tab#statusTabFinished.active {
@@ -1484,4 +1369,89 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 #movieCollectionBlock input {
     padding: 8px;
+}
+/* =======================================================
+   ЧИСТЫЙ ИСПРАВЛЕННЫЙ БЛОК ЧЕКБОКСОВ ЖАНРОВ
+   ======================================================= */
+
+/* Строка жанра: выравниваем кружок и текст в один ряд */
+.genres-checkboxes label,
+.genre-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;           /* Зазор между кружком и текстом */
+    margin-bottom: 12px; /* Расстояние между строками для удобства нажатия */
+    font-size: 15px;     /* Читаемый крупный шрифт */
+    color: #e1e1e6;
+    cursor: pointer;
+    padding: 4px 0;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    user-select: none;
+}
+
+/* Сам INPUT превращаем в идеальный круглый кастомный чекбокс */
+.genres-checkboxes input.movie-genre-checkbox,
+.genres-checkboxes input.series-genre-checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px; 
+    height: 22px;
+    border: 2px solid #29292e;
+    background-color: #121214;
+    border-radius: 50%; /* Делаем инпут круглым */
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    transition: all 0.2s ease;
+}
+
+/* Подсветка кружка при наведении на всю строку */
+.genres-checkboxes label:hover input,
+.genre-checkbox-item:hover input {
+    border-color: #06B6D4;
+}
+
+/* Когда чекбокс активен: заливаем круг голубым */
+.genres-checkboxes input.movie-genre-checkbox:checked,
+.genres-checkboxes input.series-genre-checkbox:checked {
+    background-color: #06B6D4;
+    border-color: #06B6D4;
+}
+
+/* Рисуем белую галочку строго внутри самого круглого инпута */
+.genres-checkboxes input.movie-genre-checkbox::after,
+.genres-checkboxes input.series-genre-checkbox::after {
+    content: "";
+    position: absolute;
+    left: 7px;   /* Центрируем внутри 22px */
+    top: 3px;    /* Центрируем внутри 22px */
+    width: 5px;
+    height: 9px;
+    border: solid #121214; /* Темная галочка на голубом фоне */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.15s ease;
+}
+
+/* Проявление галочки строго по центру при клике */
+.genres-checkboxes input.movie-genre-checkbox:checked::after,
+.genres-checkboxes input.series-genre-checkbox:checked::after {
+    transform: rotate(45deg) scale(1);
+}
+
+/* Текст жанра (тег span): сбрасываем старые флекс-эффекты */
+.genres-checkboxes label span,
+.genre-checkbox-item span {
+    display: inline-block;
+    line-height: 22px; /* Выравниваем по высоте кружка */
+    margin: 0;
+    padding: 0;
 }
