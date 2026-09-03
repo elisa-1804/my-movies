@@ -887,14 +887,35 @@ function showDetails(id) {
     const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || '—');
     const defaultPoster = 'https://unsplash.com';
 
-    // 5. ГЕНЕРИРУЕМ КОНТЕНТ (Строго под новые симметричные стили!)
+    // 5. ГЕНЕРИРУЕМ КОНТЕНТ (С новой кнопкой перехода к франшизе)
     const c = document.getElementById('detailsContainer'); 
     c.className = 'details-container' + (m.favorite ? ' is-fav' : '');
+    
+    // Формируем кнопку перехода, если фильм принадлежит коллекции/франшизе
+    let franchiseLinkHtml = '';
+    if (m.collection && m.collection.trim() !== '') {
+        // Фильтруем все фильмы этой франшизы, чтобы передать их в функцию отрисовки частей
+        const collectionName = m.collection.trim();
+        const partsList = movies.filter(x => x.collection && x.collection.trim().toLowerCase() === collectionName.toLowerCase());
+        
+        // Сериализуем список в строку, чтобы безопасно передать в onclick
+        franchiseLinkHtml = `
+            <div class="franchise-link-wrapper" style="margin-top: 14px;">
+                <button class="action-btn" onclick="showCollectionDetails('${collectionName.replace(/'/g, "\\'")}', movies.filter(x => x.collection && x.collection.trim().toLowerCase() === '${collectionName.toLowerCase().replace(/'/g, "\\'")}'))" 
+                        style="background-color: transparent; border: 1px solid #06B6D4; color: #22d3ee; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; user-select: none;"
+                        onmouseover="this.style.backgroundColor='rgba(6, 182, 212, 0.1)'" 
+                        onmouseout="this.style.backgroundColor='transparent'">
+                    <span>Смотреть другие части →</span>
+                </button>
+            </div>
+        `;
+    }
     
     c.innerHTML = `
         <!-- ВЕРХНИЙ РЯД: Название слева, Сердечко справа -->
         <div class="details-main-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; width: 100%;">
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${m.title}</h2>
+            
             <button class="heart-btn" onclick="toggleFav(${m.id})" style="position: static; width: 36px; height: 36px; flex-shrink: 0;">
                 <img src="favorites.png" class="heart-icon-img" alt="Избранное">
             </button>
@@ -902,20 +923,20 @@ function showDetails(id) {
 
         <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
         <div class="details-flex" style="display: flex; gap: 20px; width: 100%; margin-bottom: 20px;">
+            
+            <!-- Левая колонка: Только Постер для фильмов -->
             <div class="details-left-column" style="width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${m.poster || defaultPoster}" alt="${m.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
             </div>
             
+            <!-- Правая колонка: Данные (Год, Жанр, Рейтинг, Ссылка на франшизу) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${m.year || '—'}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(m.rating || 0)}</strong></div>
                 
-                ${m.collection && m.collection.trim() !== '' ? `
-                    <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #06B6D4; color: #22d3ee; display: block; margin-top: 10px; width: fit-content;">
-                        🎬 Франшиза: ${m.collection}
-                    </div>
-                ` : ''}
+                <!-- Вставка интерактивной кнопки франшизы вместо старого пунктира -->
+                ${franchiseLinkHtml}
             </div>
         </div>
 
@@ -931,16 +952,16 @@ function showDetails(id) {
         </div>
     `;
 
-
     // 6. Назначаем клик кнопке "Назад"
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
-            closeModal(); // Закрываем окно редактирования, если уходим назад
+            closeModal(); 
             switchPage(previousPageId, previousPageTitle);
         };
     }
 }
+
 
 
 
