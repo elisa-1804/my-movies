@@ -1805,7 +1805,7 @@ function showSeriesDetails(id) {
     const s = series.find(x => x.id == id); 
     if(!s) return; 
     
-    // Запоминаем страницу, с которой пришли
+    // 1. ЗАПОМИНАЕМ ИСТОРИЮ: проверяем, с какого экрана мы пришли
     const currentActivePage = document.querySelector('.page.active');
     if (currentActivePage && currentActivePage.id === 'favoritesPage') {
         previousPageId = 'favoritesPage';
@@ -1815,17 +1815,17 @@ function showSeriesDetails(id) {
         previousPageTitle = 'Все сериалы';
     }
 
-    // Открываем экран деталей и пишем в шапке "О сериале"
+    // 2. Переключаем экран на страницу деталей и меняем текст в фиксированной шакпе
     switchPage('detailsPage', 'О сериале'); 
     document.getElementById('detailsFixedTitle').textContent = "О сериале";
 
-    // Настраиваем карандаш шапки, чтобы он открывал модалку СЕРИАЛА
+    // 3. Настраиваем кнопку карандаша редактирования, чтобы она открывала МОДАЛКУ СЕРИАЛА
     const editBtn = document.getElementById('movieEditBtn');
     if (editBtn) {
         editBtn.onclick = function() { openSeriesModal(s.id); };
     }
 
-    // Чистим жанры для вывода на странице деталей
+    // 4. Очищаем и форматируем жанры без кавычек и скобок
     let genresText = '—';
     if (Array.isArray(s.genre)) {
         genresText = s.genre.join(', ');
@@ -1833,25 +1833,31 @@ function showSeriesDetails(id) {
         genresText = s.genre.replace(/[\[\]"]/g, '').split(',').join(', ');
     }
 
+    const defaultPoster = 'https://unsplash.com';
+
+    // 5. ИСПРАВЛЕННЫЙ И ОЧИЩЕННЫЙ БЛОК ПРОГРЕССА СЕРИЙ (Строго в твоем стиле 🍿 3 / 2 / 12:09)
+    let progressInfo = '';
+    if (s.is_finished === false || s.is_finished === 'false') {
+        const season = s.current_season || 1;
+        const episode = s.current_episode || 1;
+        const time = s.current_time ? ` / ${s.current_time.trim()}` : '';
+        
+        progressInfo = `
+            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content;">
+                🍿 ${season} / ${episode}${time}
+            </div>
+        `;
+    }
+
+    // 6. ГЕНЕРИРУЕМ КОНТЕНТ (Кнопка лайка сверху, статус под постером, прогресс в новом формате справа)
     const c = document.getElementById('detailsContainer'); 
     c.className = 'details-container' + (s.favorite ? ' is-fav' : '');
     
-    // Блок прогресса серий
-    let progressInfo = '';
-    if (s.is_finished === false || s.is_finished === 'false') {
-        progressInfo = `
-            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content;">
-                🍿 Остановка:  ${s.current_season || 1}/  ${s.current_episode || 1} ${s.current_time ? `(${s.current_time})` : ''}
-            </div>
-        `;
-    } else {
-        progressInfo = `<div class="details-tag">✅ Просмотрено полностью</div>`;
-    }
-
     c.innerHTML = `
         <!-- ВЕРХНИЙ РЯД: Название слева, Сердечко справа -->
         <div class="details-main-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; width: 100%;">
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${s.title}</h2>
+            
             <button class="heart-btn" onclick="toggleSeriesFav(${s.id})" style="position: static; width: 36px; height: 36px; flex-shrink: 0;">
                 <img src="favorites.png" class="heart-icon-img" alt="Избранное">
             </button>
@@ -1859,26 +1865,26 @@ function showSeriesDetails(id) {
 
         <!-- ОСНОВНОЙ БЛОК: Постер + Данные справа -->
         <div class="details-flex" style="display: flex; gap: 20px; width: 100%; margin-bottom: 20px;">
+            
+            <!-- Левая колонка: Постер и овальный тег статуса строго под ним -->
             <div class="details-left-column" style="display: flex; flex-direction: column; gap: 12px; width: 140px; flex-shrink: 0;">
                 <img class="details-poster" src="${s.poster || defaultPoster}" alt="${s.title}" style="width: 140px; height: 200px; object-fit: cover; border-radius: 8px; margin: 0;">
                 
                 ${s.is_finished === true || s.is_finished === 'true' 
-                    ? `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; width: 100%; box-sizing: border-box;">Просмотрено</div>`
-                    : `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box;">В процессе</div>`
+                    ? `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; width: 100%; box-sizing: border-box; user-select: none;">Просмотрено</div>`
+                    : `<div class="series-status-tab active" style="text-align: center; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background-color: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.4); color: #fdba74; width: 100%; box-sizing: border-box; user-select: none;">В процессе</div>`
                 }
             </div>
             
+            <!-- Правая колонка: Данные (Год, Жанр, Сезоны, Рейтинг, Прогресс слэшами) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${s.year || '—'}</div>
                 <div class="details-tag">🎭 ${genresText}</div>
                 <div class="details-tag">📺 Сезонов: ${s.seasons_total || '—'}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(s.rating || 0)}</strong></div>
                 
-                ${s.is_finished === false || s.is_finished === 'false' ? `
-                    <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content;">
-                        🍿 Сезон ${s.current_season || 1}, Серия ${s.current_episode || 1} ${s.current_time ? `(${s.current_time})` : ''}
-                    </div>
-                ` : ''}
+                <!-- Компактный слэш-прогресс встает под теги -->
+                ${progressInfo}
             </div>
         </div>
 
@@ -1894,8 +1900,7 @@ function showSeriesDetails(id) {
         </div>
     `;
 
-
-    // Корректный возврат назад по кнопке из шапки
+    // 7. Обновляем кнопку "Назад" в шапке
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
@@ -1904,6 +1909,7 @@ function showSeriesDetails(id) {
         };
     }
 }
+
 
 // Функция лайка/избранного для сериалов, чтобы сердечко работало
 async function toggleSeriesFav(id) { 
