@@ -1500,3 +1500,147 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     line-height: 1.5;
     color: #c4c4cc;
 }
+/* Ряд поиска и кнопок управления */
+.search-filter-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.movies-search-row,
+.series-search-row {
+    margin-top: 85px; /* Сдвиг под фиксированную шапку */
+}
+
+.search-filter-row input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    background-color: #1a1a1e;
+    border: 1px solid #29292e;
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-filter-row input[type="text"]:focus {
+    border-color: #06B6D4;
+}
+
+/* Иконки-кнопки */
+.filter-icon-btn,
+.sort-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sort-icon-btn {
+    transition: transform 0.4s ease; /* Красивое плавное перекручивание */
+}
+
+.filter-icon-btn img,
+.sort-icon-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Перекрытие и шторка фильтров */
+.filter-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 3000;
+    justify-content: flex-end;
+    overscroll-behavior: contain;
+}
+
+.filter-drawer {
+    background-color: #1a1a1e; /* Темнее основного фона сайта */
+    width: 60%;
+    max-width: 320px;
+    height: 100%;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.6);
+    border-left: 1px solid #29292e;
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #29292e;
+}
+
+.drawer-close-x {
+    cursor: pointer;
+    color: #8d8d99;
+    font-size: 20px;
+}
+
+.drawer-year-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.drawer-year-inputs input {
+    flex: 1;
+    padding: 8px;
+    background: #121214;
+    border: 1px solid #29292e;
+    border-radius: 6px;
+    color: white;
+    font-size: 13px;
+    outline: none;
+}
+
+.drawer-dash {
+    color: #8d8d99;
+}
+
+#drawerGenresContainer {
+    max-height: 180px;
+    overflow-y: auto;
+    background: #121214;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #29292e;
+    box-sizing: border-box;
+}
+
+.drawer-buttons-row {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 15px;
+}
+
+.drawer-buttons-row button {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+}
+
+/* Сброс старых огромных маржинов у сеток */
+#allMoviesPage .movies-grid,
+#allSeriesPage .movies-grid {
+    margin-top: 20px !important; 
+}
