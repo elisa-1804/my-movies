@@ -1384,9 +1384,15 @@ function switchFavTab(tabType) {
 // --- ФУНКЦИИ МОДАЛЬНОГО ОКНА СЕРИАЛОВ ---
 
 function openSeriesModal(editId = null) {
-    // 1. Принудительно генерируем список жанров и пустые звезды из базы при открытии окна
-    if (typeof updateSeriesGenresCheckboxes === 'function') updateSeriesGenresCheckboxes();
-    if (typeof initSeriesFormStars === 'function') initSeriesFormStars();
+    // 1. Сначала принудительно создаем сами чекбоксы в HTML-дереве
+    if (typeof updateSeriesGenresCheckboxes === 'function') {
+        updateSeriesGenresCheckboxes();
+    }
+    
+    // Инициализируем пустые звезды
+    if (typeof initSeriesFormStars === 'function') {
+        initSeriesFormStars();
+    }
     
     // Сворачиваем спойлер жанров сериала по умолчанию при каждом открытии окна
     const sDropdown = document.getElementById('seriesGenresCheckboxes');
@@ -1395,6 +1401,7 @@ function openSeriesModal(editId = null) {
     if (sArrow) sArrow.classList.remove('open');
 
     if (editId) {
+        // РЕЖИМ РЕДАКТИРОВАНИЯ СУЩЕСТВУЮЩЕГО СЕРИАЛА
         const s = series.find(x => x.id == editId);
         if (!s) return;
         
@@ -1408,24 +1415,38 @@ function openSeriesModal(editId = null) {
         document.getElementById('formSeriesCurrentTime').value = s.current_time || '';
         
         // Восстанавливаем сохраненный статус просмотра (Просмотрено/В процессе)
-        if (typeof toggleSeriesStatus === 'function') toggleSeriesStatus(s.is_finished || false);
+        if (typeof toggleSeriesStatus === 'function') {
+            toggleSeriesStatus(s.is_finished || false);
+        }
         
         // Восстанавливаем оценку звездами
-        if (typeof setSeriesFormRating === 'function') setSeriesFormRating(s.rating || 0);
+        if (typeof setSeriesFormRating === 'function') {
+            setSeriesFormRating(s.rating || 0);
+        }
         document.getElementById('formSeriesPoster').value = s.poster || '';
         document.getElementById('formSeriesDesc').value = s.desc || '';
         
-        // ТОЧЕЧНЫЙ ФИКС: Восстанавливаем галочки жанров СЕРИАЛА
-        const seriesGenres = Array.isArray(s.genre) ? s.genre : (s.genre ? [s.genre] : []);
-        document.querySelectorAll('.series-genre-checkbox').forEach(cb => {
-            cb.checked = seriesGenres.includes(cb.value);
+        // ЖЕЛЕЗОБЕТОННЫЙ ВОЗВРАТ ГАЛОЧЕК:
+        // База может вернуть жанры как массив ["Драма"], либо как строку "Драма, Триллер" (из-за типа text)
+        let seriesGenres = [];
+        if (Array.isArray(s.genre)) {
+            seriesGenres = s.genre;
+        } else if (typeof s.genre === 'string') {
+            // Если в базе лежит строка через запятую, превращаем её обратно в массив для галочек
+            seriesGenres = s.genre.replace(/[\[\]"]/g, '').split(',').map(g => g.trim());
+        }
+
+        // Пробегаемся по всем сгенерированным чекбоксам и включаем нужные
+        const checkboxes = document.querySelectorAll('.series-genre-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = seriesGenres.includes(cb.value.trim());
         });
         
         // Показываем кнопку удаления при редактировании
         const delBtn = document.getElementById('seriesDeleteBtn');
         if (delBtn) delBtn.style.display = 'flex';
     } else {
-        // ЛОГИКА ДЛЯ НОВОГО СЕРИАЛА (БЕЗ ОШИБОК)
+        // ЛОГИКА ДЛЯ СОЗДАНИЯ СОВЕРШЕННО НОВОГО СЕРИАЛА
         document.getElementById('seriesModalHeadline').textContent = "Новый сериал";
         document.getElementById('formSeriesId').value = '';
         document.getElementById('formSeriesTitle').value = '';
@@ -1441,10 +1462,10 @@ function openSeriesModal(editId = null) {
         document.getElementById('formSeriesPoster').value = '';
         document.getElementById('formSeriesDesc').value = '';
         
-        // Сбрасываем все галочки жанров для новой записи
+        // Сбрасываем абсолютно все галочки для новой записи
         document.querySelectorAll('.series-genre-checkbox').forEach(cb => cb.checked = false);
         
-        // Прячем кнопку удаления для новой записи
+        // Прячем кнопку удаления
         const delBtn = document.getElementById('seriesDeleteBtn');
         if (delBtn) delBtn.style.display = 'none';
     }
@@ -1453,6 +1474,7 @@ function openSeriesModal(editId = null) {
     const modal = document.getElementById('addSeriesModal');
     if (modal) modal.classList.add('active');
 }
+
 
 
 
