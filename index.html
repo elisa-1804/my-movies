@@ -633,13 +633,23 @@ function switchPage(pageId, titleText) {
     // 5. Автоматически запускаем отрисовку данных с очисткой полей поиска
     if (pageId === 'allMoviesPage' && typeof renderMoviesGrid === 'function') {
         const input = document.getElementById('movieSearchInput');
-        if (input) input.value = ''; // Сбрасываем строку поиска фильмов
+        if (input) input.value = '';
+        movieSortDirection = 'desc'; // Всегда сбрасываем на новые
+        const img = document.getElementById('movieSortImg');
+        if (img) img.src = 'sort2.png';
+        
+        movies.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         renderMoviesGrid('moviesGrid', movies);
     }
     
     if (pageId === 'allSeriesPage' && typeof renderSeriesGrid === 'function') {
         const input = document.getElementById('seriesSearchInput');
-        if (input) input.value = ''; // Сбрасываем строку поиска сериалов
+        if (input) input.value = '';
+        seriesSortDirection = 'desc'; // Всегда сбрасываем на новые
+        const img = document.getElementById('seriesSortImg');
+        if (img) img.src = 'sort2.png';
+        
+        series.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         renderSeriesGrid('seriesGrid', series);
     }
     
@@ -2098,16 +2108,14 @@ async function saveQuickProgress(id) {
     }
 }
 let currentFilterType = 'movie'; 
-let movieSortDirection = 'desc'; // 'desc' - новые, 'asc' - старые
+let movieSortDirection = 'desc'; // По умолчанию ВСЕГДА desc (недавно добавленные)
 let seriesSortDirection = 'desc';
-let movieSortDegrees = 0;
-let seriesSortDegrees = 0;
 
 // 1. Открытие шторки
 function openFilterDrawer(type) {
     currentFilterType = type;
     document.getElementById('filterOverlay').style.display = 'flex';
-    document.body.style.overflow = 'hidden'; // Блокируем скролл фона
+    document.body.style.overflow = 'hidden'; 
 
     const statusBlock = document.getElementById('drawerStatusBlock');
     if (statusBlock) {
@@ -2116,6 +2124,7 @@ function openFilterDrawer(type) {
     
     document.getElementById('drawerTitle').textContent = type === 'series' ? 'Фильтры сериалов' : 'Фильтры фильмов';
     
+    // Генерируем галочки жанров в шторке строго по твоему круглому стилю сериалов
     const container = document.getElementById('drawerGenresContainer');
     if (container && genres) {
         container.innerHTML = '';
@@ -2123,7 +2132,7 @@ function openFilterDrawer(type) {
             const label = document.createElement('label');
             label.className = 'genre-checkbox-item';
             label.innerHTML = `
-                <input type="checkbox" class="drawer-genre-checkbox" value="${g}">
+                <input type="checkbox" class="series-genre-checkbox" value="${g}">
                 <span>${g}</span>
             `;
             container.appendChild(label);
@@ -2143,74 +2152,86 @@ function resetFilters() {
     document.getElementById('filterYearMax').value = '';
     document.getElementById('filterRating').value = '0';
     if(document.getElementById('filterStatus')) document.getElementById('filterStatus').value = 'all';
-    document.querySelectorAll('.drawer-genre-checkbox').forEach(cb => cb.checked = false);
+    
+    // Принудительно возвращаем стрелочки сортировки в дефолтное состояние "недавно добавленные"
+    movieSortDirection = 'desc';
+    seriesSortDirection = 'desc';
+    
+    const movieSortImg = document.getElementById('movieSortImg');
+    const seriesSortImg = document.getElementById('seriesSortImg');
+    if (movieSortImg) movieSortImg.src = 'sort2.png';
+    if (seriesSortImg) seriesSortImg.src = 'sort2.png';
     
     document.getElementById('movieSearchInput').value = '';
     document.getElementById('seriesSearchInput').value = '';
     
-    if (currentFilterType === 'movie') {
-        renderMoviesGrid('moviesGrid', movies);
-    } else {
-        renderSeriesGrid('seriesGrid', series);
-    }
+    // Перекачиваем и принудительно выстраиваем по дате добавления
+    loadData();
     closeFilterDrawer();
 }
 
-// 4. Текстовый поиск фильмов на лету
+// 4. Текстовый поиск фильмов на лету (с сохранением дефолтной сортировки desc)
 function filterMovies() {
     const query = document.getElementById('movieSearchInput').value.toLowerCase().trim();
-    const filtered = movies.filter(m => m.title.toLowerCase().includes(query));
+    let filtered = movies.filter(m => m.title.toLowerCase().includes(query));
+    
+    filtered.sort((a, b) => {
+        const dateA = new Date(a.created_at || 0);
+        const dateB = new Date(b.created_at || 0);
+        return movieSortDirection === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+    
     renderMoviesGrid('moviesGrid', filtered);
 }
 
-// 5. Текстовый поиск сериалов на лету
+// 5. Текстовый поиск сериалов на лету (с сохранением дефолтной сортировки desc)
 function filterSeries() {
     const query = document.getElementById('seriesSearchInput').value.toLowerCase().trim();
-    const filtered = series.filter(s => s.title.toLowerCase().includes(query));
+    let filtered = series.filter(s => s.title.toLowerCase().includes(query));
+    
+    filtered.sort((a, b) => {
+        const dateA = new Date(a.created_at || 0);
+        const dateB = new Date(b.created_at || 0);
+        return seriesSortDirection === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+    
     renderSeriesGrid('seriesGrid', filtered);
 }
 
-// 6. Кнопка сортировки: перекручивание и смена иконки
+// 6. Кнопка сортировки: БЫСТРАЯ СМЕНА ИКОНОК без кручения на 180 градусов
 function toggleSort(type) {
     if (type === 'movie') {
-        const sortBtn = document.getElementById('movieSortBtn');
         const sortImg = document.getElementById('movieSortImg');
-        movieSortDegrees += 180;
-        if (sortBtn) sortBtn.style.transform = `rotate(${movieSortDegrees}deg)`;
-        
         if (movieSortDirection === 'desc') {
             movieSortDirection = 'asc';
-            if (sortImg) sortImg.src = 'sort1.png';
+            if (sortImg) sortImg.src = 'sort1.png'; // самые поздние
         } else {
             movieSortDirection = 'desc';
-            if (sortImg) sortImg.src = 'sort2.png';
+            if (sortImg) sortImg.src = 'sort2.png'; // недавно добавленные
         }
         applyFilters(); 
     } else {
-        const sortBtn = document.getElementById('seriesSortBtn');
         const sortImg = document.getElementById('seriesSortImg');
-        seriesSortDegrees += 180;
-        if (sortBtn) sortBtn.style.transform = `rotate(${seriesSortDegrees}deg)`;
-        
         if (seriesSortDirection === 'desc') {
             seriesSortDirection = 'asc';
-            if (sortImg) sortImg.src = 'sort1.png';
+            if (sortImg) sortImg.src = 'sort1.png'; // самые поздние
         } else {
             seriesSortDirection = 'desc';
-            if (sortImg) sortImg.src = 'sort2.png';
+            if (sortImg) sortImg.src = 'sort2.png'; // недавно добавленные
         }
         applyFilters();
     }
 }
 
-// 7. Комбинированный фильтр-движок
+// 7. ИСПРАВЛЕННЫЙ УЛЬТИМАТИВНЫЙ ДВИЖОК ФИЛЬТРАЦИИ И КНОПКА ПРИМЕНИТЬ
 function applyFilters() {
     const minYear = parseInt(document.getElementById('filterYearMin').value, 10) || null;
     const maxYear = parseInt(document.getElementById('filterYearMax').value, 10) || null;
-    const minRating = parseInt(document.getElementById('filterRating').value, 10) || 0;
+    const targetRating = parseInt(document.getElementById('filterRating').value, 10) || 0;
     
+    // Сбор жанров по правильному сериальному классу кружков
     const selectedGenres = [];
-    document.querySelectorAll('.drawer-genre-checkbox:checked').forEach(cb => {
+    document.querySelectorAll('#drawerGenresContainer .series-genre-checkbox:checked').forEach(cb => {
         selectedGenres.push(cb.value);
     });
 
@@ -2220,7 +2241,10 @@ function applyFilters() {
             if (searchWord && !m.title.toLowerCase().includes(searchWord)) return false;
             if (minYear && (m.year < minYear)) return false;
             if (maxYear && (m.year > maxYear)) return false;
-            if (m.rating < minRating) return false;
+            
+            // ЖЕЛЕЗОБЕТОННЫЙ ФИКС РЕЙТИНГА: Только точное количество звезд!
+            if (targetRating > 0 && m.rating !== targetRating) return false;
+            
             if (selectedGenres.length > 0) {
                 const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
                 if (!selectedGenres.every(g => movieGenres.includes(g))) return false;
@@ -2228,6 +2252,7 @@ function applyFilters() {
             return true;
         });
         
+        // ВСЕГДА сортируем по созданию с учетом флага
         filtered.sort((a, b) => {
             const dateA = new Date(a.created_at || 0);
             const dateB = new Date(b.created_at || 0);
@@ -2241,9 +2266,13 @@ function applyFilters() {
             if (searchWord && !s.title.toLowerCase().includes(searchWord)) return false;
             if (minYear && (s.year < minYear)) return false;
             if (maxYear && (s.year > maxYear)) return false;
-            if (s.rating < minRating) return false;
+            
+            // ЖЕЛЕЗОБЕТОННЫЙ ФИКС РЕЙТИНГА: Только точное количество звезд!
+            if (targetRating > 0 && s.rating !== targetRating) return false;
+            
             if (statusVal === 'finished' && !(s.is_finished === true || s.is_finished === 'true')) return false;
             if (statusVal === 'watching' && (s.is_finished === true || s.is_finished === 'true')) return false;
+            
             if (selectedGenres.length > 0) {
                 let seriesGenres = [];
                 if (Array.isArray(s.genre)) seriesGenres = s.genre;
@@ -2260,6 +2289,8 @@ function applyFilters() {
         });
         renderSeriesGrid('seriesGrid', filtered);
     }
+    
+    // Закрываем шторку
     document.getElementById('filterOverlay').style.display = 'none';
     document.body.style.overflow = '';
 }
