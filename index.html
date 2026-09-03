@@ -520,6 +520,7 @@ async function loadData() {
     series = sResponse.ok ? await sResponse.json() : [];
 
     // 4. Запускаем рендеры и обновления интерфейса
+    renderSeriesGrid();
     renderMoviesGrid('moviesGrid', movies); 
     updateGenreSelect();
     await loadRecommendations();
@@ -1481,9 +1482,150 @@ function toggleFranchiseRowStyle(isChecked) {
     }
 }
 
+// =======================================================
+//        РАЗДЕЛ СЕРИАЛОВ: ОТРИСОВКА, СОХРАНЕНИЕ И УДАЛЕНИЕ
+// =======================================================
 
+// 1. Отрисовка сетки сериалов (Копия фильмов, но адаптированная под сериальные данные)
+function renderSeriesGrid() {
+    const grid = document.getElementById('seriesGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    if (series.length === 0) {
+        grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список сериалов пуст 🎬</p>';
+        return;
+    }
+    
+    series.forEach(s => {
+        const card = document.createElement('div');
+        // Поддерживаем твой класс избранного, если сериал в любимых
+        card.className = 'movie-card' + (s.favorite ? ' is-fav' : '');
+        
+        // При клике открываем модалку редактирования (как у тебя задумано в HTML)
+        card.onclick = function() { openSeriesModal(s.id); };
+        
+        // Формируем мета-данные: Год, Жанры и Сезоны
+        const genresText = Array.isArray(s.genre) ? s.genre.join(', ') : (s.genre || 'Общий');
+        const seasonsText = s.seasons_total ? ` • Сезонов: ${s.seasons_total}` : '';
+        
+        // Добавляем индикатор «В процессе», чтобы сразу видеть, где остановились
+        let progressBadge = '';
+        if (s.is_finished === false || s.is_finished === 'false') {
+            const currentSeason = s.current_season || 1;
+            const currentEpisode = s.current_episode || 1;
+            progressBadge = `<div style="font-size: 10px; color: #06B6D4; margin-top: 2px; font-weight: 600;">🍿 С1:${currentSeason} Ср:${currentEpisode}</div>`;
+        }
+        
+        card.innerHTML = `
+            <img class="movie-poster" src="${s.poster || defaultPoster}">
+            <img src="favorites.png" class="card-heart-img">
+            <div class="movie-info">
+                <div class="movie-title">${s.title}</div>
+                <div class="movie-meta">${s.year || '—'} • ${genresText}${seasonsText}</div>
+                <div class="card-stars">${getStarsHtml(s.rating || 0)}</div>
+                ${progressBadge}
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
 
+// 2. Функция сохранения сериала (Сбор полей модалки и отправка в REST таблицу /series)
+async function saveSeries() {
+    const title = document.getElementById('formSeriesTitle').value.trim();
+    if (!title) { alert("Укажите название сериала!"); return; }
+    
+    const id = document.getElementById('formSeriesId').value;
+    const t = localStorage.getItem("sb_token");
+    const headers = { 
+        "apikey": SUPABASE_KEY, 
+        "Authorization": "Bearer " + t, 
+        "Content-Type": "application/json" 
+    };
+    
+    // Считываем значения из текстовых и числовых полей
+    const posterValue = document.getElementById('formSeriesPoster').value.trim();
+    const descValue = document.getElementById('formSeriesDesc').value.trim();
+    const yearValue = document.getElementById('formSeriesYear').value.trim();
+    const seasonsTotalValue = document.getElementById('formSeriesSeasonsTotal').value.trim();
+    
+    // Блок контроля просмотра («Где остановились»)
+    const currentSeasonValue = document.getElementById('formSeriesCurrentSeason').value.trim();
+    const currentEpisodeValue = document.getElementById('formSeriesCurrentEpisode').value.trim();
+    const currentTimeValue = document.getElementById('formSeriesCurrentTime').value.trim();
+    
+    // Статус просмотра (берем скрытый инпут, куда пишется true/false)
+    const isFinishedValue = document.getElementById('formSeriesIsFinished').value === 'true';
+    const ratingValue = parseInt(document.getElementById('formSeriesRating').value, 10) || 0;
 
+    // Сбор выбранных чекбоксов жанров для сериала
+    const selectedGenres = [];
+    document.querySelectorAll('.series-genre-checkbox:checked').forEach(cb => {
+        selectedGenres.push(cb.value);
+    });
+
+    // Формируем чистый объект для базы данных Supabase
+    const sData = {
+        title: title,
+        year: yearValue ? parseInt(yearValue, 10) : null,
+        seasons_total: seasonsTotalValue ? parseInt(seasonsTotalValue, 10) : null,
+        genre: selectedGenres.length > 0 ? selectedGenres : null,
+        rating: ratingValue,
+        is_finished: isFinishedValue,
+        current_season: !isFinishedValue && currentSeasonValue ? parseInt(currentSeasonValue, 10) : null,
+        current_episode: !isFinishedValue && currentEpisodeValue ? parseInt(currentEpisodeValue, 10) : null,
+        current_time: !isFinishedValue && currentTimeValue ? currentTimeValue : null,
+        poster: posterValue || null,
+        desc: descValue || null,
+        user_id: currentUser.id
+    };
+
+    let response;
+    if (id) {
+        // Обновляем старый сериал
+        response = await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(sData) });
+    } else {
+        // Создаем новый сериал
+        sData.favorite = false; // По умолчанию не в избранном
+        response = await fetch(SUPABASE_URL + "/rest/v1/series", { method: "POST", headers: headers, body: JSON.stringify(sData) });
+    }
+
+    if (response.ok) {
+        closeSeriesModal();
+        await loadData(); // Перезагружаем массивы из базы (внутри вызовется и renderSeriesGrid)
+        switchPage('allSeriesPage', 'Сериалы');
+    } else {
+        const errorText = await response.text();
+        alert("Ошибка сохранения сериала: " + errorText);
+    }
+}
+
+// 3. Функция удаления сериала напрямую из модального окна
+async function deleteSeriesFromModal() {
+    const id = document.getElementById('formSeriesId').value;
+    if (!id) return;
+    
+    if (confirm("Вы уверены, что хотите удалить этот сериал насовсем?")) {
+        const t = localStorage.getItem("sb_token");
+        const response = await fetch(SUPABASE_URL + "/rest/v1/series?id=eq." + id, {
+            method: "DELETE",
+            headers: { 
+                "apikey": SUPABASE_KEY, 
+                "Authorization": "Bearer " + t 
+            }
+        });
+        
+        if (response.ok) {
+            closeSeriesModal();
+            await loadData(); // Качаем чистые данные
+            switchPage('allSeriesPage', 'Сериалы');
+        } else {
+            alert("Ошибка при удалении сериала из базы данных!");
+        }
+    }
+}
            
 
     checkUser();
