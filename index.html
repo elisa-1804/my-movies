@@ -1815,7 +1815,7 @@ function showSeriesDetails(id) {
         previousPageTitle = 'Все сериалы';
     }
 
-    // 2. Переключаем экран на страницу деталей и меняем текст в фиксированной шакпе
+    // 2. Переключаем экран на страницу деталей и меняем текст в фиксированной шапке
     switchPage('detailsPage', 'О сериале'); 
     document.getElementById('detailsFixedTitle').textContent = "О сериале";
 
@@ -1835,21 +1835,26 @@ function showSeriesDetails(id) {
 
     const defaultPoster = 'https://unsplash.com';
 
-    // 5. ИСПРАВЛЕННЫЙ И ОЧИЩЕННЫЙ БЛОК ПРОГРЕССА СЕРИЙ (Строго в твоем стиле 🍿 3 / 2 / 12:09)
+    // 5. ВЕРНУЛИ РАЗВЁРНУТЫЙ ФОРМАТ ПРОГРЕССА (Строго построчно через тире)
     let progressInfo = '';
     if (s.is_finished === false || s.is_finished === 'false') {
         const season = s.current_season || 1;
         const episode = s.current_episode || 1;
-        const time = s.current_time ? ` / ${s.current_time.trim()}` : '';
+        const timeHtml = s.current_time && s.current_time.trim() !== '' 
+            ? `<div style="margin-bottom: 4px;">минута — ${s.current_time.trim()}</div>` 
+            : '';
         
         progressInfo = `
-            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content;">
-                🍿 ${season} / ${episode}${time}
+            <div class="details-tag" style="background-color: #1a1a1e; border: 1px dashed #29292e; display: block; margin-top: 10px; width: fit-content; padding: 10px 14px; line-height: 1.4; font-size: 13px; color: #e1e1e6;">
+                <div style="margin-bottom: 4px; color: #06B6D4; font-weight: 600;">Где остановились:</div>
+                <div style="margin-bottom: 4px;">сезон — ${season}</div>
+                <div style="margin-bottom: 4px;">серия — ${episode}</div>
+                ${timeHtml}
             </div>
         `;
     }
 
-    // 6. ГЕНЕРИРУЕМ КОНТЕНТ (Кнопка лайка сверху, статус под постером, прогресс в новом формате справа)
+    // 6. ГЕНЕРИРУЕМ КОНТЕНТ (Симметричный дизайн)
     const c = document.getElementById('detailsContainer'); 
     c.className = 'details-container' + (s.favorite ? ' is-fav' : '');
     
@@ -1876,14 +1881,14 @@ function showSeriesDetails(id) {
                 }
             </div>
             
-            <!-- Правая колонка: Данные (Год, Жанр, Сезоны, Рейтинг, Прогресс слэшами) -->
+            <!-- Правая колонка: Данные (Год, Жанр, Сезоны, Рейтинг, Прогресс) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${s.year || '—'}</div>
                 <div class="details-tag">🎭 ${genresText}</div>
                 <div class="details-tag">📺 Сезонов: ${s.seasons_total || '—'}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(s.rating || 0)}</strong></div>
                 
-                <!-- Компактный слэш-прогресс встает под теги -->
+                <!-- Подробный прогресс просмотра -->
                 ${progressInfo}
             </div>
         </div>
@@ -1909,6 +1914,7 @@ function showSeriesDetails(id) {
         };
     }
 }
+
 
 
 // Функция лайка/избранного для сериалов, чтобы сердечко работало
