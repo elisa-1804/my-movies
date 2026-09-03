@@ -91,7 +91,7 @@
                 <h1>Сериалы</h1>
                 <div style="display:flex; gap:15px; align-items:center;">
                     <!-- Для сериалов откроем отдельную модалку, которую сделаем в след. шаге -->
-                    <button class="add-movie-btn" id="headerSeriesPlusBtn" onclick="openSeriesModal()">
+                    <button class="add-movie-btn" id="headerSeriesPlusBtn" onclick="()">
                         <img src="add.png" alt="Добавить" class="header-icon-img">
                     </button>
                     <button class="logout-btn" onclick="logout()">
@@ -774,6 +774,7 @@ function openModal(editId = null) {
     
     const modal = document.getElementById('addMovieModal');
     if (modal) modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Блокируем скролл сайта
 }
 
 
@@ -838,7 +839,10 @@ function openModal(editId = null) {
     }
 
            
-    function closeModal() { document.getElementById('addMovieModal').classList.remove('active'); }
+    function closeModal() { 
+        document.getElementById('addMovieModal').classList.remove('active'); 
+    document.body.style.overflow = ''; // Возвращаем скролл сайту обратно
+    }
            
     async function deleteMovieFromForm() { 
         const id = document.getElementById('formMovieId').value; 
@@ -1440,11 +1444,13 @@ function openSeriesModal(editId = null) {
     if (sArrow) sArrow.classList.remove('open');
     // Включаем класс активности для плавного появления модалки на экране
     document.getElementById('addSeriesModal').classList.add('active');
+    document.body.style.overflow = 'hidden'; // Блокируем скролл сайта
 }
 
 
 function closeSeriesModal() {
     document.getElementById('addSeriesModal').classList.remove('active');
+    document.body.style.overflow = ''; // Возвращаем скролл сайту обратно
 }
 
 // --- ИНТЕРАКТИВНОЕ ПЕРЕКЛЮЧЕНИЕ ПЛАШЕК СТАТУСА ---
