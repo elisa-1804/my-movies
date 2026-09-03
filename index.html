@@ -1347,9 +1347,26 @@ function renderSeriesGridInContainer(containerId, list) {
         else if (typeof s.genre === 'string') { genresText = s.genre.replace(/[\[\]"]/g, '').split(',').join(', '); }
         const seasonsText = s.seasons_total ? ` • Сезонов: ${s.seasons_total}` : '';
         
-        let progressBadge = '';
-        if (s.is_finished === false || s.is_finished === 'false') {
-            progressBadge = `<div style="font-size: 10px; color: #06B6D4; margin-top: 2px; font-weight: 600;">🍿 С1:${s.current_season || 1} Ср:${s.current_episode || 1}</div>`;
+        let progressHtml = '';
+        if ((s.is_finished === false || s.is_finished === 'false') && s.seasons_total > 0) {
+            let percent = Math.round((parseInt(s.current_season, 10) / parseInt(s.seasons_total, 10)) * 100);
+            if (percent > 100) percent = 100;
+            if (percent < 5) percent = 5;
+            
+            progressHtml = `
+                <div class="card-progress-container" style="margin-top: 8px; width: 100%; position: relative;">
+                    <div class="card-progress-track" style="width: 100%; height: 4px; background-color: #29292e; border-radius: 2px; position: relative;">
+                        <div class="card-progress-fill" style="width: ${percent}%; height: 100%; background-color: #06B6D4; border-radius: 2px; position: absolute; top: 0; left: 0;"></div>
+                        <div class="card-progress-dot" style="width: 8px; height: 8px; background-color: #22d3ee; border-radius: 50%; position: absolute; top: -2px; left: calc(${percent}% - 4px); box-shadow: 0 0 6px #06B6D4;"></div>
+                    </div>
+                </div>
+            `;
+        } else if (s.is_finished === true || s.is_finished === 'true') {
+            progressHtml = `
+                <div class="card-progress-container" style="margin-top: 8px; width: 100%;">
+                    <div style="width: 100%; height: 4px; background-color: rgba(74, 222, 128, 0.4); border-radius: 2px;"></div>
+                </div>
+            `;
         }
         
         card.innerHTML = `
@@ -1359,12 +1376,13 @@ function renderSeriesGridInContainer(containerId, list) {
                 <div class="movie-title">${s.title}</div>
                 <div class="movie-meta">${s.year || '—'} • ${genresText}${seasonsText}</div>
                 <div class="card-stars">${getStarsHtml(s.rating || 0)}</div>
-                ${progressBadge}
+                ${progressHtml}
             </div>
         `;
         grid.appendChild(card);
     });
 }
+
 
 
 // --- ФУНКЦИЯ: ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК В ИЗБРАННОМ ---
@@ -1614,7 +1632,6 @@ function renderSeriesGrid(gridId, list) {
     if (!grid) return;
     grid.innerHTML = '';
     
-    // Проверяем, передан ли массив и есть ли в нём элементы
     if (!list || list.length === 0) {
         grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список сериалов пуст 🎬</p>';
         return;
@@ -1623,11 +1640,9 @@ function renderSeriesGrid(gridId, list) {
     list.forEach(s => {
         const card = document.createElement('div');
         card.className = 'movie-card' + (s.favorite ? ' is-fav' : '');
-        
-        // Вешаем клик на открытие страницы "О сериале"
         card.onclick = function() { showSeriesDetails(s.id); };
         
-        // Форматируем жанры без скобок и кавычек
+        // Форматируем жанры
         let genresText = 'Общий';
         if (Array.isArray(s.genre)) {
             genresText = s.genre.join(', ');
@@ -1637,11 +1652,44 @@ function renderSeriesGrid(gridId, list) {
 
         const seasonsText = s.seasons_total ? ` • Сезонов: ${s.seasons_total}` : '';
         
-        let progressBadge = '';
-        if (s.is_finished === false || s.is_finished === 'false') {
-            const currentSeason = s.current_season || 1;
-            const currentEpisode = s.current_episode || 1;
-            progressBadge = `<div style="font-size: 10px; color: #06B6D4; margin-top: 2px; font-weight: 600;">🍿 С1:${currentSeason} Ср:${currentEpisode}</div>`;
+        // РАСЧЁТ И ИНТЕГРАЦИЯ УМНОГО ПРОГРЕСС-БАРА
+        let progressHtml = '';
+        
+        // Показываем полоску только если сериал "В процессе" и у него есть сезоны
+        if ((s.is_finished === false || s.is_finished === 'false') && s.seasons_total > 0) {
+            const totalSeasons = parseInt(s.seasons_total, 10);
+            const currentSeason = parseInt(s.current_season, 10) || 1;
+            const currentEpisode = parseInt(s.current_episode, 10) || 1;
+            
+            // Грубый, но надёжный расчёт прогресса для карточки: 
+            // (Текущий сезон / Всего сезонов) * 100
+            let percent = Math.round((currentSeason / totalSeasons) * 100);
+            
+            // Страховка границ от 0% до 100%
+            if (percent > 100) percent = 100;
+            if (percent < 5) percent = 5; // Минимальная длина, чтобы точку было видно в самом начале
+            
+            progressHtml = `
+                <div class="card-progress-container" style="margin-top: 8px; width: 100%; position: relative;">
+                    <!-- Серая (остаточная) часть линии -->
+                    <div class="card-progress-track" style="width: 100%; height: 4px; background-color: #29292e; border-radius: 2px; position: relative;">
+                        
+                        <!-- Акцентная голубая часть прогресса -->
+                        <div class="card-progress-fill" style="width: ${percent}%; height: 100%; background-color: #06B6D4; border-radius: 2px; position: absolute; top: 0; left: 0;"></div>
+                        
+                        <!-- Светящаяся точка на конце голубой линии -->
+                        <div class="card-progress-dot" style="width: 8px; height: 8px; background-color: #22d3ee; border-radius: 50%; position: absolute; top: -2px; left: calc(${percent}% - 4px); box-shadow: 0 0 6px #06B6D4;"></div>
+                    
+                    </div>
+                </div>
+            `;
+        } else if (s.is_finished === true || s.is_finished === 'true') {
+            // Если сериал полностью просмотрен, можно вывести полную аккуратную полоску без точки
+            progressHtml = `
+                <div class="card-progress-container" style="margin-top: 8px; width: 100%;">
+                    <div style="width: 100%; height: 4px; background-color: rgba(74, 222, 128, 0.4); border-radius: 2px;"></div>
+                </div>
+            `;
         }
         
         card.innerHTML = `
@@ -1651,12 +1699,13 @@ function renderSeriesGrid(gridId, list) {
                 <div class="movie-title">${s.title}</div>
                 <div class="movie-meta">${s.year || '—'} • ${genresText}${seasonsText}</div>
                 <div class="card-stars">${getStarsHtml(s.rating || 0)}</div>
-                ${progressBadge}
+                ${progressHtml}
             </div>
         `;
         grid.appendChild(card);
     });
 }
+
 
 
 
