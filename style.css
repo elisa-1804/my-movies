@@ -2079,3 +2079,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 #statsPage .stats-container {
     padding-top: 50px;
 }
+.stats-header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
