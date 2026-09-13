@@ -684,11 +684,19 @@ function switchPage(pageId, titleText) {
     if (pageId === 'recommendationsPage' && typeof loadRecommendations === 'function') {
         loadRecommendations();
     }
-    if (pageId === 'statsPage') {
-    setTimeout(function() {
-        if (typeof renderStatistics === 'function') renderStatistics();
-    }, 50);
+if (pageId === 'statsPage') {
+    function tryRenderStats(attempt) {
+        if (movies.length > 0 && recommendations.length > 0) {
+            renderStatistics();
+        } else if (attempt < 10) {
+            setTimeout(function() { tryRenderStats(attempt + 1); }, 100);
+        } else {
+            renderStatistics();
+        }
+    }
+    tryRenderStats(0);
 }
+
 
 
     if (pageId === 'favoritesPage') {
