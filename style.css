@@ -2084,3 +2084,11 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     align-items: center;
     gap: 10px;
 }
+.stats-header-row .page-fixed-header-title {
+    margin-bottom: 0 !important;
+}
+
+.stats-header-row {
+    margin-bottom: 20px;
+    width: 100%;
+}
