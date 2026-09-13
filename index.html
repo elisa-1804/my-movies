@@ -76,10 +76,12 @@
 <!-- СТРАНИЦА СТАТИСТИКИ -->
 <div id="statsPage" class="page" style="position: relative;">
     <div class="collection-fixed-header">
-        <button class="back-button" onclick="goBack()">
-            <img src="images/back.png" alt="Назад" class="back-icon">
-        </button>
-        <h1 class="page-fixed-header-title">Статистика</h1>
+        <div class="stats-header-row">
+            <button class="back-button" onclick="goBack()">
+                <img src="images/back.png" alt="Назад" class="back-icon">
+            </button>
+            <h1 class="page-fixed-header-title">Статистика</h1>
+        </div>
         <div class="fav-tabs-container">
             <div class="fav-tab movie active" id="statsTabMovie" onclick="switchStatsTab('movie')">Фильмы</div>
             <div class="fav-tab series" id="statsTabSeries" onclick="switchStatsTab('series')">Сериалы</div>
@@ -87,6 +89,7 @@
     </div>
     <div id="statsContainer" class="stats-container"></div>
 </div>
+
 
 
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ -->
@@ -151,10 +154,12 @@
             <!-- 4. СТРАНИЦА ИЗБРАННОГО -->
         <div id="favoritesPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
-                <button class="back-button" onclick="goBack()">
-            <img src="images/back.png" alt="Назад" class="back-icon">
-        </button>
-                <h1 class="page-fixed-header-title">Любимое</h1>
+               <div class="stats-header-row">
+            <button class="back-button" onclick="goBack()">
+                <img src="images/back.png" alt="Назад" class="back-icon">
+            </button>
+            <h1 class="page-fixed-header-title">Любимое</h1>
+        </div>
                 <div class="fav-tabs-container">
                     <div class="fav-tab movie active" id="favTabMovie" onclick="switchFavTab('movie')">Фильмы</div>
                     <div class="fav-tab series" id="favTabSeries" onclick="switchFavTab('series')">Сериалы</div>
@@ -172,10 +177,12 @@
         <!-- 5. СТРАНИЦА: ФИЛЬМЫ ПО ЧАСТЯМ -->
         <div id="moviePartsPage" class="page">
             <div class="page-fixed-header">
-                <button class="back-button" onclick="goBack()">
-            <img src="images/back.png" alt="Назад" class="back-icon">
-        </button>
-                <h1>Фильмы по частям</h1>
+                <div class="stats-header-row">
+            <button class="back-button" onclick="goBack()">
+                <img src="images/back.png" alt="Назад" class="back-icon">
+            </button>
+          <h1>Фильмы по частям</h1>
+        </div>
                 <div></div>
             </div>
             <div class="collections-grid" id="collectionsGrid"></div>
@@ -185,9 +192,10 @@
         <div id="recommendationsPage" class="page">
             <div class="page-fixed-header">
                 <button class="back-button" onclick="goBack()">
-            <img src="images/back.png" alt="Назад" class="back-icon">
-        </button>
-                <h1>Рекомендации</h1>
+                <img src="images/back.png" alt="Назад" class="back-icon">
+            </button>
+          <h1>Рекомендации</h1>
+        </div>
                 <div></div>
             </div>
             <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
@@ -198,9 +206,10 @@
         <div id="genresPage" class="page">
             <div class="page-fixed-header">
                 <button class="back-button" onclick="goBack()">
-            <img src="images/back.png" alt="Назад" class="back-icon">
-        </button>
-                <h1>Жанры</h1>
+                <img src="images/back.png" alt="Назад" class="back-icon">
+            </button>
+          <h1>Жанры</h1>
+        </div> 
                 <div></div>
             </div>
             <button class="add-rec-btn" onclick="openAddGenreModal()">Добавить жанр</button>
