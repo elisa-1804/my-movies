@@ -700,7 +700,7 @@ function switchPage(pageId, titleText) {
     if(list.length === 0) { grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список пуст 🎬</p>'; return; }
     list.forEach(m => {
         const card = document.createElement('div'); card.className = 'movie-card' + (m.favorite ? ' is-fav' : ''); card.onclick = function() { showDetails(m.id); };
-        const durationText = m.duration ? ' • ' + m.duration + ' мин' : '';
+        const durationText = m.duration ? ' • ' + formatDuration(m.duration) : '';
         card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><img src="images/favorites.png" class="card-heart-img"><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + durationText + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';
         grid.appendChild(card);
     });
@@ -1028,7 +1028,7 @@ function showDetails(id) {
             <!-- Правая колонка: Данные (Год, Продолжительность, Жанр, Рейтинг) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${m.year || '—'}</div>
-                <div class="details-tag">⏱️ ${m.duration ? m.duration + ' мин' : '—'}</div>
+                <div class="details-tag">⏱️ ${formatDuration(m.duration)}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(m.rating || 0)}</strong></div>
             </div>
@@ -1365,7 +1365,7 @@ function showCollectionDetails(collectionName, partsList) {
             <div class="franchise-row-info">
                 <div class="franchise-row-title">${m.title}</div>
                 <div class="franchise-row-meta">📅 ${m.year || '—'}</div>
-                <div class="franchise-row-meta">⏱️ ${m.duration ? m.duration + ' мин' : '—'}</div>
+                <div class="franchise-row-meta">⏱️ ${formatDuration(m.duration)}</div>
                 <div class="franchise-row-meta">🎭 ${genreText}</div>
                 <div class="franchise-row-stars">${getStarsHtml(m.rating || 0)}</div>
             </div>
@@ -2349,6 +2349,19 @@ function applyFilters() {
     // Закрываем шторку
     document.getElementById('filterOverlay').style.display = 'none';
     document.body.style.overflow = '';
+}
+// Функция преобразования минут в формат "ч:мм"
+function formatDuration(minutes) {
+    if (!minutes) return '—'; // Если значение пустое
+    
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    
+    // Форматируем минуты с ведущим нулем
+    const formattedMins = mins < 10 ? '0' + mins : mins;
+    
+    // Если есть часы, возвращаем формат "ч:мм", иначе просто минуты
+    return hours > 0 ? `${hours}:${formattedMins}` : `${minutes} мин`;
 }
 
     checkUser();
