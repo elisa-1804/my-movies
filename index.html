@@ -77,7 +77,7 @@
 <div id="statsPage" class="page" style="position: relative;">
     <div class="collection-fixed-header">
         <div class="stats-header-row">
-            <button class="details-back-img-btn" onclick="goBack()">
+            <button class="back-icon-btn" onclick="goBack()">
                 <img src="images/back.png" alt="Назад" class="details-back-img">
             </button>
             <h1 class="page-fixed-header-title">Статистика</h1>
@@ -155,7 +155,7 @@
         <div id="favoritesPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
                <div class="stats-header-row">
-            <button class="details-back-img-btn" onclick="goBack()">
+            <button class="back-icon-btn" onclick="goBack()">
                 <img src="images/back.png" alt="Назад" class="details-back-img">
             </button>
             <h1 class="page-fixed-header-title">Любимое</h1>
@@ -178,7 +178,7 @@
         <div id="moviePartsPage" class="page">
             <div class="page-fixed-header">
                 <div class="stats-header-row">
-            <button class="details-back-img-btn" onclick="goBack()">
+            <button class="back-icon-btn" onclick="goBack()">
                 <img src="images/back.png" alt="Назад" class="details-back-img">
             </button>
           <h1>Фильмы по частям</h1>
@@ -193,7 +193,7 @@
 <div id="recommendationsPage" class="page">
     <div class="page-fixed-header">
         <div class="stats-header-row">
-            <button class="details-back-img-btn" onclick="goBack()">
+            <button class="back-icon-btn" onclick="goBack()">
                 <img src="images/back.png" alt="Назад" class="details-back-img">
             </button>
             <h1>Рекомендации</h1>
@@ -207,7 +207,7 @@
 <div id="genresPage" class="page">
     <div class="page-fixed-header">
         <div class="stats-header-row">
-            <button class="details-back-img-btn" onclick="goBack()">
+            <button class="back-icon-btn" onclick="goBack()">
                 <img src="images/back.png" alt="Назад" class="details-back-img">
             </button>
             <h1>Жанры</h1>
@@ -221,7 +221,7 @@
         <!-- 8. СТРАНИЦА: СПИСОК ЧАСТЕЙ ФРАНШИЗЫ -->
         <div id="collectionPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
-                <button class="details-back-img-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
+                <button class="back-icon-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
                     <img src="images/back.png" alt="Назад" class="details-back-img">
                 </button>
                 <h2 class="details-page-center-title" id="collectionPageTitle">Франшиза</h2>
@@ -233,7 +233,7 @@
         <!-- 9. СТРАНИЦА ДЕТАЛЕЙ -->
         <div id="detailsPage" class="page" style="position: relative;">
             <div class="details-fixed-header">
-                <button class="details-back-img-btn">
+                <button class="back-icon-btn">
                     <img src="images/back.png" alt="Назад" class="details-back-img">
                 </button>
                 <h2 class="details-page-center-title" id="detailsFixedTitle">О фильме</h2>
@@ -1112,7 +1112,7 @@ function showDetails(id) {
     `;
 
     // 7. Назначаем клик кнопке "Назад"
-    const backBtn = document.querySelector('#detailsPage .details-back-img-btn');
+    const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
             closeModal(); 
@@ -2294,7 +2294,7 @@ function showSeriesDetails(id) {
         </div>
     `;
 
-    const backBtn = document.querySelector('#detailsPage .details-back-img-btn');
+    const backBtn = document.querySelector('#detailsPage .back-icon-btn');
     if (backBtn) {
         backBtn.onclick = function() {
             closeSeriesModal(); 
