@@ -684,9 +684,12 @@ function switchPage(pageId, titleText) {
     if (pageId === 'recommendationsPage' && typeof loadRecommendations === 'function') {
         loadRecommendations();
     }
-    if (pageId === 'statsPage' && typeof renderStatistics === 'function') {
-    renderStatistics();
+    if (pageId === 'statsPage') {
+    setTimeout(function() {
+        if (typeof renderStatistics === 'function') renderStatistics();
+    }, 50);
 }
+
 
     if (pageId === 'favoritesPage') {
         // Принудительно сбрасываем вкладку на Фильмы при входе в Избранное
@@ -1195,11 +1198,6 @@ function renderStatistics() {
         ? Math.round(moviesWithDuration.reduce((sum, m) => sum + m.duration, 0) / moviesWithDuration.length)
         : 0;
 
-    // Диапазон лет
-    const years = movies.map(m => m.year).filter(y => y);
-    const minYear = years.length > 0 ? Math.min(...years) : null;
-    const maxYear = years.length > 0 ? Math.max(...years) : null;
-
     // Жанры
     const genreCount = {};
     movies.forEach(m => {
@@ -1211,13 +1209,20 @@ function renderStatistics() {
     const sortedGenres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]);
     const maxGenreCount = sortedGenres.length > 0 ? sortedGenres[0][1] : 1;
 
-    // Кольцевая диаграмма
+    // Кольцевая диаграмма — два раздельных сегмента с зазором
     const r = 70;
     const circ = 2 * Math.PI * r;
+    const gap = 12; // зазор между сегментами в единицах длины окружности
+
     const watchedPct = totalAll > 0 ? (totalMovies / totalAll) : 0;
     const plannedPct = totalAll > 0 ? (plannedMovies / totalAll) : 0;
-    const watchedLen = watchedPct * circ;
-    const plannedLen = plannedPct * circ;
+
+    // Длина каждой дуги (с вычетом зазора)
+    const watchedLen = Math.max(0, watchedPct * circ - gap);
+    const plannedLen = Math.max(0, plannedPct * circ - gap);
+
+    // Смещение для второго сегмента: после первого + зазор
+    const plannedOffset = circ * 0.25 - watchedLen - gap * 2;
 
     container.innerHTML = `
         <div class="stats-donut-section">
@@ -1226,16 +1231,16 @@ function renderStatistics() {
                     <circle cx="100" cy="100" r="${r}" fill="none" stroke="#29292e" stroke-width="18"/>
                     <circle class="donut-seg donut-watched"
                         cx="100" cy="100" r="${r}" fill="none"
-                        stroke="#06B6D4" stroke-width="18" stroke-linecap="round"
+                        stroke="#06B6D4" stroke-width="18" stroke-linecap="butt"
                         stroke-dasharray="0 ${circ}"
                         stroke-dashoffset="${circ * 0.25}"
                         transform="rotate(-90 100 100)"
                         data-target="${watchedLen}"/>
                     <circle class="donut-seg donut-planned"
                         cx="100" cy="100" r="${r}" fill="none"
-                        stroke="#8b5cf6" stroke-width="18" stroke-linecap="round"
+                        stroke="#8b5cf6" stroke-width="18" stroke-linecap="butt"
                         stroke-dasharray="0 ${circ}"
-                        stroke-dashoffset="${circ * 0.25 - watchedLen}"
+                        stroke-dashoffset="${plannedOffset}"
                         transform="rotate(-90 100 100)"
                         data-target="${plannedLen}"/>
                 </svg>
@@ -1276,14 +1281,13 @@ function renderStatistics() {
                 <div class="stats-mini-number">${avgDuration ? formatDuration(avgDuration) : '—'}</div>
                 <div class="stats-mini-label">средняя длина</div>
             </div>
-            <div class="stats-mini-card">
-                <div class="stats-mini-number">${minYear && maxYear ? (minYear === maxYear ? minYear : minYear + '—' + maxYear) : '—'}</div>
-                <div class="stats-mini-label">годы</div>
-            </div>
         </div>
 
-        <div class="stats-genres-section">
-            <h3 class="stats-subtitle">Жанры</h3>
+        <div class="stats-genres-header" onclick="toggleGenresStats(this)">
+            <span class="stats-genres-header-title">Жанры</span>
+            <span class="stats-genres-arrow">▼</span>
+        </div>
+        <div class="stats-genres-body">
             <div class="stats-bars-list">
                 ${sortedGenres.map(function(g, i) {
                     var wp = (g[1] / maxGenreCount * 100);
@@ -1311,6 +1315,25 @@ function renderStatistics() {
         });
     }, 300);
 }
+
+function toggleGenresStats(headerEl) {
+    var body = headerEl.nextElementSibling;
+    var arrow = headerEl.querySelector('.stats-genres-arrow');
+    if (body.classList.contains('open')) {
+        body.classList.remove('open');
+        arrow.classList.remove('open');
+    } else {
+        body.classList.add('open');
+        arrow.classList.add('open');
+        // Запускаем анимацию полосок при открытии
+        setTimeout(function() {
+            body.querySelectorAll('.stats-bar-fill').forEach(function(bar) {
+                bar.style.width = bar.dataset.width;
+            });
+        }, 100);
+    }
+}
+
 
 
     // 5. Отрисовка списка рекомендаций на экране
