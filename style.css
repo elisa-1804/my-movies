@@ -1696,6 +1696,16 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     padding: 10px;
     font-size: 13px;
 }
+/* Двухколоночный ряд для формы */
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
 
 #allMoviesPage .movies-grid,
 #allSeriesPage .movies-grid {
