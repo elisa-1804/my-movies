@@ -608,17 +608,29 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* Исправляем сетку главной страницы */
 .hub-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Теперь 3 колонки */
+    grid-template-columns: repeat(2, 1fr); /* Две колонки */
     gap: 15px;
     margin-top: 90px;
+    width: 100%;
 }
 
-/* Обновляем стили для плиток */
+/* Базовый стиль для всех плиток */
 .hub-tile-card {
-    aspect-ratio: 1 / 1; /* Возвращаем квадратную форму */
-    height: auto;
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 12px;
+    aspect-ratio: 1 / 1; /* Квадратная форма */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    user-select: none;
+    box-sizing: border-box;
 }
-
 /* Первая плитка (Фильмы) */
 .hub-tile-card:nth-child(1) {
     aspect-ratio: 1 / 1;
