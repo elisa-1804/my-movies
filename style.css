@@ -1711,3 +1711,78 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 #allSeriesPage .movies-grid {
     margin-top: 20px !important; 
 }
+/* 5-я плитка на главной — широкая плашка на всю ширину */
+.hub-tile-card:nth-child(5) {
+    aspect-ratio: unset;
+    height: 110px;
+    grid-column: 1 / -1;
+}
+
+/* Страница статистики */
+.stats-container {
+    margin-top: 90px;
+    padding-bottom: 100px;
+}
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+}
+.stats-card {
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 12px;
+    padding: 20px 15px;
+    text-align: center;
+}
+.stats-card:nth-child(3) {
+    grid-column: 1 / -1;
+}
+.stats-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #06B6D4;
+}
+.stats-small {
+    font-size: 14px;
+    font-weight: 500;
+    color: #8d8d99;
+}
+.stats-label {
+    font-size: 12px;
+    color: #8d8d99;
+    margin-top: 6px;
+}
+.stats-subtitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e1e1e6;
+    margin-bottom: 15px;
+}
+.stats-genres-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.stats-genre-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+.stats-genre-name {
+    font-size: 14px;
+    color: #e1e1e6;
+}
+.stats-genre-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: #06B6D4;
+    background-color: #29292e;
+    padding: 2px 10px;
+    border-radius: 10px;
+}
