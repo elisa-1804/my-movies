@@ -2622,11 +2622,9 @@ function formatDuration(minutes) {
     // Если есть часы, возвращаем формат "ч:мм", иначе просто минуты
     return hours > 0 ? `${hours}:${formattedMins}` : `${minutes} мин`;
 }
-<script>
     function goBack() {
         window.history.go(-1); // Возвращаемся на предыдущую страницу
     }
-</script>
 
     checkUser();
 
