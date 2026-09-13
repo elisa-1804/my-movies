@@ -1739,41 +1739,137 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     grid-column: 1 / -1;
 }
 
-/* Страница статистики */
+/* === СТАТИСТИКА === */
 .stats-container {
     margin-top: 90px;
     padding-bottom: 100px;
 }
-.stats-section {
+
+/* Кольцевая диаграмма */
+.stats-donut-section {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 12px;
+    padding: 25px 20px;
+    margin-bottom: 20px;
+}
+.stats-donut-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+.stats-donut-svg {
+    animation: donut-spin 1.2s ease-out;
+}
+@keyframes donut-spin {
+    from { transform: rotate(0deg) scale(0.5); opacity: 0; }
+    50%  { opacity: 1; }
+    to   { transform: rotate(360deg) scale(1); opacity: 1; }
+}
+.donut-seg {
+    transition: stroke-dasharray 1s ease-out;
+}
+.stats-donut-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+.donut-center-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #e1e1e6;
+}
+.donut-center-label {
+    font-size: 12px;
+    color: #8d8d99;
+}
+.stats-donut-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.donut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.donut-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.donut-legend-text {
+    font-size: 14px;
+    color: #e1e1e6;
+    flex: 1;
+}
+.donut-legend-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e1e1e6;
+}
+
+/* Время просмотра */
+.stats-time-card {
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.stats-time-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #06B6D4;
+}
+.stats-time-value span {
+    font-size: 16px;
+    font-weight: 500;
+    color: #8d8d99;
+    margin-left: 2px;
+}
+.stats-time-label {
+    font-size: 12px;
+    color: #8d8d99;
+    margin-top: 6px;
+}
+
+/* Мини-карточки */
+.stats-mini-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-bottom: 25px;
 }
-.stats-card {
+.stats-mini-card {
     background-color: #202024;
     border: 1px solid #29292e;
-    border-radius: 12px;
-    padding: 20px 15px;
+    border-radius: 10px;
+    padding: 15px;
     text-align: center;
 }
-.stats-card:nth-child(3) {
-    grid-column: 1 / -1;
-}
-.stats-number {
-    font-size: 32px;
+.stats-mini-number {
+    font-size: 20px;
     font-weight: 700;
     color: #06B6D4;
 }
-.stats-small {
-    font-size: 14px;
-    font-weight: 500;
+.stats-mini-label {
+    font-size: 11px;
     color: #8d8d99;
+    margin-top: 4px;
 }
-.stats-label {
-    font-size: 12px;
-    color: #8d8d99;
-    margin-top: 6px;
+
+/* Столбчатая диаграмма жанров */
+.stats-genres-section {
+    margin-bottom: 20px;
 }
 .stats-subtitle {
     font-size: 18px;
@@ -1781,29 +1877,53 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     color: #e1e1e6;
     margin-bottom: 15px;
 }
-.stats-genres-list {
+.stats-bars-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
-.stats-genre-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.stats-bar-item {
     background-color: #202024;
     border: 1px solid #29292e;
     border-radius: 8px;
-    padding: 12px 15px;
+    padding: 10px 12px;
 }
-.stats-genre-name {
-    font-size: 14px;
+.stats-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+.stats-bar-name {
+    font-size: 13px;
     color: #e1e1e6;
 }
-.stats-genre-count {
-    font-size: 14px;
+.stats-bar-count {
+    font-size: 13px;
     font-weight: 600;
     color: #06B6D4;
-    background-color: #29292e;
-    padding: 2px 10px;
-    border-radius: 10px;
+}
+.stats-bar-track {
+    height: 8px;
+    background-color: #121214;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.stats-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06B6D4, #0dd0f2);
+    border-radius: 4px;
+}
+
+/* Адаптив */
+@media (max-width: 380px) {
+    .stats-donut-section {
+        flex-direction: column;
+        text-align: center;
+    }
+    .stats-donut-legend {
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+    }
 }
