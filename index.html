@@ -234,6 +234,11 @@
                 <label>Год</label>
                 <input type="number" id="formYear">
             </div>
+            <div class="form-group">
+    <label>Продолжительность (мин)</label>
+    <input type="number" id="formDuration" min="0" placeholder="Например: 120">
+</div>
+
        <!-- РАСКРЫВАЮЩИЙСЯ СПОЙЛЕР ЖАНРОВ ФИЛЬМА -->
             <div class="form-group">
                 <label>Жанры фильма</label>
@@ -687,14 +692,17 @@ function switchPage(pageId, titleText) {
 }
 
     function getStarsHtml(r) { let h = ''; for(let i=1; i<=5; i++) { h += i <= r ? '★' : '☆'; } return h; }
-    function renderMoviesGrid(gridId, list) {
-        const grid = document.getElementById(gridId); grid.innerHTML = '';
-        if(list.length === 0) { grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список пуст 🎬</p>'; return; }
-        list.forEach(m => {
-            const card = document.createElement('div'); card.className = 'movie-card' + (m.favorite ? ' is-fav' : ''); card.onclick = function() { showDetails(m.id); };
-card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><img src="images/favorites.png" class="card-heart-img"><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';            grid.appendChild(card);
-        });
-    }
+ function renderMoviesGrid(gridId, list) {
+    const grid = document.getElementById(gridId); grid.innerHTML = '';
+    if(list.length === 0) { grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список пуст 🎬</p>'; return; }
+    list.forEach(m => {
+        const card = document.createElement('div'); card.className = 'movie-card' + (m.favorite ? ' is-fav' : ''); card.onclick = function() { showDetails(m.id); };
+        const durationText = m.duration ? ' • ' + m.duration + ' мин' : '';
+        card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><img src="images/favorites.png" class="card-heart-img"><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + durationText + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';
+        grid.appendChild(card);
+    });
+}
+
         async function renderGenresList() {
         const t = localStorage.getItem("sb_token");
         const response = await fetch(SUPABASE_URL + "/rest/v1/genres?select=*", { method: "GET", headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + t } });
@@ -810,6 +818,7 @@ function openModal(editId = null) {
         document.getElementById('formMovieId').value = m.id;
         document.getElementById('formTitle').value = m.title;
         document.getElementById('formYear').value = m.year || '';
+        document.getElementById('formDuration').value = m.duration || '';
         document.getElementById('formPoster').value = m.poster || '';
         document.getElementById('formDesc').value = m.desc || '';
         if (typeof setFormRating === 'function') setFormRating(m.rating || 0); 
@@ -839,6 +848,7 @@ function openModal(editId = null) {
         document.getElementById('formMovieId').value = '';
         document.getElementById('formTitle').value = '';
         document.getElementById('formYear').value = '';
+        document.getElementById('formDuration').value = '';
         document.getElementById('formPoster').value = '';
         document.getElementById('formDesc').value = '';
         if (typeof setFormRating === 'function') setFormRating(0); 
@@ -857,69 +867,73 @@ function openModal(editId = null) {
     
     const modal = document.getElementById('addMovieModal');
     if (modal) modal.classList.add('active');
-
 }
 
 
 
 
+
     // 2. Обновленная функция сохранения фильма
-    async function saveMovie() {
-        const title = document.getElementById('formTitle').value.trim(); 
-        if (!title) { alert("Укажите название!"); return; }
-        
-        const id = document.getElementById('formMovieId').value;
-        const t = localStorage.getItem("sb_token");
-        const headers = { 
-            "apikey": SUPABASE_KEY, 
-            "Authorization": "Bearer " + t, 
-            "Content-Type": "application/json" 
-        };
-        
-        const posterValue = document.getElementById('formPoster').value.trim();
-        const descValue = document.getElementById('formDesc').value.trim();
-        const yearValue = document.getElementById('formYear').value.trim();
-        
-        // ЧИТАЕМ ЗНАЧЕНИЕ ФРАНШИЗЫ:
-        const collectionValue = document.getElementById('formCollection').value.trim();
+async function saveMovie() {
+    const title = document.getElementById('formTitle').value.trim(); 
+    if (!title) { alert("Укажите название!"); return; }
+    
+    const id = document.getElementById('formMovieId').value;
+    const t = localStorage.getItem("sb_token");
+    const headers = { 
+        "apikey": SUPABASE_KEY, 
+        "Authorization": "Bearer " + t, 
+        "Content-Type": "application/json" 
+    };
+    
+    const posterValue = document.getElementById('formPoster').value.trim();
+    const descValue = document.getElementById('formDesc').value.trim();
+    const yearValue = document.getElementById('formYear').value.trim();
+    const durationValue = document.getElementById('formDuration').value.trim();
+    
+    // ЧИТАЕМ ЗНАЧЕНИЕ ФРАНШИЗЫ:
+    const collectionValue = document.getElementById('formCollection').value.trim();
 
-        const parsedYear = yearValue ? parseInt(yearValue, 10) : null;
-        const parsedRating = currentFormRating ? parseInt(currentFormRating, 10) : 0;
+    const parsedYear = yearValue ? parseInt(yearValue, 10) : null;
+    const parsedDuration = durationValue ? parseInt(durationValue, 10) : null;
+    const parsedRating = currentFormRating ? parseInt(currentFormRating, 10) : 0;
 
-        const selectedGenres = [];
-        document.querySelectorAll('.movie-genre-checkbox:checked').forEach(cb => {
-            selectedGenres.push(cb.value);
-        });
+    const selectedGenres = [];
+    document.querySelectorAll('.movie-genre-checkbox:checked').forEach(cb => {
+        selectedGenres.push(cb.value);
+    });
 
-        // Собираем объект данных для Supabase
-        const mData = { 
-            title: title, 
-            year: parsedYear,             
-            genre: selectedGenres.length > 0 ? selectedGenres : null, 
-            poster: posterValue || null,  
-            desc: descValue || null,      
-            rating: parsedRating,
-            collection: collectionValue || null, // ТЕПЕРЬ ФРАНШИЗА УЛЕТАЕТ В БАЗУ!
-            user_id: currentUser.id 
-        };
-        
-        let response;
-        if(id) { 
-            response = await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
-        } else { 
-            mData.favorite = false; 
-            response = await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
-        }
-
-        if (response.ok) {
-            closeModal(); 
-            await loadData(); 
-            if(id) { showDetails(id); } else { switchPage('allMoviesPage', 'Все фильмы'); }
-        } else {
-            const errorText = await response.text();
-            alert("Ошибка сохранения фильма: " + errorText);
-        }
+    // Собираем объект данных для Supabase
+    const mData = { 
+        title: title, 
+        year: parsedYear,             
+        duration: parsedDuration,
+        genre: selectedGenres.length > 0 ? selectedGenres : null, 
+        poster: posterValue || null,  
+        desc: descValue || null,      
+        rating: parsedRating,
+        collection: collectionValue || null, // ТЕПЕРЬ ФРАНШИЗА УЛЕТАЕТ В БАЗУ!
+        user_id: currentUser.id 
+    };
+    
+    let response;
+    if(id) { 
+        response = await fetch(SUPABASE_URL + "/rest/v1/movies?id=eq." + id, { method: "PATCH", headers: headers, body: JSON.stringify(mData) });
+    } else { 
+        mData.favorite = false; 
+        response = await fetch(SUPABASE_URL + "/rest/v1/movies", { method: "POST", headers: headers, body: JSON.stringify(mData) });
     }
+
+    if (response.ok) {
+        closeModal(); 
+        await loadData(); 
+        if(id) { showDetails(id); } else { switchPage('allMoviesPage', 'Все фильмы'); }
+    } else {
+        const errorText = await response.text();
+        alert("Ошибка сохранения фильма: " + errorText);
+    }
+}
+
 
            
     function closeModal() { 
@@ -1008,9 +1022,10 @@ function showDetails(id) {
                 ${franchiseLinkHtml}
             </div>
             
-            <!-- Правая колонка: Данные (Год, Жанр, Рейтинг) -->
+            <!-- Правая колонка: Данные (Год, Продолжительность, Жанр, Рейтинг) -->
             <div class="details-content" style="flex: 1; min-width: 0; padding: 0; margin: 0; position: static;">
                 <div class="details-tag">📅 ${m.year || '—'}</div>
+                <div class="details-tag">⏱️ ${m.duration ? m.duration + ' мин' : '—'}</div>
                 <div class="details-tag">🎭 ${genreText}</div>
                 <div class="details-tag"><span>Рейтинг:</span> <strong style="color: #fba94c;">${getStarsHtml(m.rating || 0)}</strong></div>
             </div>
@@ -1037,6 +1052,7 @@ function showDetails(id) {
         };
     }
 }
+
 
 
  async function toggleFav(id) { 
@@ -1314,46 +1330,48 @@ wrapper.onclick = () => showCollectionDetails(collectionName, list);
         });
     }
     // --- ФУНКЦИЯ: ОТРИСОВКА ВСЕХ ЧАСТЕЙ ФРАНШИЗЫ (С ПОДДЕРЖКОЙ ИЗБРАННОГО) ---
-    function showCollectionDetails(collectionName, partsList) {
-        // Переключаем экран на страницу списка частей
-        switchPage('collectionPage', collectionName);
+function showCollectionDetails(collectionName, partsList) {
+    // Переключаем экран на страницу списка частей
+    switchPage('collectionPage', collectionName);
+    
+    // Меням заголовок в зафиксированной шапке
+    document.getElementById('collectionPageTitle').textContent = collectionName;
+    
+    const container = document.getElementById('collectionListContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    const defaultPoster = 'https://unsplash.com';
+    
+    // Перебираем части франшизы
+    partsList.forEach(m => {
+        const card = document.createElement('div');
         
-        // Меням заголовок в зафиксированной шапке
-        document.getElementById('collectionPageTitle').textContent = collectionName;
+        // МАГИЯ: Проверяем, в Избранном ли эта конкретная часть.
+        // Если да — добавляем класс is-fav, чтобы применились твои фирменные цвета!
+        card.className = 'franchise-row-card' + (m.favorite ? ' is-fav' : '');
         
-        const container = document.getElementById('collectionListContainer');
-        if (!container) return;
+        // При клике проваливаемся в полное описание фильма
+        card.onclick = () => showDetails(m.id);
         
-        container.innerHTML = '';
-        const defaultPoster = 'https://unsplash.com';
+        // Собираем жанры в строку
+        const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий');
         
-        // Перебираем части франшизы
-        partsList.forEach(m => {
-            const card = document.createElement('div');
-            
-            // МАГИЯ: Проверяем, в Избранном ли эта конкретная часть.
-            // Если да — добавляем класс is-fav, чтобы применились твои фирменные цвета!
-            card.className = 'franchise-row-card' + (m.favorite ? ' is-fav' : '');
-            
-            // При клике проваливаемся в полное описание фильма
-            card.onclick = () => showDetails(m.id);
-            
-            // Собираем жанры в строку
-            const genreText = Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий');
-            
-            card.innerHTML = `
-                <img class="franchise-row-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
-                <div class="franchise-row-info">
-                    <div class="franchise-row-title">${m.title}</div>
-                    <div class="franchise-row-meta">📅 ${m.year || '—'}</div>
-                    <div class="franchise-row-meta">🎭 ${genreText}</div>
-                    <div class="franchise-row-stars">${getStarsHtml(m.rating || 0)}</div>
-                </div>
-            `;
-            
-            container.appendChild(card);
-        });
-    }
+        card.innerHTML = `
+            <img class="franchise-row-poster" src="${m.poster || defaultPoster}" alt="${m.title}">
+            <div class="franchise-row-info">
+                <div class="franchise-row-title">${m.title}</div>
+                <div class="franchise-row-meta">📅 ${m.year || '—'}</div>
+                <div class="franchise-row-meta">⏱️ ${m.duration ? m.duration + ' мин' : '—'}</div>
+                <div class="franchise-row-meta">🎭 ${genreText}</div>
+                <div class="franchise-row-stars">${getStarsHtml(m.rating || 0)}</div>
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
 // --- ФУНКЦИЯ: УДАЛЕНИЕ ФИЛЬМА ИЗ МОДАЛЬНОГО ОКНА ---
 async function deleteMovieFromModal() {
     const id = document.getElementById('formMovieId').value;
