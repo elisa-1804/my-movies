@@ -1169,36 +1169,32 @@ function showDetails(id) {
         recommendations = response.ok ? await response.json() : [];
         renderRecommendationsList();
     }
+
+
 function renderStatistics() {
     const container = document.getElementById('statsContainer');
     if (!container) return;
 
-    // Данные
-    const totalMovies = movies.length;
-    const plannedMovies = recommendations.filter(r => r.type === 'movie').length;
+    const totalMovies = movies.length || 0;
+    const plannedMovies = recommendations.filter(r => r.type === 'movie').length || 0;
     const totalAll = totalMovies + plannedMovies;
 
-    // Время
     const totalMinutes = movies.reduce((sum, m) => sum + (m.duration || 0), 0);
     const totalHours = Math.floor(totalMinutes / 60);
     const remainingMins = totalMinutes % 60;
 
-    // Избранное
     const favCount = movies.filter(m => m.favorite).length;
 
-    // Средний рейтинг
     const ratedMovies = movies.filter(m => m.rating && m.rating > 0);
     const avgRating = ratedMovies.length > 0
         ? (ratedMovies.reduce((sum, m) => sum + m.rating, 0) / ratedMovies.length).toFixed(1)
         : '—';
 
-    // Средняя продолжительность
     const moviesWithDuration = movies.filter(m => m.duration && m.duration > 0);
     const avgDuration = moviesWithDuration.length > 0
         ? Math.round(moviesWithDuration.reduce((sum, m) => sum + m.duration, 0) / moviesWithDuration.length)
         : 0;
 
-    // Жанры
     const genreCount = {};
     movies.forEach(m => {
         const mg = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
@@ -1209,19 +1205,18 @@ function renderStatistics() {
     const sortedGenres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]);
     const maxGenreCount = sortedGenres.length > 0 ? sortedGenres[0][1] : 1;
 
-    // Кольцевая диаграмма — два раздельных сегмента с зазором
+    // Кольцевая диаграмма — раздельные сегменты с зазором
     const r = 70;
     const circ = 2 * Math.PI * r;
-    const gap = 12; // зазор между сегментами в единицах длины окружности
+    const gap = 30; // увеличенный зазор, чтобы скруглённые концы не сливались
 
     const watchedPct = totalAll > 0 ? (totalMovies / totalAll) : 0;
     const plannedPct = totalAll > 0 ? (plannedMovies / totalAll) : 0;
 
-    // Длина каждой дуги (с вычетом зазора)
     const watchedLen = Math.max(0, watchedPct * circ - gap);
     const plannedLen = Math.max(0, plannedPct * circ - gap);
 
-    // Смещение для второго сегмента: после первого + зазор
+    // Смещение второго сегмента: после первого + два зазора
     const plannedOffset = circ * 0.25 - watchedLen - gap * 2;
 
     container.innerHTML = `
@@ -1229,16 +1224,16 @@ function renderStatistics() {
             <div class="stats-donut-wrapper">
                 <svg class="stats-donut-svg" viewBox="0 0 200 200" width="180" height="180">
                     <circle cx="100" cy="100" r="${r}" fill="none" stroke="#29292e" stroke-width="18"/>
-                    <circle class="donut-seg donut-watched"
+                    <circle class="donut-seg"
                         cx="100" cy="100" r="${r}" fill="none"
-                        stroke="#06B6D4" stroke-width="18" stroke-linecap="butt"
+                        stroke="#06B6D4" stroke-width="18"
                         stroke-dasharray="0 ${circ}"
                         stroke-dashoffset="${circ * 0.25}"
                         transform="rotate(-90 100 100)"
                         data-target="${watchedLen}"/>
-                    <circle class="donut-seg donut-planned"
+                    <circle class="donut-seg"
                         cx="100" cy="100" r="${r}" fill="none"
-                        stroke="#8b5cf6" stroke-width="18" stroke-linecap="butt"
+                        stroke="#8b5cf6" stroke-width="18"
                         stroke-dasharray="0 ${circ}"
                         stroke-dashoffset="${plannedOffset}"
                         transform="rotate(-90 100 100)"
@@ -1300,20 +1295,13 @@ function renderStatistics() {
         </div>
     `;
 
-    // Анимация сегментов кольца
+    // Анимация сегментов
     setTimeout(function() {
         document.querySelectorAll('.donut-seg').forEach(function(seg) {
             var target = parseFloat(seg.dataset.target);
             seg.style.strokeDasharray = target + ' ' + circ;
         });
     }, 200);
-
-    // Анимация столбиков
-    setTimeout(function() {
-        document.querySelectorAll('.stats-bar-fill').forEach(function(bar) {
-            bar.style.width = bar.dataset.width;
-        });
-    }, 300);
 }
 
 function toggleGenresStats(headerEl) {
@@ -1325,7 +1313,6 @@ function toggleGenresStats(headerEl) {
     } else {
         body.classList.add('open');
         arrow.classList.add('open');
-        // Запускаем анимацию полосок при открытии
         setTimeout(function() {
             body.querySelectorAll('.stats-bar-fill').forEach(function(bar) {
                 bar.style.width = bar.dataset.width;
