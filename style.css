@@ -1948,8 +1948,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 @media (max-width: 380px) {
     .stats-donut-section {
         flex-direction: column;
-        text-align: center;
-        align-items: center;
+        align-items: flex-start;
+        padding-left: 15px;
     }
     
     .stats-donut-wrapper {
