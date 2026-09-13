@@ -189,32 +189,34 @@
         </div>
 
         <!-- 6. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
-        <div id="recommendationsPage" class="page">
-            <div class="page-fixed-header">
-                <button class="back-button" onclick="goBack()">
+        <!-- 6. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
+<div id="recommendationsPage" class="page">
+    <div class="page-fixed-header">
+        <div class="stats-header-row">
+            <button class="back-button" onclick="goBack()">
                 <img src="images/back.png" alt="Назад" class="back-icon">
             </button>
-          <h1>Рекомендации</h1>
+            <h1>Рекомендации</h1>
         </div>
-                <div></div>
-            </div>
-            <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
-            <ul class="rec-list" id="recList"></ul>
-        </div>
+    </div>
+    <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
+    <ul class="rec-list" id="recList"></ul>
+</div>
 
-        <!-- 7. СТРАНИЦА ЖАНРОВ -->
-        <div id="genresPage" class="page">
-            <div class="page-fixed-header">
-                <button class="back-button" onclick="goBack()">
+       <!-- 7. СТРАНИЦА ЖАНРОВ -->
+<div id="genresPage" class="page">
+    <div class="page-fixed-header">
+        <div class="stats-header-row">
+            <button class="back-button" onclick="goBack()">
                 <img src="images/back.png" alt="Назад" class="back-icon">
             </button>
-          <h1>Жанры</h1>
-        </div> 
-                <div></div>
-            </div>
-            <button class="add-rec-btn" onclick="openAddGenreModal()">Добавить жанр</button>
-            <ul class="genre-list" id="genreList"></ul>
+            <h1>Жанры</h1>
         </div>
+    </div>
+    <button class="add-rec-btn" onclick="openAddGenreModal()">Добавить жанр</button>
+    <ul class="genre-list" id="genreList"></ul>
+</div>
+
 
         <!-- 8. СТРАНИЦА: СПИСОК ЧАСТЕЙ ФРАНШИЗЫ -->
         <div id="collectionPage" class="page" style="position: relative;">
