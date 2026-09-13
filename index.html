@@ -1169,57 +1169,149 @@ function showDetails(id) {
 function renderStatistics() {
     const container = document.getElementById('statsContainer');
     if (!container) return;
-    
-    // Общее количество фильмов
+
+    // Данные
     const totalMovies = movies.length;
-    
-    // Количество фильмов в планах (рекомендации с type='movie')
     const plannedMovies = recommendations.filter(r => r.type === 'movie').length;
-    
-    // Общее время просмотра в минутах
+    const totalAll = totalMovies + plannedMovies;
+
+    // Время
     const totalMinutes = movies.reduce((sum, m) => sum + (m.duration || 0), 0);
     const totalHours = Math.floor(totalMinutes / 60);
     const remainingMins = totalMinutes % 60;
-    
-    // Статистика по жанрам
+
+    // Избранное
+    const favCount = movies.filter(m => m.favorite).length;
+
+    // Средний рейтинг
+    const ratedMovies = movies.filter(m => m.rating && m.rating > 0);
+    const avgRating = ratedMovies.length > 0
+        ? (ratedMovies.reduce((sum, m) => sum + m.rating, 0) / ratedMovies.length).toFixed(1)
+        : '—';
+
+    // Средняя продолжительность
+    const moviesWithDuration = movies.filter(m => m.duration && m.duration > 0);
+    const avgDuration = moviesWithDuration.length > 0
+        ? Math.round(moviesWithDuration.reduce((sum, m) => sum + m.duration, 0) / moviesWithDuration.length)
+        : 0;
+
+    // Диапазон лет
+    const years = movies.map(m => m.year).filter(y => y);
+    const minYear = years.length > 0 ? Math.min(...years) : null;
+    const maxYear = years.length > 0 ? Math.max(...years) : null;
+
+    // Жанры
     const genreCount = {};
     movies.forEach(m => {
-        const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
-        movieGenres.forEach(g => {
-            if (g && g.trim()) {
-                genreCount[g.trim()] = (genreCount[g.trim()] || 0) + 1;
-            }
+        const mg = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
+        mg.forEach(g => {
+            if (g && g.trim()) genreCount[g.trim()] = (genreCount[g.trim()] || 0) + 1;
         });
     });
-    
-    // Сортируем жанры по убыванию количества
     const sortedGenres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]);
-    
+    const maxGenreCount = sortedGenres.length > 0 ? sortedGenres[0][1] : 1;
+
+    // Кольцевая диаграмма
+    const r = 70;
+    const circ = 2 * Math.PI * r;
+    const watchedPct = totalAll > 0 ? (totalMovies / totalAll) : 0;
+    const plannedPct = totalAll > 0 ? (plannedMovies / totalAll) : 0;
+    const watchedLen = watchedPct * circ;
+    const plannedLen = plannedPct * circ;
+
     container.innerHTML = `
-        <div class="stats-section">
-            <div class="stats-card">
-                <div class="stats-number">${totalMovies}</div>
-                <div class="stats-label">Фильмов в каталоге</div>
+        <div class="stats-donut-section">
+            <div class="stats-donut-wrapper">
+                <svg class="stats-donut-svg" viewBox="0 0 200 200" width="180" height="180">
+                    <circle cx="100" cy="100" r="${r}" fill="none" stroke="#29292e" stroke-width="18"/>
+                    <circle class="donut-seg donut-watched"
+                        cx="100" cy="100" r="${r}" fill="none"
+                        stroke="#06B6D4" stroke-width="18" stroke-linecap="round"
+                        stroke-dasharray="0 ${circ}"
+                        stroke-dashoffset="${circ * 0.25}"
+                        transform="rotate(-90 100 100)"
+                        data-target="${watchedLen}"/>
+                    <circle class="donut-seg donut-planned"
+                        cx="100" cy="100" r="${r}" fill="none"
+                        stroke="#8b5cf6" stroke-width="18" stroke-linecap="round"
+                        stroke-dasharray="0 ${circ}"
+                        stroke-dashoffset="${circ * 0.25 - watchedLen}"
+                        transform="rotate(-90 100 100)"
+                        data-target="${plannedLen}"/>
+                </svg>
+                <div class="stats-donut-center">
+                    <div class="donut-center-number">${totalAll}</div>
+                    <div class="donut-center-label">всего</div>
+                </div>
             </div>
-            <div class="stats-card">
-                <div class="stats-number">${plannedMovies}</div>
-                <div class="stats-label">В планах к просмотру</div>
-            </div>
-            <div class="stats-card">
-                <div class="stats-number">${totalHours}<span class="stats-small">ч ${remainingMins} мин</span></div>
-                <div class="stats-label">Потрачено на просмотр</div>
+            <div class="stats-donut-legend">
+                <div class="donut-legend-item">
+                    <span class="donut-legend-dot" style="background:#06B6D4"></span>
+                    <span class="donut-legend-text">В каталоге</span>
+                    <span class="donut-legend-value">${totalMovies}</span>
+                </div>
+                <div class="donut-legend-item">
+                    <span class="donut-legend-dot" style="background:#8b5cf6"></span>
+                    <span class="donut-legend-text">В планах</span>
+                    <span class="donut-legend-value">${plannedMovies}</span>
+                </div>
             </div>
         </div>
+
+        <div class="stats-time-card">
+            <div class="stats-time-value">${totalHours}<span>ч</span> ${remainingMins}<span>мин</span></div>
+            <div class="stats-time-label">потрачено на просмотр</div>
+        </div>
+
+        <div class="stats-mini-grid">
+            <div class="stats-mini-card">
+                <div class="stats-mini-number">${favCount}</div>
+                <div class="stats-mini-label">в избранном</div>
+            </div>
+            <div class="stats-mini-card">
+                <div class="stats-mini-number">${avgRating}</div>
+                <div class="stats-mini-label">средний рейтинг</div>
+            </div>
+            <div class="stats-mini-card">
+                <div class="stats-mini-number">${avgDuration ? formatDuration(avgDuration) : '—'}</div>
+                <div class="stats-mini-label">средняя длина</div>
+            </div>
+            <div class="stats-mini-card">
+                <div class="stats-mini-number">${minYear && maxYear ? (minYear === maxYear ? minYear : minYear + '—' + maxYear) : '—'}</div>
+                <div class="stats-mini-label">годы</div>
+            </div>
+        </div>
+
         <div class="stats-genres-section">
             <h3 class="stats-subtitle">Жанры</h3>
-            <div class="stats-genres-list">
-                ${sortedGenres.map(function(g) {
-                    return '<div class="stats-genre-item"><span class="stats-genre-name">' + g[0] + '</span><span class="stats-genre-count">' + g[1] + '</span></div>';
+            <div class="stats-bars-list">
+                ${sortedGenres.map(function(g, i) {
+                    var wp = (g[1] / maxGenreCount * 100);
+                    return '<div class="stats-bar-item">' +
+                        '<div class="stats-bar-header"><span class="stats-bar-name">' + g[0] + '</span><span class="stats-bar-count">' + g[1] + '</span></div>' +
+                        '<div class="stats-bar-track"><div class="stats-bar-fill" data-width="' + wp + '%" style="width:0;transition:width 0.8s ease-out ' + (i * 0.06) + 's;"></div></div>' +
+                    '</div>';
                 }).join('')}
             </div>
         </div>
     `;
+
+    // Анимация сегментов кольца
+    setTimeout(function() {
+        document.querySelectorAll('.donut-seg').forEach(function(seg) {
+            var target = parseFloat(seg.dataset.target);
+            seg.style.strokeDasharray = target + ' ' + circ;
+        });
+    }, 200);
+
+    // Анимация столбиков
+    setTimeout(function() {
+        document.querySelectorAll('.stats-bar-fill').forEach(function(bar) {
+            bar.style.width = bar.dataset.width;
+        });
+    }, 300);
 }
+
 
     // 5. Отрисовка списка рекомендаций на экране
     function renderRecommendationsList() {
