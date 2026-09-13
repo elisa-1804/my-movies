@@ -1739,7 +1739,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     grid-column: 1 / -1;
 }
 
-/* === СТАТИСТИКА === */
+//* === СТАТИСТИКА === */
 .stats-container {
     margin-top: 90px;
     padding-bottom: 100px;
@@ -1792,12 +1792,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
 }
 .donut-legend-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 .donut-legend-dot {
     width: 12px;
@@ -1811,9 +1811,11 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     flex: 1;
 }
 .donut-legend-value {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     color: #e1e1e6;
+    min-width: 35px;
+    text-align: right;
 }
 
 /* Время просмотра */
@@ -1856,6 +1858,9 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     padding: 15px;
     text-align: center;
 }
+.stats-mini-card:last-child {
+    grid-column: 1 / -1;
+}
 .stats-mini-number {
     font-size: 20px;
     font-weight: 700;
@@ -1867,20 +1872,48 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     margin-top: 4px;
 }
 
-/* Столбчатая диаграмма жанров */
-.stats-genres-section {
-    margin-bottom: 20px;
+/* Раскрывающийся блок жанров */
+.stats-genres-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #202024;
+    border: 1px solid #29292e;
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s;
 }
-.stats-subtitle {
-    font-size: 18px;
+.stats-genres-header:hover {
+    border-color: #06B6D4;
+}
+.stats-genres-header-title {
+    font-size: 16px;
     font-weight: 600;
     color: #e1e1e6;
-    margin-bottom: 15px;
+}
+.stats-genres-arrow {
+    font-size: 14px;
+    color: #8d8d99;
+    transition: transform 0.3s ease;
+}
+.stats-genres-arrow.open {
+    transform: rotate(180deg);
+}
+.stats-genres-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+.stats-genres-body.open {
+    max-height: 2000px;
 }
 .stats-bars-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-top: 12px;
 }
 .stats-bar-item {
     background-color: #202024;
@@ -1924,6 +1957,15 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     .stats-donut-legend {
         flex-direction: row;
         justify-content: center;
-        gap: 20px;
+        gap: 24px;
+        width: 100%;
+    }
+    .donut-legend-item {
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+    }
+    .donut-legend-text {
+        font-size: 12px;
     }
 }
