@@ -34,7 +34,7 @@
             <div class="page-fixed-header">
                 <h1>Главная</h1>
                 <button class="logout-btn" onclick="logout()">
-                    <img src="exit.png" alt="Выйти" class="header-icon-img">
+                    <img src="images/exit.png" alt="Выйти" class="header-icon-img">
                 </button>
             </div>
             
@@ -43,25 +43,25 @@
                 
                 <!-- 1. Избранное (Верхний левый) -->
                 <div class="hub-tile-card" onclick="switchPage('favoritesPage', 'Избранное')">
-                    <img src="favorites.png" alt="Избранное" class="hub-tile-icon">
+                    <img src="images/favorites.png" alt="Избранное" class="hub-tile-icon">
                     <span class="hub-tile-title">Любимое</span>
                 </div>
 
                 <!-- 2. Фильмы по частям (Верхний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
-                    <img src="playlist.png" alt="Части" class="hub-tile-icon">
+                    <img src="images/playlist.png" alt="Части" class="hub-tile-icon">
                     <span class="hub-tile-title">Фильмы по частям</span>
                 </div>
 
                 <!-- 3. Рекомендации к просмотру (Нижний левый) -->
                 <div class="hub-tile-card" onclick="switchPage('recommendationsPage', 'Рекомендации')">
-                    <img src="rec.png" alt="Рекомендации" class="hub-tile-icon">
+                    <img src="images/rec.png" alt="Рекомендации" class="hub-tile-icon">
                     <span class="hub-tile-title">Рекомендации к просмотру</span>
                 </div>
 
                 <!-- 4. Жанры (Нижний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
-                    <img src="genres.png" alt="Жанры" class="hub-tile-icon">
+                    <img src="images/genres.png" alt="Жанры" class="hub-tile-icon">
                     <span class="hub-tile-title">Жанры</span>
                 </div>
 
@@ -75,10 +75,10 @@
                 <h1>Фильмы</h1>
                 <div style="display:flex; gap:15px; align-items:center;">
                     <button class="add-movie-btn" id="headerPlusBtn" onclick="openModal()">
-                        <img src="add.png" alt="Добавить" class="header-icon-img">
+                        <img src="images/add.png" alt="Добавить" class="header-icon-img">
                     </button>
                     <button class="logout-btn" onclick="logout()">
-                        <img src="exit.png" alt="Выйти" class="header-icon-img">
+                        <img src="images/exit.png" alt="Выйти" class="header-icon-img">
                     </button>
                 </div>
             </div>
@@ -87,11 +87,11 @@
     <input type="text" id="movieSearchInput" oninput="filterMovies()" placeholder="Поиск фильма...">
     
     <button class="filter-icon-btn" onclick="openFilterDrawer('movie')">
-        <img src="settings.png" alt="Фильтры">
+        <img src="images/settings.png" alt="Фильтры">
     </button>
 
     <button id="movieSortBtn" class="sort-icon-btn" onclick="toggleSort('movie')">
-        <img id="movieSortImg" src="sort2.png" alt="Сортировка">
+        <img id="movieSortImg" src="images/sort2.png" alt="Сортировка">
     </button>
 </div>
 
@@ -105,10 +105,10 @@
                 <div style="display:flex; gap:15px; align-items:center;">
                     <!-- Для сериалов откроем отдельную модалку, которую сделаем в след. шаге -->
                     <button class="add-movie-btn" id="headerSeriesPlusBtn" onclick="openSeriesModal()">
-                        <img src="add.png" alt="Добавить" class="header-icon-img">
+                        <img src="images/add.png" alt="Добавить" class="header-icon-img">
                     </button>
                     <button class="logout-btn" onclick="logout()">
-                        <img src="exit.png" alt="Выйти" class="header-icon-img">
+                        <img src="images/exit.png" alt="Выйти" class="header-icon-img">
                     </button>
                 </div>
             </div>
@@ -117,11 +117,11 @@
     <input type="text" id="seriesSearchInput" oninput="filterSeries()" placeholder="Поиск сериала...">
     
     <button class="filter-icon-btn" onclick="openFilterDrawer('series')">
-        <img src="settings.png" alt="Фильтры">
+        <img src="images/settings.png" alt="Фильтры">
     </button>
 
     <button id="seriesSortBtn" class="sort-icon-btn" onclick="toggleSort('series')">
-        <img id="seriesSortImg" src="sort2.png" alt="Сортировка">
+        <img id="seriesSortImg" src="images/sort2.png" alt="Сортировка">
     </button>
 </div>
 
@@ -179,7 +179,7 @@
         <div id="collectionPage" class="page" style="position: relative;">
             <div class="collection-fixed-header">
                 <button class="back-icon-btn" onclick="switchPage('moviePartsPage', 'Фильмы по частям')">
-                    <img src="back.png" alt="Назад" class="details-back-img">
+                    <img src="images/back.png" alt="Назад" class="details-back-img">
                 </button>
                 <h2 class="details-page-center-title" id="collectionPageTitle">Франшиза</h2>
                 <div style="width: 40px;"></div> 
@@ -191,11 +191,11 @@
         <div id="detailsPage" class="page" style="position: relative;">
             <div class="details-fixed-header">
                 <button class="back-icon-btn">
-                    <img src="back.png" alt="Назад" class="details-back-img">
+                    <img src="images/back.png" alt="Назад" class="details-back-img">
                 </button>
                 <h2 class="details-page-center-title" id="detailsFixedTitle">О фильме</h2>
                 <button class="edit-icon-btn" id="movieEditBtn">
-                    <img src="edit.png" alt="Редактировать" class="details-edit-img">
+                    <img src="images/edit.png" alt="Редактировать" class="details-edit-img">
                 </button>
             </div>
             <div class="details-container" id="detailsContainer"></div>
@@ -204,15 +204,15 @@
         <!-- НОВОЕ НИЖНЕЕ МЕНЮ (ИЗБРАННОГО НЕТ, ЕСТЬ СЕРИАЛЫ) -->
         <nav class="bottom-nav">
             <button class="nav-item active" id="navHome" onclick="switchPage('homePage', 'Главная')">
-                <img src="home.png" alt="Главная" class="nav-icon-img">
+                <img src="images/home.png" alt="Главная" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
             <button class="nav-item" id="navAllMovies" onclick="switchPage('allMoviesPage', 'Фильмы')">
-                <img src="film.png" alt="Все фильмы" class="nav-icon-img">
+                <img src="images/film.png" alt="Все фильмы" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
             <button class="nav-item" id="navAllSeries" onclick="switchPage('allSeriesPage', 'Сериалы')">
-                <img src="serial.png" alt="Все сериалы" class="nav-icon-img">
+                <img src="images/serial.png" alt="Все сериалы" class="nav-icon-img">
                 <div class="nav-line"></div>
             </button>
         </nav>
@@ -279,12 +279,12 @@
             <div class="form-buttons">
                 <!-- Кнопка удаления (по умолчанию скрыта, JS включит её только при редактировании) -->
                 <button class="genre-del-icon-btn" id="movieDeleteBtn" style="display: none;" onclick="deleteMovieFromModal()">
-                    <img src="delete.png" alt="Удалить" class="genre-btn-img">
+                    <img src="images/delete.png" alt="Удалить" class="genre-btn-img">
                 </button>
                 
                 <button class="action-btn cancel-btn" onclick="closeModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="saveMovie()">
-                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                    <img src="images/save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
             </div>
         </div>
@@ -301,11 +301,11 @@
             </div>
             <div class="genre-modal-buttons">
                 <button class="genre-del-icon-btn" onclick="deleteGenreFromModal()">
-                    <img src="delete.png" alt="Удалить" class="genre-btn-img">
+                    <img src="images/delete.png" alt="Удалить" class="genre-btn-img">
                 </button>
                 <button class="action-btn cancel-btn" onclick="closeGenreModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="saveGenreChanges()">
-                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                    <img src="images/save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
             </div>
         </div>
@@ -334,11 +334,11 @@
             <div class="genre-modal-buttons">
                 <!-- Кнопка удаления (покажется только при редактировании) -->
                 <button class="genre-del-icon-btn" id="recDeleteBtn" style="display:none;" onclick="deleteRec()">
-                    <img src="delete.png" alt="Удалить" class="genre-btn-img">
+                    <img src="images/delete.png" alt="Удалить" class="genre-btn-img">
                 </button>
                 <button class="action-btn cancel-btn" onclick="closeRecModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="saveRecommendation()">
-                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                    <img src="images/save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
             </div>
         </div>
@@ -355,7 +355,7 @@
             <div class="form-buttons">
                 <button class="action-btn cancel-btn" onclick="closeAddGenreModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="submitNewGenre()">
-                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                    <img src="images/save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
             </div>
         </div>
@@ -438,11 +438,11 @@
 
             <div class="form-buttons">
                 <button class="genre-del-icon-btn" id="seriesDeleteBtn" style="display: none;" onclick="deleteSeriesFromModal()">
-                    <img src="delete.png" alt="Удалить" class="genre-btn-img">
+                    <img src="images/delete.png" alt="Удалить" class="genre-btn-img">
                 </button>
                 <button class="action-btn cancel-btn" onclick="closeSeriesModal()">Забей</button>
                 <button class="genre-save-icon-btn" onclick="saveSeries()">
-                    <img src="save.png" alt="Сохранить" class="genre-btn-img">
+                    <img src="images/save.png" alt="Сохранить" class="genre-btn-img">
                 </button>
             </div>
         </div>
@@ -468,10 +468,10 @@
             <label>Минимальный рейтинг</label>
             <select id="filterRating">
                 <option value="0">Любой рейтинг</option>
-                <option value="1">★☆☆☆☆ и выше</option>
-                <option value="2">★★☆☆☆ и выше</option>
-                <option value="3">★★★☆☆ и выше</option>
-                <option value="4">★★★★☆ и выше</option>
+                <option value="1">★☆☆☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="4">★★★★☆</option>
                 <option value="5">★★★★★</option>
             </select>
         </div>
@@ -636,7 +636,7 @@ function switchPage(pageId, titleText) {
         if (input) input.value = '';
         movieSortDirection = 'desc'; // Всегда сбрасываем на новые
         const img = document.getElementById('movieSortImg');
-        if (img) img.src = 'sort2.png';
+        if (img) img.src = 'images/sort2.png';
         
         movies.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         renderMoviesGrid('moviesGrid', movies);
@@ -647,7 +647,7 @@ function switchPage(pageId, titleText) {
         if (input) input.value = '';
         seriesSortDirection = 'desc'; // Всегда сбрасываем на новые
         const img = document.getElementById('seriesSortImg');
-        if (img) img.src = 'sort2.png';
+        if (img) img.src = 'images/sort2.png';
         
         series.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         renderSeriesGrid('seriesGrid', series);
@@ -692,7 +692,7 @@ function switchPage(pageId, titleText) {
         if(list.length === 0) { grid.innerHTML = '<p style="color:#8d8d99; text-align:center; grid-column:1/-1; padding:20px;">Список пуст 🎬</p>'; return; }
         list.forEach(m => {
             const card = document.createElement('div'); card.className = 'movie-card' + (m.favorite ? ' is-fav' : ''); card.onclick = function() { showDetails(m.id); };
-card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><img src="favorites.png" class="card-heart-img"><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';            grid.appendChild(card);
+card.innerHTML = '<img class="movie-poster" src="' + (m.poster || defaultPoster) + '"><img src="images/favorites.png" class="card-heart-img"><div class="movie-info"><div class="movie-title">' + m.title + '</div><div class="movie-meta">' + (m.year || '—') + ' • ' + (Array.isArray(m.genre) ? m.genre.join(', ') : (m.genre || 'Общий')) + '</div><div class="card-stars">' + getStarsHtml(m.rating || 0) + '</div></div>';            grid.appendChild(card);
         });
     }
         async function renderGenresList() {
@@ -995,7 +995,7 @@ function showDetails(id) {
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${m.title}</h2>
             
             <button class="heart-btn" onclick="toggleFav(${m.id})" style="position: static; width: 36px; height: 36px; flex-shrink: 0;">
-                <img src="favorites.png" class="heart-icon-img" alt="Избранное">
+                <img src="images/favorites.png" class="heart-icon-img" alt="Избранное">
             </button>
         </div>
 
@@ -1462,7 +1462,7 @@ function renderSeriesGridInContainer(containerId, list) {
                 <div class="movie-meta">${s.year || '—'} • ${genresText}${seasonsText}</div>
                 <div class="rating-heart-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 14px;">
                     <div class="card-stars" style="font-size: 11px; color: #fba94c;">${getStarsHtml(s.rating || 0)}</div>
-                    <img src="favorites.png" alt="Избранное" style="${heartVisibility} width: 14px; height: 14px; object-fit: contain; margin: 0; padding: 0; filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%);">
+                    <img src="images/favorites.png" alt="Избранное" style="${heartVisibility} width: 14px; height: 14px; object-fit: contain; margin: 0; padding: 0; filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%);">
                 </div>
                 ${progressHtml}
             </div>
@@ -1781,7 +1781,7 @@ function renderSeriesGrid(gridId, list) {
                 <div class="rating-heart-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 14px;">
                     <div class="card-stars" style="font-size: 11px; color: #fba94c;">${getStarsHtml(s.rating || 0)}</div>
                     
-                    <img src="favorites.png" alt="Избранное" style="${heartVisibility} width: 14px; height: 14px; object-fit: contain; margin: 0; padding: 0; filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%);">
+                    <img src="images/favorites.png" alt="Избранное" style="${heartVisibility} width: 14px; height: 14px; object-fit: contain; margin: 0; padding: 0; filter: invert(44%) sepia(51%) saturate(1800%) hue-rotate(315deg) brightness(100%) contrast(96%);">
                 </div>
                 
                 <!-- Полоса прогресса идёт строго в самом низу инфо-блока -->
@@ -1948,7 +1948,7 @@ function showSeriesDetails(id) {
         <div class="details-main-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; width: 100%;">
             <h2 class="details-title" style="margin: 0; padding-right: 15px; font-size: 24px; font-weight: 600; color: white;">${s.title}</h2>
             <button class="heart-btn" onclick="toggleSeriesFav(${s.id})" style="position: static; width: 36px; height: 36px; flex-shrink: 0;">
-                <img src="favorites.png" class="heart-icon-img" alt="Избранное">
+                <img src="images/favorites.png" class="heart-icon-img" alt="Избранное">
             </button>
         </div>
 
@@ -2191,8 +2191,8 @@ function resetFilters() {
     
     const movieSortImg = document.getElementById('movieSortImg');
     const seriesSortImg = document.getElementById('seriesSortImg');
-    if (movieSortImg) movieSortImg.src = 'sort2.png';
-    if (seriesSortImg) seriesSortImg.src = 'sort2.png';
+    if (movieSortImg) movieSortImg.src = 'images/sort2.png';
+    if (seriesSortImg) seriesSortImg.src = 'images/sort2.png';
     
     document.getElementById('movieSearchInput').value = '';
     document.getElementById('seriesSearchInput').value = '';
@@ -2235,20 +2235,20 @@ function toggleSort(type) {
         const sortImg = document.getElementById('movieSortImg');
         if (movieSortDirection === 'desc') {
             movieSortDirection = 'asc';
-            if (sortImg) sortImg.src = 'sort1.png'; // самые поздние
+            if (sortImg) sortImg.src = 'images/sort1.png'; // самые поздние
         } else {
             movieSortDirection = 'desc';
-            if (sortImg) sortImg.src = 'sort2.png'; // недавно добавленные
+            if (sortImg) sortImg.src = 'images/sort2.png'; // недавно добавленные
         }
         applyFilters(); 
     } else {
         const sortImg = document.getElementById('seriesSortImg');
         if (seriesSortDirection === 'desc') {
             seriesSortDirection = 'asc';
-            if (sortImg) sortImg.src = 'sort1.png'; // самые поздние
+            if (sortImg) sortImg.src = 'images/sort1.png'; // самые поздние
         } else {
             seriesSortDirection = 'desc';
-            if (sortImg) sortImg.src = 'sort2.png'; // недавно добавленные
+            if (sortImg) sortImg.src = 'images/sort2.png'; // недавно добавленные
         }
         applyFilters();
     }
