@@ -77,6 +77,10 @@
 <div id="statsPage" class="page">
     <div class="page-fixed-header">
         <h1>Статистика</h1>
+        <div class="fav-tabs-container">
+            <div class="fav-tab movie active" id="statsTabMovie" onclick="switchStatsTab('movie')">Фильмы</div>
+            <div class="fav-tab series" id="statsTabSeries" onclick="switchStatsTab('series')">Сериалы</div>
+        </div>
     </div>
     <div id="statsContainer" class="stats-container"></div>
 </div>
@@ -527,6 +531,7 @@
    
     let currentUser = null, movies = [], genres = [], currentFormRating = 0, isSignUpMode = false;
     let currentFavTab = 'movie'; // Переключатель вкладок Избранного по умолчанию
+    let currentStatsTab = 'movie';
     const defaultPoster = "https://unsplash.com";
     let previousPageId = 'allMoviesPage'; // По умолчанию предыдущая страница — "Все фильмы"
     let previousPageTitle = 'Все фильмы';
@@ -685,6 +690,12 @@ function switchPage(pageId, titleText) {
         loadRecommendations();
     }
 if (pageId === 'statsPage') {
+    currentStatsTab = 'movie';
+    const movieTab = document.getElementById('statsTabMovie');
+    const seriesTab = document.getElementById('statsTabSeries');
+    if (movieTab) movieTab.classList.add('active');
+    if (seriesTab) seriesTab.classList.remove('active');
+
     function tryRenderStats(attempt) {
         if (movies.length > 0 && recommendations.length > 0) {
             renderStatistics();
@@ -696,6 +707,7 @@ if (pageId === 'statsPage') {
     }
     tryRenderStats(0);
 }
+
 
 
 
@@ -1183,28 +1195,52 @@ function renderStatistics() {
     const container = document.getElementById('statsContainer');
     if (!container) return;
 
-    const totalMovies = movies.length || 0;
-    const plannedMovies = recommendations.filter(r => r.type === 'movie').length || 0;
-    const totalAll = totalMovies + plannedMovies;
+    // Выбираем источник данных в зависимости от вкладки
+    const isMovies = currentStatsTab === 'movie';
+    const data = isMovies ? movies : series;
+    const plannedItems = isMovies
+        ? recommendations.filter(r => r.type === 'movie')
+        : recommendations.filter(r => r.type === 'series');
 
-    const totalMinutes = movies.reduce((sum, m) => sum + (m.duration || 0), 0);
+    const totalItems = data.length || 0;
+    const plannedCount = plannedItems.length || 0;
+    const totalAll = totalItems + plannedCount;
+
+    // Общее время (только для фильмов, у сериалов нет duration)
+    let totalMinutes = 0;
+    if (isMovies) {
+        totalMinutes = data.reduce((sum, m) => sum + (m.duration || 0), 0);
+    }
     const totalHours = Math.floor(totalMinutes / 60);
     const remainingMins = totalMinutes % 60;
 
-    const favCount = movies.filter(m => m.favorite).length;
+    // Избранное
+    const favCount = data.filter(m => m.favorite).length;
 
-    const ratedMovies = movies.filter(m => m.rating && m.rating > 0);
-    const avgRating = ratedMovies.length > 0
-        ? (ratedMovies.reduce((sum, m) => sum + m.rating, 0) / ratedMovies.length).toFixed(1)
+    // Средний рейтинг
+    const ratedItems = data.filter(m => m.rating && m.rating > 0);
+    const avgRating = ratedItems.length > 0
+        ? (ratedItems.reduce((sum, m) => sum + m.rating, 0) / ratedItems.length).toFixed(1)
         : '—';
 
-    const moviesWithDuration = movies.filter(m => m.duration && m.duration > 0);
-    const avgDuration = moviesWithDuration.length > 0
-        ? Math.round(moviesWithDuration.reduce((sum, m) => sum + m.duration, 0) / moviesWithDuration.length)
-        : 0;
+    // Средняя продолжительность (только для фильмов)
+    let avgDuration = 0;
+    if (isMovies) {
+        const withDuration = data.filter(m => m.duration && m.duration > 0);
+        avgDuration = withDuration.length > 0
+            ? Math.round(withDuration.reduce((sum, m) => sum + m.duration, 0) / withDuration.length)
+            : 0;
+    }
 
+    // Для сериалов — сколько просмотрено полностью
+    let finishedCount = 0;
+    if (!isMovies) {
+        finishedCount = data.filter(s => s.is_finished === true || s.is_finished === 'true').length;
+    }
+
+    // Жанры
     const genreCount = {};
-    movies.forEach(m => {
+    data.forEach(m => {
         const mg = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
         mg.forEach(g => {
             if (g && g.trim()) genreCount[g.trim()] = (genreCount[g.trim()] || 0) + 1;
@@ -1213,19 +1249,21 @@ function renderStatistics() {
     const sortedGenres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]);
     const maxGenreCount = sortedGenres.length > 0 ? sortedGenres[0][1] : 1;
 
-    // Кольцевая диаграмма — раздельные сегменты с зазором
+    // Кольцевая диаграмма
     const r = 70;
     const circ = 2 * Math.PI * r;
-    const gap = 30; // увеличенный зазор, чтобы скруглённые концы не сливались
-
-    const watchedPct = totalAll > 0 ? (totalMovies / totalAll) : 0;
-    const plannedPct = totalAll > 0 ? (plannedMovies / totalAll) : 0;
-
+    const gap = 30;
+    const watchedPct = totalAll > 0 ? (totalItems / totalAll) : 0;
+    const plannedPct = totalAll > 0 ? (plannedCount / totalAll) : 0;
     const watchedLen = Math.max(0, watchedPct * circ - gap);
     const plannedLen = Math.max(0, plannedPct * circ - gap);
-
-    // Смещение второго сегмента: после первого + два зазора
     const plannedOffset = circ * 0.25 - watchedLen - gap * 2;
+
+    // Третья мини-карточка меняется: для фильмов — средняя длина, для сериалов — досмотрено
+    const thirdCardLabel = isMovies ? 'средняя длина' : 'досмотрено';
+    const thirdCardValue = isMovies
+        ? (avgDuration ? formatDuration(avgDuration) : '—')
+        : finishedCount;
 
     container.innerHTML = `
         <div class="stats-donut-section">
@@ -1256,20 +1294,22 @@ function renderStatistics() {
                 <div class="donut-legend-item">
                     <span class="donut-legend-dot" style="background:#06B6D4"></span>
                     <span class="donut-legend-text">В каталоге</span>
-                    <span class="donut-legend-value">${totalMovies}</span>
+                    <span class="donut-legend-value">${totalItems}</span>
                 </div>
                 <div class="donut-legend-item">
                     <span class="donut-legend-dot" style="background:#8b5cf6"></span>
                     <span class="donut-legend-text">В планах</span>
-                    <span class="donut-legend-value">${plannedMovies}</span>
+                    <span class="donut-legend-value">${plannedCount}</span>
                 </div>
             </div>
         </div>
 
+        ${isMovies ? `
         <div class="stats-time-card">
             <div class="stats-time-value">${totalHours}<span>ч</span> ${remainingMins}<span>мин</span></div>
             <div class="stats-time-label">потрачено на просмотр</div>
         </div>
+        ` : ''}
 
         <div class="stats-mini-grid">
             <div class="stats-mini-card">
@@ -1281,8 +1321,8 @@ function renderStatistics() {
                 <div class="stats-mini-label">средний рейтинг</div>
             </div>
             <div class="stats-mini-card">
-                <div class="stats-mini-number">${avgDuration ? formatDuration(avgDuration) : '—'}</div>
-                <div class="stats-mini-label">средняя длина</div>
+                <div class="stats-mini-number">${thirdCardValue}</div>
+                <div class="stats-mini-label">${thirdCardLabel}</div>
             </div>
         </div>
 
@@ -1303,7 +1343,6 @@ function renderStatistics() {
         </div>
     `;
 
-    // Анимация сегментов
     setTimeout(function() {
         document.querySelectorAll('.donut-seg').forEach(function(seg) {
             var target = parseFloat(seg.dataset.target);
@@ -1311,6 +1350,7 @@ function renderStatistics() {
         });
     }, 200);
 }
+
 
 function toggleGenresStats(headerEl) {
     var body = headerEl.nextElementSibling;
@@ -1692,6 +1732,19 @@ function switchFavTab(tabType) {
     }
     
     renderFavGrid();
+}
+function switchStatsTab(tabType) {
+    currentStatsTab = tabType;
+    const movieTab = document.getElementById('statsTabMovie');
+    const seriesTab = document.getElementById('statsTabSeries');
+    if (movieTab) movieTab.classList.remove('active');
+    if (seriesTab) seriesTab.classList.remove('active');
+    if (tabType === 'movie') {
+        if (movieTab) movieTab.classList.add('active');
+    } else {
+        if (seriesTab) seriesTab.classList.add('active');
+    }
+    renderStatistics();
 }
 
 
