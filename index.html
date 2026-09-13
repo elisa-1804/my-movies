@@ -58,6 +58,11 @@
                     <img src="images/rec.png" alt="Рекомендации" class="hub-tile-icon">
                     <span class="hub-tile-title">Рекомендации к просмотру</span>
                 </div>
+<!-- 5. Статистика -->
+<div class="hub-tile-card" onclick="switchPage('statsPage', 'Статистика')">
+    <img src="images/statistic.png" alt="Статистика" class="hub-tile-icon">
+    <span class="hub-tile-title">Статистика</span>
+</div>
 
                 <!-- 4. Жанры (Нижний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
@@ -68,6 +73,13 @@
             </div>
 
         </div>
+<!-- СТРАНИЦА СТАТИСТИКИ -->
+<div id="statsPage" class="page">
+    <div class="page-fixed-header">
+        <h1>Статистика</h1>
+    </div>
+    <div id="statsContainer" class="stats-container"></div>
+</div>
 
         <!-- 2. СТРАНИЦА ВСЕХ ФИЛЬМОВ -->
         <div id="allMoviesPage" class="page">
@@ -672,7 +684,10 @@ function switchPage(pageId, titleText) {
     if (pageId === 'recommendationsPage' && typeof loadRecommendations === 'function') {
         loadRecommendations();
     }
-    
+    if (pageId === 'statsPage' && typeof renderStatistics === 'function') {
+    renderStatistics();
+}
+
     if (pageId === 'favoritesPage') {
         // Принудительно сбрасываем вкладку на Фильмы при входе в Избранное
         if (typeof currentFavTab === 'undefined') {
@@ -1151,6 +1166,60 @@ function showDetails(id) {
         recommendations = response.ok ? await response.json() : [];
         renderRecommendationsList();
     }
+function renderStatistics() {
+    const container = document.getElementById('statsContainer');
+    if (!container) return;
+    
+    // Общее количество фильмов
+    const totalMovies = movies.length;
+    
+    // Количество фильмов в планах (рекомендации с type='movie')
+    const plannedMovies = recommendations.filter(r => r.type === 'movie').length;
+    
+    // Общее время просмотра в минутах
+    const totalMinutes = movies.reduce((sum, m) => sum + (m.duration || 0), 0);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMins = totalMinutes % 60;
+    
+    // Статистика по жанрам
+    const genreCount = {};
+    movies.forEach(m => {
+        const movieGenres = Array.isArray(m.genre) ? m.genre : (m.genre ? [m.genre] : []);
+        movieGenres.forEach(g => {
+            if (g && g.trim()) {
+                genreCount[g.trim()] = (genreCount[g.trim()] || 0) + 1;
+            }
+        });
+    });
+    
+    // Сортируем жанры по убыванию количества
+    const sortedGenres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]);
+    
+    container.innerHTML = `
+        <div class="stats-section">
+            <div class="stats-card">
+                <div class="stats-number">${totalMovies}</div>
+                <div class="stats-label">Фильмов в каталоге</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-number">${plannedMovies}</div>
+                <div class="stats-label">В планах к просмотру</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-number">${totalHours}<span class="stats-small">ч ${remainingMins} мин</span></div>
+                <div class="stats-label">Потрачено на просмотр</div>
+            </div>
+        </div>
+        <div class="stats-genres-section">
+            <h3 class="stats-subtitle">Жанры</h3>
+            <div class="stats-genres-list">
+                ${sortedGenres.map(function(g) {
+                    return '<div class="stats-genre-item"><span class="stats-genre-name">' + g[0] + '</span><span class="stats-genre-count">' + g[1] + '</span></div>';
+                }).join('')}
+            </div>
+        </div>
+    `;
+}
 
     // 5. Отрисовка списка рекомендаций на экране
     function renderRecommendationsList() {
