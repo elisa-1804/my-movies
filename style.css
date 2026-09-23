@@ -2098,3 +2098,37 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 #genresPage .stats-header-row {
     margin-bottom: 0;
 }
+.movies-grid.list-view {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.movies-grid.list-view .movie-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px;
+}
+
+.movies-grid.list-view .movie-poster {
+    width: 70px;
+    height: 105px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.movies-grid.list-view .movie-info {
+    flex: 1;
+    padding: 4px 0;
+    min-width: 0;
+}
+
+.movies-grid.list-view .card-heart-img {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    bottom: auto !important;
+    width: 14px !important;
+    height: 14px !important;
+}
