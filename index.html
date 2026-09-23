@@ -598,13 +598,14 @@
         <div class="fortuna-overlay-title" id="fortunaTitle"></div>
         <div class="fortuna-overlay-meta" id="fortunaMeta"></div>
         <div class="fortuna-overlay-stars" id="fortunaStars"></div>
-        <button class="fortuna-stop-btn" id="fortunaStopBtn" onclick="stopFortuna()">Стоп</button>
         <div class="fortuna-overlay-actions" id="fortunaActions" style="display: none;">
             <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
             <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
         </div>
     </div>
+    <button class="fortuna-stop-btn" id="fortunaStopBtn" onclick="stopFortuna()">Стоп</button>
 </div>
+
 
 
 
@@ -2788,26 +2789,22 @@ function spinFortuna(type) {
 function stopFortuna() {
     if (!fortunaSpinning) return;
 
-    // Останавливаем таймер
     if (fortunaTimeoutId) {
         clearTimeout(fortunaTimeoutId);
         fortunaTimeoutId = null;
     }
 
-    // Собираем свежий массив, чтобы финал был случайным
-    let items = [];
-    if (fortunaType === 'love') {
-        const favMovies = movies.filter(m => m.favorite === true || m.favorite === 'true').map(m => ({ ...m, _itemType: 'movie' }));
-        const favSeries = series.filter(s => s.favorite === true || s.favorite === 'true').map(s => ({ ...s, _itemType: 'series' }));
-        items = [...favMovies, ...favSeries];
-    } else if (fortunaType === 'film') {
-        items = movies.map(m => ({ ...m, _itemType: 'movie' }));
-    } else if (fortunaType === 'serial') {
-        items = series.map(s => ({ ...s, _itemType: 'series' }));
-    }
+    fortunaSpinning = false;
 
-    finishFortuna(items);
+    const overlay = document.getElementById('fortunaOverlay');
+    const card = document.getElementById('fortunaCard');
+    const stopBtn = document.getElementById('fortunaStopBtn');
+
+    card.classList.remove('spinning');
+    stopBtn.classList.remove('visible');
+    overlay.classList.remove('active');
 }
+
 
 function finishFortuna(items) {
     if (fortunaTimeoutId) {
