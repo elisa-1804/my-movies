@@ -2897,49 +2897,49 @@ function finishFortuna() {
     if (!track || !container) return;
 
     const containerWidth = container.offsetWidth;
-    // Расчет финального индекса
     const targetIdx = Math.round((fortunaPosition + containerWidth / 2 - CARD_WIDTH / 2) / (CARD_WIDTH + GAP));
     const targetPosition = targetIdx * (CARD_WIDTH + GAP);
 
-    // Плавная докрутка
+    // Плавная докрутка трека
     track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = 'translateX(' + (-targetPosition) + 'px)';
     fortunaPosition = targetPosition;
 
     setTimeout(function() {
-        const winner = fortunaCards[targetIdx];
-        
+        // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+        // Сначала проверяем, существует ли индекс и массив
+        let winner = null;
+        if (fortunaCards && targetIdx >= 0 && targetIdx < fortunaCards.length) {
+            winner = fortunaCards[targetIdx];
+        }
+
         if (winner) {
-            // --- КРИТИЧЕСКИ ВАЖНО: ПОЛНЫЙ СБРОС СТИЛЕЙ ---
+            // 1. Полный сброс стилей у всех
             fortunaCards.forEach(c => {
                 c.element.classList.remove('center', 'winner');
-                // Удаляем ВЕСЬ атрибут style. Это надежнее, чем removeProperty
                 if (c.element.style) {
                     c.element.removeAttribute('style'); 
                 }
             });
 
-            // Принудительный пересчет макета (Reflow)
-            // Это заставляет браузер применить изменения ДО того, как мы добавим класс winner
+            // 2. Принудительный Reflow (чтобы браузер "увидел" удаление стилей)
             void winner.element.offsetWidth; 
 
-            // Теперь добавляем класс. CSS сработает гарантированно
+            // 3. Добавляем класс победителя
             winner.element.classList.add('winner');
             fortunaResult = winner.item;
-            
             console.log('✅ ВЫПАЛО: ' + fortunaResult.title);
+        } else {
+            // Если победителя нет (ошибка расчета индекса), просто логируем и не ломаем код
+            console.error('❌ Ошибка: Не удалось найти карточку по индексу ' + targetIdx);
         }
 
         const overlay = document.getElementById('fortunaOverlay');
         if (overlay) overlay.classList.remove('spinning');
         track.style.transition = '';
     }, 650);
-    // ТЕСТ: Принудительно задаём стиль через JS, чтобы проверить, виден ли элемент вообще
-winner.element.style.border = '5px solid red !important';
-winner.element.style.zIndex = '9999';
-winner.element.style.transform = 'scale(1.5)';
-
 }
+
 
 
 
