@@ -115,6 +115,10 @@
 
     <button id="movieSortBtn" class="sort-icon-btn" onclick="toggleSort('movie')">
         <img id="movieSortImg" src="images/sort2.png" alt="Сортировка">
+        <button id="movieViewBtn" class="sort-icon-btn" onclick="toggleView('movie')">
+    <img id="movieViewImg" src="images/plitka.png" alt="Вид">
+</button>
+
     </button>
 </div>
 
@@ -145,6 +149,10 @@
 
     <button id="seriesSortBtn" class="sort-icon-btn" onclick="toggleSort('series')">
         <img id="seriesSortImg" src="images/sort2.png" alt="Сортировка">
+        <button id="movieViewBtn" class="sort-icon-btn" onclick="toggleView('movie')">
+    <img id="movieViewImg" src="images/plitka.png" alt="Вид">
+</button>
+
     </button>
 </div>
 
@@ -2531,6 +2539,24 @@ function toggleSort(type) {
             if (sortImg) sortImg.src = 'images/sort2.png'; // недавно добавленные
         }
         applyFilters();
+    }
+}
+let movieViewMode = 'grid';
+let seriesViewMode = 'grid';
+
+function toggleView(type) {
+    if (type === 'movie') {
+        movieViewMode = movieViewMode === 'grid' ? 'list' : 'grid';
+        const grid = document.getElementById('moviesGrid');
+        if (grid) grid.classList.toggle('list-view', movieViewMode === 'list');
+        const img = document.getElementById('movieViewImg');
+        if (img) img.src = movieViewMode === 'grid' ? 'images/plitka.png' : 'images/spisok.png';
+    } else {
+        seriesViewMode = seriesViewMode === 'grid' ? 'list' : 'grid';
+        const grid = document.getElementById('seriesGrid');
+        if (grid) grid.classList.toggle('list-view', seriesViewMode === 'list');
+        const img = document.getElementById('seriesViewImg');
+        if (img) img.src = seriesViewMode === 'grid' ? 'images/plitka.png' : 'images/spisok.png';
     }
 }
 
