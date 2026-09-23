@@ -2870,23 +2870,18 @@ function updateCenterCard() {
         }
     }
 
-    // Сброс стилей у всех
+    // Сброс классов у всех
     fortunaCards.forEach(c => {
         c.element.classList.remove('center', 'winner');
-        c.element.style.transform = 'scale(0.85)';
-        c.element.style.opacity = '0.4';
-        c.element.style.animation = 'none';
-        c.element.style.boxShadow = 'none';
     });
 
-    // Применение стилей к центральной
+    // Установка класса только центральной
     const centerCard = fortunaCards[closestIdx];
     centerCard.element.classList.add('center');
-    centerCard.element.style.transform = 'scale(1.15)';
-    centerCard.element.style.opacity = '1';
 
     fortunaCenterIdx = closestIdx;
 }
+
 
 // === ФИНАЛИЗАЦИЯ ВЫБОРА (ЭТОЙ ФУНКЦИИ ТЕБЕ НЕ ХВАТАЛО) ===
 function finishFortuna() {
@@ -2897,61 +2892,49 @@ function finishFortuna() {
 
     const track = document.getElementById('fortunaTrack');
     const container = document.querySelector('.fortuna-carousel');
+    
     if (!track || !container) return;
 
-    var containerWidth = container.offsetWidth;
-    var targetIdx = Math.round((fortunaPosition + containerWidth / 2 - CARD_WIDTH / 2) / (CARD_WIDTH + GAP));
-    var targetPosition = targetIdx * (CARD_WIDTH + GAP);
+    const containerWidth = container.offsetWidth;
+    // Вычисляем финальную позицию, чтобы остановиться ровно по центру карточки
+    const targetIdx = Math.round((fortunaPosition + containerWidth / 2 - CARD_WIDTH / 2) / (CARD_WIDTH + GAP));
+    const targetPosition = targetIdx * (CARD_WIDTH + GAP);
 
     track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = 'translateX(' + (-targetPosition) + 'px)';
     fortunaPosition = targetPosition;
 
     setTimeout(function() {
-        // Считаем центр вручную, без updateCenterCard
-        var centerPos = fortunaPosition + containerWidth / 2;
-        var closestIdx = 0;
-        var closestDist = Infinity;
-
-        for (var i = 0; i < fortunaCards.length; i++) {
-            var cardCenter = i * (CARD_WIDTH + GAP) + CARD_WIDTH / 2;
-            var dist = Math.abs(cardCenter - centerPos);
-            if (dist < closestDist) {
-                closestDist = dist;
-                closestIdx = i;
-            }
-        }
-
-        fortunaCenterIdx = closestIdx;
-        var winner = fortunaCards[fortunaCenterIdx];
-
+        // 1. Находим победителя по индексу
+        const winner = fortunaCards[targetIdx];
+        
         if (winner) {
-            // Полностью очищаем инлайн-стили у ВСЕХ карточек
-            fortunaCards.forEach(function(c) {
+            // 2. Очищаем ВСЕ инлайн-стили у ВСЕХ карточек (это критически важно!)
+            fortunaCards.forEach(c => {
                 c.element.classList.remove('center', 'winner');
-                c.element.style.removeProperty('animation');
                 c.element.style.removeProperty('transform');
                 c.element.style.removeProperty('opacity');
+                c.element.style.removeProperty('animation');
                 c.element.style.removeProperty('box-shadow');
                 c.element.style.removeProperty('filter');
-                c.element.style.removeProperty('z-index');
             });
 
-            // Принудительный reflow
+            // 3. Принудительный пересчет макета (reflow), чтобы браузер сбросил старые анимации
             void winner.element.offsetWidth;
 
-            // Добавляем класс победителя — CSS сделает всё остальное
+            // 4. Добавляем класс победителя. Теперь сработает CSS .winner
             winner.element.classList.add('winner');
             fortunaResult = winner.item;
-
-            console.log('Победитель:', winner.item.title, 'индекс:', fortunaCenterIdx);
+            
+            console.log('Выпало:', fortunaResult.title);
         }
 
-        var overlay = document.getElementById('fortunaOverlay');
+        const overlay = document.getElementById('fortunaOverlay');
         if (overlay) overlay.classList.remove('spinning');
         track.style.transition = '';
     }, 650);
 }
+
 
 
 function stopFortuna() {
