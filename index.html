@@ -2843,7 +2843,6 @@ function updateCenterCard() {
     const container = document.querySelector('.fortuna-carousel');
     if (!container) return;
 
-    // Центр зоны выделения (учитываем gap)
     const containerWidth = container.offsetWidth;
     const centerPos = fortunaPosition + containerWidth / 2;
 
@@ -2851,7 +2850,6 @@ function updateCenterCard() {
     let closestDist = Infinity;
 
     for (let i = 0; i < fortunaCards.length; i++) {
-        // Позиция центра i-й карточки с учетом gap
         const cardCenter = i * (CARD_WIDTH + GAP) + CARD_WIDTH / 2;
         const dist = Math.abs(cardCenter - centerPos);
         if (dist < closestDist) {
@@ -2864,9 +2862,20 @@ function updateCenterCard() {
     fortunaCards.forEach(c => {
         c.element.classList.remove('center', 'winner');
         c.element.style.transform = 'scale(0.85)';
-        c.element.style.opacity;
+        c.element.style.opacity = '0.4';        
+        c.element.style.animation = 'none';       
+        c.element.style.boxShadow = 'none';       
+    });                                           
+
+    // Выделяем центральную
+    const centerCard = fortunaCards[closestIdx];
+    centerCard.element.classList.add('center');
+    centerCard.element.style.transform = 'scale(1.15)';
+    centerCard.element.style.opacity = '1';
+
+    fortunaCenterIdx = closestIdx;
 }
-}
+
 
     checkUser();
 
