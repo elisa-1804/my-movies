@@ -64,10 +64,11 @@
     <span class="hub-tile-title">Статистика</span>
 </div>
                 
-<div class="hub-tile-card" onclick="showPage('fortunaPage')">
+<div class="hub-tile-card" onclick="switchPage('fortunaPage', 'Колесо фортуны')">
     <img src="icons/fortuna.png" class="hub-tile-icon" alt="">
     <span class="hub-tile-title">Колесо фортуны</span>
 </div>
+
 
                 <!-- 4. Жанры (Нижний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
@@ -219,9 +220,9 @@
 
 <div id="fortunaPage" class="page">
     <div class="page-fixed-header">
-        <button class="back-btn" onclick="showPage('homePage')">
-            <img src="icons/back.png" class="header-icon-img" alt="">
-        </button>
+<button class="back-btn" onclick="switchPage('homePage', 'Главная')">
+    <img src="icons/back.png" class="header-icon-img" alt="">
+</button>
         <h1>Колесо фортуны</h1>
         <div style="width: 40px;"></div>
     </div>
@@ -626,6 +627,7 @@ let fortunaSpinning = false;
         document.getElementById('authPrimaryBtn').textContent = isSignUpMode ? "Создать аккаунт" : "Войти";
         document.getElementById('authPrimaryBtn').nextElementSibling.textContent = isSignUpMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Зарегистрироваться";
     }
+           
     async function handleAuth() {
         const email = document.getElementById('authEmail').value.trim();
         const password = document.getElementById('authPassword').value.trim();
@@ -2717,20 +2719,21 @@ function formatDuration(minutes) {
         switchPage('homePage', 'Главная');
     }
 // === КОЛЕСО ФОРТУНЫ ===
+// === КОЛЕСО ФОРТУНЫ ===
+
 function spinFortuna(type) {
     if (fortunaSpinning) return;
 
-    // Собираем массив элементов
     let items = [];
 
     if (type === 'love') {
-        const favMovies = (typeof movies !== 'undefined' ? movies : []).filter(m => m.isFavorite);
-        const favSeries = (typeof series !== 'undefined' ? series : []).filter(s => s.isFavorite);
+        const favMovies = movies.filter(m => m.favorite === true || m.favorite === 'true').map(m => ({ ...m, _itemType: 'movie' }));
+        const favSeries = series.filter(s => s.favorite === true || s.favorite === 'true').map(s => ({ ...s, _itemType: 'series' }));
         items = [...favMovies, ...favSeries];
     } else if (type === 'film') {
-        items = (typeof movies !== 'undefined' ? movies : []).slice();
+        items = movies.map(m => ({ ...m, _itemType: 'movie' }));
     } else if (type === 'serial') {
-        items = (typeof series !== 'undefined' ? series : []).slice();
+        items = series.map(s => ({ ...s, _itemType: 'series' }));
     }
 
     if (items.length === 0) {
@@ -2751,7 +2754,6 @@ function spinFortuna(type) {
     card.classList.remove('selected');
     actions.style.display = 'none';
 
-    // Анимация прокрутки
     const totalSteps = 28;
     let step = 0;
 
@@ -2760,19 +2762,17 @@ function spinFortuna(type) {
             const randomItem = items[Math.floor(Math.random() * items.length)];
             displayFortunaCard(randomItem);
 
-            // Замедляем к концу
             let delay;
             if (step < totalSteps * 0.4) {
                 delay = 55;
             } else {
                 const progress = (step - totalSteps * 0.4) / (totalSteps * 0.6);
-                delay = 55 + progress * 265; // от 55мс до 320мс
+                delay = 55 + progress * 265;
             }
 
             step++;
             setTimeout(nextFrame, delay);
         } else {
-            // Финал — полностью рандомный выбор
             fortunaResult = items[Math.floor(Math.random() * items.length)];
             displayFortunaCard(fortunaResult);
 
@@ -2787,20 +2787,19 @@ function spinFortuna(type) {
 }
 
 function displayFortunaCard(item) {
-    const isMovie = item.duration !== undefined || item.type === 'movie';
-    const poster = item.poster || item.posterUrl || '';
-    const title = item.title || item.name || 'Без названия';
+    const isMovie = item._itemType === 'movie';
+    const poster = item.poster || defaultPoster;
+    const title = item.title || 'Без названия';
     const year = item.year || '';
-    const rating = item.rating || 0;
 
     let metaText = year;
     if (isMovie && item.duration) {
-        metaText += ' • ' + item.duration + ' мин';
-    } else if (!isMovie && item.seasons) {
-        metaText += ' • ' + item.seasons + ' сез.';
+        metaText += ' • ' + formatDuration(item.duration);
+    } else if (!isMovie && item.seasons_total) {
+        metaText += ' • ' + item.seasons_total + ' сез.';
     }
 
-    // Звёзды
+    const rating = item.rating || 0;
     let stars = '';
     for (let i = 1; i <= 5; i++) {
         stars += i <= rating ? '★' : '☆';
@@ -2822,13 +2821,10 @@ function fortunaOpenResult() {
 
     if (!fortunaResult) return;
 
-    const isMovie = fortunaResult.duration !== undefined || fortunaResult.type === 'movie';
-
-    // ЗАМЕНИТЕ названия функций на те, что есть в вашем коде:
-    if (isMovie) {
-        showMovieDetails(fortunaResult);   // ← ваша функция открытия фильма
+    if (fortunaResult._itemType === 'movie') {
+        showDetails(fortunaResult.id);
     } else {
-        showSeriesDetails(fortunaResult);  // ← ваша функция открытия сериала
+        showSeriesDetails(fortunaResult.id);
     }
 }
 
