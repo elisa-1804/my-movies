@@ -2934,6 +2934,11 @@ function finishFortuna() {
         if (overlay) overlay.classList.remove('spinning');
         track.style.transition = '';
     }, 650);
+    // ТЕСТ: Принудительно задаём стиль через JS, чтобы проверить, виден ли элемент вообще
+winner.element.style.border = '5px solid red !important';
+winner.element.style.zIndex = '9999';
+winner.element.style.transform = 'scale(1.5)';
+
 }
 
 
