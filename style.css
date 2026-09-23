@@ -2330,9 +2330,9 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     border-color: #00b4ff;
     z-index: 20;
     opacity: 1 !important;
-    transform: scale(1.15) !important;
     filter: drop-shadow(0 0 20px rgba(0, 180, 255, 0.8)) !important;
 }
+
 
 @keyframes fortuna-winner-pulse {
     0%, 100% {
