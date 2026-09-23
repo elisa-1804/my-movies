@@ -2092,3 +2092,9 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     margin-bottom: 20px;
     width: 100%;
 }
+/* Убираем лишний отступ для простых разделов без вкладок */
+#moviePartsPage .stats-header-row,
+#recommendationsPage .stats-header-row,
+#genresPage .stats-header-row {
+    margin-bottom: 0;
+}
