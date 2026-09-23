@@ -2623,7 +2623,7 @@ function formatDuration(minutes) {
     return hours > 0 ? `${hours}:${formattedMins}` : `${minutes} мин`;
 }
     function goBack() {
-        window.history.go(-1); // Возвращаемся на предыдущую страницу
+        switchPage('homePage', 'Главная');
     }
 
     checkUser();
