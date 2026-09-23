@@ -2173,6 +2173,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     background-color: #29292e;
 }
 /* ===== ИСПРАВЛЕННЫЙ CSS ДЛЯ ФОРТУНЫ ===== */
+/* Оверлей (шторка) */
 #fortunaOverlay {
     position: fixed;
     top: 0;
@@ -2181,11 +2182,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     height: 100%;
     z-index: 9999;
     background-color: rgba(0, 0, 0, 0.85);
-    display: none;
+    display: none; /* Скрыт по умолчанию */
+    
+    /* Центрируем только кнопки действий внутри шторки */
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding-top: 40px; /* отступ сверху, чтобы шапка не перекрывала кнопки */
+    justify-content: flex-end; /* Кнопки прижаты к низу шторки */
+    padding: 20px;
     box-sizing: border-box;
 }
 
@@ -2193,16 +2196,88 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: flex;
 }
 
+/* Кнопки действий (внутри оверлея) */
+.fortuna-overlay-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px; /* Отступ от низа экрана */
+}
+
+.fortuna-overlay-actions button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fortuna-open-btn { background-color: #00b4ff; color: #000; }
+.fortuna-again-btn {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #00b4ff;
+}
+.fortuna-stop-btn {
+    display: none;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 12px;
+}
+#fortunaOverlay.spinning .fortuna-stop-btn { display: block; }
+
+/* --- Контент страницы (карусель и кнопки выбора) --- */
+
+.fortuna-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Кнопки выбора типа */
 .fortuna-buttons {
     display: flex;
     justify-content: center;
     gap: 16px;
     flex-wrap: wrap;
-    margin-bottom: 20px; /* фиксированный отступ до карусели */
-    width: 100%;
-    max-width: 90vw;
+    margin-bottom: 30px;
 }
 
+.fortuna-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+.fortuna-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+}
+.fortuna-btn-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.fortuna-btn-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+}
+
+/* Карусель */
 .fortuna-carousel {
     position: relative;
     overflow: hidden;
@@ -2212,6 +2287,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     justify-content: center;
     align-items: center;
     margin: 0 auto;
+    background: transparent;
 }
 
 .fortuna-carousel-track {
@@ -2230,6 +2306,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: flex;
     flex-direction: column;
     align-items: center;
+    
     opacity: 0.35;
     transform-origin: center center;
     transition: opacity 0.25s ease, transform 0.25s ease, border 0.25s ease;
@@ -2238,11 +2315,14 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     z-index: 1;
 }
 
+/* Карточки НЕ в центре */
 .fortuna-carousel-card:not(.center):not(.winner) {
     transform: scale(0.85);
     opacity: 0.4;
+    filter: none;
 }
 
+/* Центральная карточка (не победитель) */
 .fortuna-carousel-card.center:not(.winner) {
     opacity: 1;
     transform: scale(1.15);
@@ -2251,6 +2331,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     z-index: 10;
 }
 
+/* Победитель */
 .fortuna-carousel-card.winner {
     animation: fortuna-winner-pulse 1s infinite;
     border-color: #00b4ff;
@@ -2288,74 +2369,5 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     width: 100%;
     box-sizing: border-box;
 }
-
 .carousel-card-title { font-size: 11px; }
 .carousel-card-rating { font-size: 12px; color: #fba94c; }
-
-.fortuna-overlay-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 25px;
-    width: 100%;
-    max-width: 90vw;
-}
-
-.fortuna-overlay-actions button {
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.fortuna-open-btn { background-color: #00b4ff; color: #000; }
-.fortuna-again-btn {
-    background-color: transparent;
-    color: #ffffff;
-    border: 2px solid #00b4ff;
-}
-.fortuna-stop-btn {
-    display: none;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    font-size: 12px;
-    margin-top: 10px;
-}
-#fortunaOverlay.spinning .fortuna-stop-btn { display: block; }
-
-.fortuna-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    height: 100px;
-    border-radius: 16px;
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s ease;
-}
-.fortuna-btn:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-3px);
-}
-.fortuna-btn-icon {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.2);
-}
-.fortuna-btn-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    white-space: nowrap;
-}
-
