@@ -627,6 +627,7 @@ let fortunaType = '';
 let fortunaResult = null;
 let fortunaSpinning = false;
 const CARD_WIDTH = 132;
+const GAP = 12; // Должно совпадать с gap в CSS .fortuna-carousel
 
 
 
@@ -2728,13 +2729,12 @@ function formatDuration(minutes) {
     function goBack() {
         switchPage('homePage', 'Главная');
     }
-// === КОЛЕСО ФОРТУНЫ ===
+// === КОЛЕСО ФОРТУНЫ (ИСПРАВЛЕННАЯ ВЕРСИЯ) ===
 
 function spinFortuna(type) {
     if (fortunaSpinning) return;
 
     let items = [];
-
     if (type === 'love') {
         const favMovies = movies.filter(m => m.favorite === true || m.favorite === 'true').map(m => ({ ...m, _itemType: 'movie' }));
         const favSeries = series.filter(s => s.favorite === true || s.favorite === 'true').map(s => ({ ...s, _itemType: 'series' }));
@@ -2754,7 +2754,7 @@ function spinFortuna(type) {
     fortunaType = type;
     fortunaSpinning = true;
     fortunaPosition = 0;
-    fortunaVelocity = 8; // Было 14 — теперь медленнее старт
+    fortunaVelocity = 8;
 
     const overlay = document.getElementById('fortunaOverlay');
     const track = document.getElementById('fortunaTrack');
@@ -2765,13 +2765,29 @@ function spinFortuna(type) {
     track.style.transition = '';
     fortunaCards = [];
 
-    // 30 случайных карточек
-    const baseItems = [];
-    for (let i = 0; i < 30; i++) {
-        baseItems.push(items[Math.floor(Math.random() * items.length)]);
+    // 1. Убираем дубли: берем уникальные элементы (по ID)
+    const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
+    if (uniqueItems.length < 10) {
+        // Если уникальных мало — дополняем случайными из исходного списка
+        while (uniqueItems.length < 10) {
+            const rnd = items[Math.floor(Math.random() * items.length)];
+            if (!uniqueItems.some(u => u.id === rnd.id)) uniqueItems.push(rnd);
+        }
     }
 
-    // 60 шт (дублируем для бесшовности)
+    // 2. Формируем 30 карточек БЕЗ дублей подряд (перемешиваем и дублируем)
+    const shuffled = uniqueItems.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    const baseItems = [];
+    for (let i = 0; i < 30; i++) {
+        baseItems.push(shuffled[i % shuffled.length]);
+    }
+
+    // 3. Создаем 60 карточек (для бесшовной прокрутки)
     for (let i = 0; i < 60; i++) {
         const item = baseItems[i % 30];
         const card = createCarouselCard(item);
@@ -2779,8 +2795,7 @@ function spinFortuna(type) {
         fortunaCards.push({ element: card, item: item });
     }
 
-    overlay.classList.add('active');
-    overlay.classList.add('spinning'); // Показываем кнопку СТОП
+    overlay.classList.add('active', 'spinning');
     stopBtn.classList.add('visible');
     actions.style.display = 'none';
 
@@ -2788,13 +2803,14 @@ function spinFortuna(type) {
         fortunaPosition += fortunaVelocity;
         track.style.transform = 'translateX(' + (-fortunaPosition) + 'px)';
 
+        // Бесшовность: если прокрутили больше 30 карточек — сбрасываем позицию
         if (fortunaPosition > CARD_WIDTH * 30) {
             fortunaPosition -= CARD_WIDTH * 30;
             track.style.transform = 'translateX(' + (-fortunaPosition) + 'px)';
         }
 
         updateCenterCard();
-        fortunaVelocity *= 0.991; // Было 0.992 — теперь медленнее затухание
+        fortunaVelocity *= 0.991;
 
         if (fortunaSpinning && fortunaVelocity > 0.5) {
             fortunaAnimId = requestAnimationFrame(animate);
@@ -2810,26 +2826,24 @@ function spinFortuna(type) {
 function createCarouselCard(item) {
     const card = document.createElement('div');
     card.className = 'fortuna-carousel-card';
-
     const poster = item.poster || defaultPoster;
     const title = item.title || 'Без названия';
     const rating = item.rating || 0;
     let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        stars += i <= rating ? '★' : '☆';
-    }
+    for (let i = 1; i <= 5; i++) stars += i <= rating ? '★' : '☆';
 
     card.innerHTML =
         '<img src="' + poster + '" alt="' + title + '">' +
         '<div class="carousel-card-title">' + title + '</div>' +
         '<div class="carousel-card-rating">' + stars + '</div>';
-
     return card;
 }
 
 function updateCenterCard() {
     const container = document.querySelector('.fortuna-carousel');
     if (!container) return;
+
+    // Центр зоны выделения (учитываем gap)
     const containerWidth = container.offsetWidth;
     const centerPos = fortunaPosition + containerWidth / 2;
 
@@ -2837,7 +2851,8 @@ function updateCenterCard() {
     let closestDist = Infinity;
 
     for (let i = 0; i < fortunaCards.length; i++) {
-        const cardCenter = i * CARD_WIDTH + CARD_WIDTH / 2;
+        // Позиция центра i-й карточки с учетом gap
+        const cardCenter = i * (CARD_WIDTH + GAP) + CARD_WIDTH / 2;
         const dist = Math.abs(cardCenter - centerPos);
         if (dist < closestDist) {
             closestDist = dist;
@@ -2845,75 +2860,12 @@ function updateCenterCard() {
         }
     }
 
-    for (let i = 0; i < fortunaCards.length; i++) {
-        if (i === closestIdx) {
-            fortunaCards[i].element.classList.add('center');
-        } else {
-            fortunaCards[i].element.classList.remove('center');
-            fortunaCards[i].element.classList.remove('winner');
-        }
-    }
+    // Сбрасываем стили у всех
+    fortunaCards.forEach(c => {
+        c.element.classList.remove('center', 'winner');
+        c.element.style.transform = 'scale(0.85)';
+        c.element.style.opacity
 
-    fortunaCenterIdx = closestIdx;
-}
-
-function stopFortuna() {
-    if (!fortunaSpinning) return;
-    fortunaSpinning = false;
-    finishFortuna();
-}
-
-function finishFortuna() {
-    if (fortunaAnimId) {
-        cancelAnimationFrame(fortunaAnimId);
-        fortunaAnimId = null;
-    }
-
-    const track = document.getElementById('fortunaTrack');
-    const container = document.querySelector('.fortuna-carousel');
-    const containerWidth = container.offsetWidth;
-    const overlay = document.getElementById('fortunaOverlay');
-    const stopBtn = document.getElementById('fortunaStopBtn');
-
-    // Доводка до ближайшей карточки
-    const targetIdx = Math.round((fortunaPosition + containerWidth / 2 - CARD_WIDTH / 2) / CARD_WIDTH);
-    const targetPosition = targetIdx * CARD_WIDTH;
-
-    track.style.transition = 'transform 0.5s ease-out';
-    track.style.transform = 'translateX(' + (-targetPosition) + 'px)';
-    fortunaPosition = targetPosition;
-
-    setTimeout(function() {
-        updateCenterCard();
-
-        var winner = fortunaCards[fortunaCenterIdx];
-        if (winner) {
-            winner.element.classList.add('winner');
-            fortunaResult = winner.item;
-        }
-
-        document.getElementById('fortunaActions').style.display = 'flex';
-        stopBtn.classList.remove('visible');
-        overlay.classList.remove('spinning');
-
-        track.style.transition = '';
-    }, 520);
-}
-
-function fortunaAgain() {
-    document.getElementById('fortunaOverlay').classList.remove('active');
-    setTimeout(function() { spinFortuna(fortunaType); }, 350);
-}
-
-function fortunaOpenResult() {
-    document.getElementById('fortunaOverlay').classList.remove('active');
-    if (!fortunaResult) return;
-    if (fortunaResult._itemType === 'movie') {
-        showDetails(fortunaResult.id);
-    } else {
-        showSeriesDetails(fortunaResult.id);
-    }
-}
 
 
     checkUser();
