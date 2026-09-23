@@ -2334,6 +2334,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 
+
 @keyframes fortuna-winner-pulse {
     0%, 100% {
         transform: scale(1.15);
