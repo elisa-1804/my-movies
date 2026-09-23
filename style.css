@@ -2358,11 +2358,14 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* --- Стили карусели --- */
 
-/* Растягиваем на экран, но не шире 90% (чтобы не обрезало на телефонах) */
 .fortuna-carousel {
+    position: relative;
+    overflow: hidden;
     max-width: 90vw;
-    height: 40vh; /* Высота ~40% от экрана */
+    height: 40vh;
+    display: flex;
     justify-content: center;
+    align-items: center;
     margin: 0 auto;
 }
 
@@ -2374,13 +2377,28 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Тонкая неоновая рамка для победителя */
 .fortuna-carousel-card.winner {
+    animation: fortuna-winner-pulse 1s infinite;
+    transform: scale(1.15);
     border: 2px solid #00b4ff;
-    box-shadow: 0 0 15px rgba(0, 180, 255, 0.6);
-    animation: none; /* Отключаем старое мерцание */
 }
 
 /* Активная (центральная) карточка: чуть крупнее и со свечением */
 .fortuna-carousel-card.center {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 10px rgba(0, 180, 255, 0.5));
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 15px rgba(0, 180, 255, 0.6));
+    z-index: 10;
+    opacity: 1;
+}
+/* Карточки вне центра — уменьшены и полупрозрачны */
+.fortuna-carousel-card:not(.center) {
+    transform: scale(0.85);
+    opacity: 0.4;
+    filter: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Победитель — мигание */
+@keyframes fortuna-winner-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 180, 255, 0.7); }
+    50% { box-shadow: 0 0 0 12px rgba(0, 180, 255, 0); }
 }
