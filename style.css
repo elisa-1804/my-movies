@@ -2328,13 +2328,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 /* --- Стили кнопок --- */
 
 /* Кнопка "Открыть": голубой фон, темный текст */
-.btn-open-custom {
+.fortuna-open-btn {
     background-color: #00b4ff;
     color: #000;
 }
 
 /* Кнопка "Ещё раз": прозрачная, голубая обводка */
-.btn-again-custom {
+.fortuna-again-btn {
     background-color: transparent;
     color: #ffffff;
     border: 2px solid #00b4ff;
