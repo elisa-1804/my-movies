@@ -2132,3 +2132,10 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     width: 14px !important;
     height: 14px !important;
 }
+/* Принудительно уменьшаем иконки кнопки вида до размера сортировки */
+#movieViewBtn img,
+#seriesViewBtn img {
+    width: 22px !important;
+    height: 22px !important;
+    object-fit: contain;
+}
