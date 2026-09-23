@@ -2721,7 +2721,8 @@ function formatDuration(minutes) {
         switchPage('homePage', 'Главная');
     }
 // === КОЛЕСО ФОРТУНЫ ===
-// === КОЛЕСО ФОРТУНЫ ===
+
+let fortunaTimeoutId = null;
 
 function spinFortuna(type) {
     if (fortunaSpinning) return;
@@ -2750,11 +2751,13 @@ function spinFortuna(type) {
     const overlay = document.getElementById('fortunaOverlay');
     const card = document.getElementById('fortunaCard');
     const actions = document.getElementById('fortunaActions');
+    const stopBtn = document.getElementById('fortunaStopBtn');
 
     overlay.classList.add('active');
     card.classList.add('spinning');
     card.classList.remove('selected');
     actions.style.display = 'none';
+    stopBtn.classList.add('visible');
 
     const totalSteps = 28;
     let step = 0;
@@ -2773,19 +2776,57 @@ function spinFortuna(type) {
             }
 
             step++;
-            setTimeout(nextFrame, delay);
+            fortunaTimeoutId = setTimeout(nextFrame, delay);
         } else {
-            fortunaResult = items[Math.floor(Math.random() * items.length)];
-            displayFortunaCard(fortunaResult);
-
-            card.classList.remove('spinning');
-            card.classList.add('selected');
-            actions.style.display = 'flex';
-            fortunaSpinning = false;
+            finishFortuna(items);
         }
     }
 
     nextFrame();
+}
+
+function stopFortuna() {
+    if (!fortunaSpinning) return;
+
+    // Останавливаем таймер
+    if (fortunaTimeoutId) {
+        clearTimeout(fortunaTimeoutId);
+        fortunaTimeoutId = null;
+    }
+
+    // Собираем свежий массив, чтобы финал был случайным
+    let items = [];
+    if (fortunaType === 'love') {
+        const favMovies = movies.filter(m => m.favorite === true || m.favorite === 'true').map(m => ({ ...m, _itemType: 'movie' }));
+        const favSeries = series.filter(s => s.favorite === true || s.favorite === 'true').map(s => ({ ...s, _itemType: 'series' }));
+        items = [...favMovies, ...favSeries];
+    } else if (fortunaType === 'film') {
+        items = movies.map(m => ({ ...m, _itemType: 'movie' }));
+    } else if (fortunaType === 'serial') {
+        items = series.map(s => ({ ...s, _itemType: 'series' }));
+    }
+
+    finishFortuna(items);
+}
+
+function finishFortuna(items) {
+    if (fortunaTimeoutId) {
+        clearTimeout(fortunaTimeoutId);
+        fortunaTimeoutId = null;
+    }
+
+    fortunaResult = items[Math.floor(Math.random() * items.length)];
+    displayFortunaCard(fortunaResult);
+
+    const card = document.getElementById('fortunaCard');
+    const actions = document.getElementById('fortunaActions');
+    const stopBtn = document.getElementById('fortunaStopBtn');
+
+    card.classList.remove('spinning');
+    card.classList.add('selected');
+    actions.style.display = 'flex';
+    stopBtn.classList.remove('visible');
+    fortunaSpinning = false;
 }
 
 function displayFortunaCard(item) {
