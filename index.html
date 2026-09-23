@@ -1119,6 +1119,14 @@ function showDetails(id) {
                 <p style="margin: 0; padding-top: 12px; line-height: 1.5; color: #c4c4cc; font-size: 14px;">${m.desc || 'Описание отсутствует.'}</p>
             </div>
         </div>
+        <div class="details-action-buttons">
+            <button class="details-watch-btn" onclick="window.open('https://www.google.com/search?q=смотреть фильм ${encodeURIComponent(m.title)} бесплатно', '_blank')">
+                Смотреть
+            </button>
+            <button class="details-trailer-btn" onclick="window.open('https://www.google.com/search?q=смотреть трейлер к фильму ${encodeURIComponent(m.title)} на русском', '_blank')">
+                Трейлер
+            </button>
+        </div>
     `;
 
     // 7. Назначаем клик кнопке "Назад"
@@ -2301,6 +2309,14 @@ function showSeriesDetails(id) {
             <div class="spoiler-body-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
                 <p style="margin: 0; padding-top: 12px; line-height: 1.5; color: #c4c4cc; font-size: 14px;">${s.desc || 'Описание отсутствует.'}</p>
             </div>
+        </div>
+        <div class="details-action-buttons">
+            <button class="details-watch-btn" onclick="window.open('https://www.google.com/search?q=смотреть фильм ${encodeURIComponent(m.title)} бесплатно', '_blank')">
+                Смотреть
+            </button>
+            <button class="details-trailer-btn" onclick="window.open('https://www.google.com/search?q=смотреть трейлер к фильму ${encodeURIComponent(m.title)} на русском', '_blank')">
+                Трейлер
+            </button>
         </div>
     `;
 
