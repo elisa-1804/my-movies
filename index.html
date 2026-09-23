@@ -2801,9 +2801,10 @@ function stopFortuna() {
     const stopBtn = document.getElementById('fortunaStopBtn');
 
     card.classList.remove('spinning');
-    stopBtn.classList.remove('visible');
-    overlay.classList.remove('active');
+    if (stopBtn) stopBtn.classList.remove('visible');
+    if (overlay) overlay.classList.remove('active');
 }
+
 
 
 function finishFortuna(items) {
