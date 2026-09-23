@@ -2310,14 +2310,15 @@ function showSeriesDetails(id) {
                 <p style="margin: 0; padding-top: 12px; line-height: 1.5; color: #c4c4cc; font-size: 14px;">${s.desc || 'Описание отсутствует.'}</p>
             </div>
         </div>
-        <div class="details-action-buttons">
-            <button class="details-watch-btn" onclick="window.open('https://www.google.com/search?q=смотреть сериал ${encodeURIComponent(m.title)} бесплатно', '_blank')">
-                Смотреть
-            </button>
-            <button class="details-trailer-btn" onclick="window.open('https://www.google.com/search?q=смотреть трейлер к сериалу ${encodeURIComponent(m.title)} на русском', '_blank')">
-                Трейлер
-            </button>
-        </div>
+       <div class="details-action-buttons">
+    <button class="details-watch-btn" onclick="window.open('https://www.google.com/search?q=смотреть сериал \${encodeURIComponent(s.title)} бесплатно', '_blank')">
+        Смотреть
+    </button>
+    <button class="details-trailer-btn" onclick="window.open('https://www.google.com/search?q=смотреть трейлер к сериалу \${encodeURIComponent(s.title)} на русском', '_blank')">
+        Трейлер
+    </button>
+</div>
+
     `;
 
     const backBtn = document.querySelector('#detailsPage .back-icon-btn');
