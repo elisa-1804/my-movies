@@ -2244,15 +2244,10 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Оверлей */
 #fortunaOverlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.9);
-    z-index: 3000;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    overscroll-behavior: contain;
 }
 
 #fortunaOverlay.active {
@@ -2357,8 +2352,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     cursor: pointer;
     display: none;
     margin-top: 20px;
+    width: auto;
 }
-
 
 .fortuna-stop-btn.visible {
     display: block;
