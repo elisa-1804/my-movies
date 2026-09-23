@@ -1752,12 +1752,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 #allSeriesPage .movies-grid {
     margin-top: 20px !important; 
 }
-/* 5-я плитка на главной — широкая плашка на всю ширину */
-.hub-tile-card:nth-child(5) {
-    aspect-ratio: unset;
-    height: 110px;
-    grid-column: 1 / -1;
-}
 
 /* === СТАТИСТИКА === */
 .stats-container {
