@@ -2364,3 +2364,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 .carousel-card-title { font-size: 11px; }
 .carousel-card-rating { font-size: 12px; color: #fba94c; }
+.fortuna-again-btn,
+.fortuna-open-btn {
+    display: none;
+}
+
+/* Показываем их только когда оверлей активен И не крутится */
+.fortuna-overlay.active:not(.spinning) .fortuna-again-btn,
+.fortuna-overlay.active:not(.spinning) .fortuna-open-btn {
+    display: block;
+}
