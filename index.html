@@ -220,9 +220,8 @@
 
         
 <!-- СТРАНИЦА ФОРТУНА -->
-<!-- 1. Оверлей (шторка) - только затемнение и кнопки действий -->
-<div id="fortunaOverlay">
-    <!-- Кнопки действий (Стоп, Ещё раз, Открыть) -->
+<!-- Оверлей: только фон и кнопки действий. Никаких карточек внутри! -->
+<div id="fortunaOverlay" class="fortuna-overlay">
     <div class="fortuna-overlay-actions">
         <button id="fortunaStopBtn" class="fortuna-stop-btn" onclick="stopFortuna()">Стоп</button>
         <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
@@ -230,10 +229,8 @@
     </div>
 </div>
 
-<!-- 2. Контент страницы (карусель и кнопки выбора) -->
+<!-- Контент страницы: кнопки выбора типа + карусель -->
 <div class="fortuna-page-container">
-    
-    <!-- Кнопки выбора типа (Любимое, Фильм, Сериал) -->
     <div class="fortuna-buttons">
         <div class="fortuna-btn" onclick="spinFortuna('love')">
             <span class="fortuna-btn-icon">❤️</span>
@@ -249,14 +246,13 @@
         </div>
     </div>
 
-    <!-- Сама карусель -->
     <div class="fortuna-carousel">
         <div id="fortunaTrack" class="fortuna-carousel-track">
-            <!-- Сюда JS добавляет карточки -->
+            <!-- Карточки добавляются JS сюда -->
         </div>
     </div>
-
 </div>
+
 
         
        <!-- 7. СТРАНИЦА ЖАНРОВ -->
@@ -2895,68 +2891,59 @@ function finishFortuna() {
     if (!track || !container) return;
 
     const containerWidth = container.offsetWidth;
-    // Расчет позиции
     const targetIdx = Math.round((fortunaPosition + containerWidth / 2 - CARD_WIDTH / 2) / (CARD_WIDTH + GAP));
     const targetPosition = targetIdx * (CARD_WIDTH + GAP);
 
-    // Плавная прокрутка ленты
     track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = 'translateX(' + (-targetPosition) + 'px)';
     fortunaPosition = targetPosition;
 
     setTimeout(function() {
-        updateCenterCard(); // Обновляем логику "центра"
+        updateCenterCard();
         
         const winner = fortunaCards[fortunaCenterIdx];
         if (winner) {
-            // 1. Сбрасываем все классы у всех карточек
+            // Сбрасываем все классы у всех карточек
             fortunaCards.forEach(c => {
                 c.element.classList.remove('center', 'winner');
-                c.element.style.animation = 'none'; // Сброс анимации
-                c.element.offsetHeight; // Force reflow
+                c.element.style.animation = 'none';
+                c.element.offsetHeight; // force reflow
             });
 
-            // 2. Добавляем ТОЛЬКО класс winner
+            // Добавляем ТОЛЬКО класс winner (анимация останется)
             winner.element.classList.add('winner');
         }
 
-        // Убираем класс spinning у оверлея, чтобы показать кнопки действий
         const overlay = document.getElementById('fortunaOverlay');
-        if (overlay) overlay.classList.remove('spinning');
+        if (overlay) {
+            overlay.classList.remove('spinning');
+        }
         
         track.style.transition = '';
     }, 650);
 }
 
-
-
-// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (КНОПКИ) ===
+// Функции для кнопок оверлея
 function stopFortuna() {
-    if (!fortunaSpinning) return;
-    fortunaSpinning = false;
-    // Анимация сама дойдет до finishFortuna благодаря проверке скорости в animate()
-    // Если нужно остановить резко - раскомментируй строку ниже:
-    // finishFortuna(); 
+    finishFortuna();
 }
 
 function fortunaAgain() {
     const overlay = document.getElementById('fortunaOverlay');
-    if(overlay) overlay.classList.remove('active');
-    setTimeout(function() { spinFortuna(fortunaType); }, 350);
+    if (overlay) {
+        overlay.classList.remove('active');
+        // Тут можно перезапустить спин, если нужно
+    }
 }
 
 function fortunaOpenResult() {
+    // Логика открытия выбранного фильма
     const overlay = document.getElementById('fortunaOverlay');
-    if(overlay) overlay.classList.remove('active');
-    
-    if (!fortunaResult) return;
-    
-    if (fortunaResult._itemType === 'movie') {
-        showDetails(fortunaResult.id);
-    } else {
-        showSeriesDetails(fortunaResult.id);
+    if (overlay) {
+        overlay.classList.remove('active');
     }
 }
+
 
 
     checkUser();
