@@ -217,32 +217,45 @@
     <button class="add-rec-btn" onclick="openRecModal()">Пополнить реки</button>
     <ul class="rec-list" id="recList"></ul>
 </div>
+
+        
 <!-- СТРАНИЦА ФОРТУНА -->
-<div id="fortunaPage" class="page">
-    <div class="page-fixed-header">
-<button class="back-icon-btn" onclick="goBack()">
-    <img src="images/back.png" alt="Назад" class="details-back-img">
-</button>
-        <h1>Колесо фортуны</h1>
-        <div style="width: 40px;"></div>
-    </div>
-    <div class="fortuna-container">
+<div id="fortunaOverlay">
+    <!-- Обертка для центрирования контента -->
+    <div class="fortuna-content-wrapper">
+        
+        <!-- Кнопки выбора типа (Любимое, Фильм, Сериал) -->
         <div class="fortuna-buttons">
             <div class="fortuna-btn" onclick="spinFortuna('love')">
-                <img src="icons/fortuna-love.png" class="fortuna-btn-icon" alt="">
+                <span class="fortuna-btn-icon">❤️</span>
                 <span class="fortuna-btn-label">Любимое</span>
             </div>
             <div class="fortuna-btn" onclick="spinFortuna('film')">
-                <img src="icons/fortuna-film.png" class="fortuna-btn-icon" alt="">
+                <span class="fortuna-btn-icon">🎬</span>
                 <span class="fortuna-btn-label">Фильм</span>
             </div>
             <div class="fortuna-btn" onclick="spinFortuna('serial')">
-                <img src="icons/fortuna-serial.png" class="fortuna-btn-icon" alt="">
+                <span class="fortuna-btn-icon">📺</span>
                 <span class="fortuna-btn-label">Сериал</span>
             </div>
         </div>
+
+        <!-- Сама карусель -->
+        <div class="fortuna-carousel">
+            <div id="fortunaTrack" class="fortuna-carousel-track">
+                <!-- Сюда JS будет добавлять карточки -->
+            </div>
+        </div>
+
+        <!-- Кнопки действий (Стоп, Ещё раз, Открыть) -->
+        <div class="fortuna-overlay-actions">
+            <button id="fortunaStopBtn" class="fortuna-stop-btn" onclick="stopFortuna()">Стоп</button>
+            <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
+            <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
+        </div>
     </div>
 </div>
+
 
 
         
@@ -591,16 +604,6 @@
             <button class="action-btn save-btn" onclick="applyFilters()">Применить</button>
         </div>
     </div>
-</div>
-<div id="fortunaOverlay">
-    <div class="fortuna-carousel">
-        <div class="fortuna-carousel-track" id="fortunaTrack"></div>
-    </div>
-    <div class="fortuna-overlay-actions" id="fortunaActions" style="display: none;">
-        <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
-        <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
-    </div>
-    <button class="fortuna-stop-btn" id="fortunaStopBtn" onclick="stopFortuna()">Стоп</button>
 </div>
 
 
