@@ -2896,25 +2896,39 @@ function finishFortuna() {
 
     const containerWidth = container.offsetWidth;
     
-    // Вычисляем индекс карточки, которая должна оказаться в центре
+    // Вычисляем индекс карточки, которая должна быть в центре
     const targetIdx = Math.round((fortunaPosition + containerWidth / 2 - CARD_WIDTH / 2) / (CARD_WIDTH + GAP));
     const targetPosition = targetIdx * (CARD_WIDTH + GAP);
 
-    track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+    // Плавно докручиваем ленту до нужной позиции
+    track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = 'translateX(' + (-targetPosition) + 'px)';
     fortunaPosition = targetPosition;
 
     setTimeout(function() {
-        updateCenterCard();
+        // 1. Сначала обновляем логику центра (чтобы JS знал, какая карта сейчас в центре)
+        updateCenterCard(); 
 
+        // 2. Находим победителя
         const winner = fortunaCards[fortunaCenterIdx];
+        
         if (winner) {
+            // 3. ГЛАВНОЕ: Убираем ВСЕ классы состояния у всех карт
+            fortunaCards.forEach(c => {
+                c.element.classList.remove('center', 'winner');
+                c.element.style.animation = 'none'; // Сбрасываем анимацию
+                c.element.offsetHeight; // Триггер перерисовки (reflow)
+            });
+
+            // 4. Добавляем ТОЛЬКО класс .winner
+            // Все эффекты (размер, свечение, пульсация) теперь берутся из CSS
             winner.element.classList.add('winner');
-            winner.element.style.animation = 'fortuna-winner-pulse 1s infinite';
-            fortunaResult = winner.item;
+            
+            console.log('Выпало:', winner.item.title);
         }
 
-        const actions = document.getElementById('fortunaActions');
+        // Возвращаем кнопки управления
+        const actions = document.getElementById('fortunaActions'); // Или найди по классу, если ID другой
         const stopBtn = document.getElementById('fortunaStopBtn');
         const overlay = document.getElementById('fortunaOverlay');
 
@@ -2923,8 +2937,9 @@ function finishFortuna() {
         if(overlay) overlay.classList.remove('spinning');
         
         track.style.transition = '';
-    }, 520);
+    }, 650);
 }
+
 
 // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (КНОПКИ) ===
 function stopFortuna() {
