@@ -63,6 +63,11 @@
     <img src="images/statistic.png" alt="Статистика" class="hub-tile-icon">
     <span class="hub-tile-title">Статистика</span>
 </div>
+                
+<div class="hub-tile-card" onclick="showPage('fortunaPage')">
+    <img src="icons/fortuna.png" class="hub-tile-icon" alt="">
+    <span class="hub-tile-title">Колесо фортуны</span>
+</div>
 
                 <!-- 4. Жанры (Нижний правый) -->
                 <div class="hub-tile-card" onclick="switchPage('genresPage', 'Жанры фильмов')">
@@ -199,7 +204,6 @@
         </div>
 
         <!-- 6. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
-        <!-- 6. СТРАНИЦА: РЕКОМЕНДАЦИИ К ПРОСМОТРУ -->
 <div id="recommendationsPage" class="page">
     <div class="page-fixed-header">
         <div class="stats-header-row">
@@ -213,6 +217,31 @@
     <ul class="rec-list" id="recList"></ul>
 </div>
 
+        <div id="fortunaPage" class="page">
+    <div class="page-fixed-header">
+        <button class="back-btn" onclick="showPage('homePage')">
+            <img src="icons/back.png" class="header-icon-img" alt="">
+        </button>
+        <h1>Колесо фортуны</h1>
+        <div style="width: 40px;"></div>
+    </div>
+    <div class="fortuna-buttons">
+        <div class="fortuna-btn" onclick="spinFortuna('love')">
+            <img src="icons/fortuna-love.png" class="fortuna-btn-icon" alt="">
+            <span class="fortuna-btn-label">Любимое</span>
+        </div>
+        <div class="fortuna-btn" onclick="spinFortuna('film')">
+            <img src="icons/fortuna-film.png" class="fortuna-btn-icon" alt="">
+            <span class="fortuna-btn-label">Фильм</span>
+        </div>
+        <div class="fortuna-btn" onclick="spinFortuna('serial')">
+            <img src="icons/fortuna-serial.png" class="fortuna-btn-icon" alt="">
+            <span class="fortuna-btn-label">Сериал</span>
+        </div>
+    </div>
+</div>
+
+        
        <!-- 7. СТРАНИЦА ЖАНРОВ -->
 <div id="genresPage" class="page">
     <div class="page-fixed-header">
@@ -559,6 +588,18 @@
         </div>
     </div>
 </div>
+<div id="fortunaOverlay">
+    <div class="fortuna-overlay-card" id="fortunaCard">
+        <img class="fortuna-overlay-poster" id="fortunaPoster" src="" alt="">
+        <div class="fortuna-overlay-title" id="fortunaTitle"></div>
+        <div class="fortuna-overlay-meta" id="fortunaMeta"></div>
+        <div class="fortuna-overlay-stars" id="fortunaStars"></div>
+        <div class="fortuna-overlay-actions" id="fortunaActions" style="display: none;">
+            <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
+            <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
+        </div>
+    </div>
+</div>
 
 
 
@@ -572,7 +613,9 @@
     const defaultPoster = "https://unsplash.com";
     let previousPageId = 'allMoviesPage'; // По умолчанию предыдущая страница — "Все фильмы"
     let previousPageTitle = 'Все фильмы';
-
+let fortunaResult = null;   // выбранный элемент
+let fortunaType = null;      // 'love' | 'film' | 'serial'
+let fortunaSpinning = false;
 
     function toggleAuthMode() {
         isSignUpMode = !isSignUpMode;
@@ -2670,6 +2713,121 @@ function formatDuration(minutes) {
     function goBack() {
         switchPage('homePage', 'Главная');
     }
+// === КОЛЕСО ФОРТУНЫ ===
+function spinFortuna(type) {
+    if (fortunaSpinning) return;
+
+    // Собираем массив элементов
+    let items = [];
+
+    if (type === 'love') {
+        const favMovies = (typeof movies !== 'undefined' ? movies : []).filter(m => m.isFavorite);
+        const favSeries = (typeof series !== 'undefined' ? series : []).filter(s => s.isFavorite);
+        items = [...favMovies, ...favSeries];
+    } else if (type === 'film') {
+        items = (typeof movies !== 'undefined' ? movies : []).slice();
+    } else if (type === 'serial') {
+        items = (typeof series !== 'undefined' ? series : []).slice();
+    }
+
+    if (items.length === 0) {
+        const labels = { love: 'в избранном', film: 'фильмов', serial: 'сериалов' };
+        alert('Нет ' + labels[type] + ' для колеса фортуны!');
+        return;
+    }
+
+    fortunaType = type;
+    fortunaSpinning = true;
+
+    const overlay = document.getElementById('fortunaOverlay');
+    const card = document.getElementById('fortunaCard');
+    const actions = document.getElementById('fortunaActions');
+
+    overlay.classList.add('active');
+    card.classList.add('spinning');
+    card.classList.remove('selected');
+    actions.style.display = 'none';
+
+    // Анимация прокрутки
+    const totalSteps = 28;
+    let step = 0;
+
+    function nextFrame() {
+        if (step < totalSteps) {
+            const randomItem = items[Math.floor(Math.random() * items.length)];
+            displayFortunaCard(randomItem);
+
+            // Замедляем к концу
+            let delay;
+            if (step < totalSteps * 0.4) {
+                delay = 55;
+            } else {
+                const progress = (step - totalSteps * 0.4) / (totalSteps * 0.6);
+                delay = 55 + progress * 265; // от 55мс до 320мс
+            }
+
+            step++;
+            setTimeout(nextFrame, delay);
+        } else {
+            // Финал — полностью рандомный выбор
+            fortunaResult = items[Math.floor(Math.random() * items.length)];
+            displayFortunaCard(fortunaResult);
+
+            card.classList.remove('spinning');
+            card.classList.add('selected');
+            actions.style.display = 'flex';
+            fortunaSpinning = false;
+        }
+    }
+
+    nextFrame();
+}
+
+function displayFortunaCard(item) {
+    const isMovie = item.duration !== undefined || item.type === 'movie';
+    const poster = item.poster || item.posterUrl || '';
+    const title = item.title || item.name || 'Без названия';
+    const year = item.year || '';
+    const rating = item.rating || 0;
+
+    let metaText = year;
+    if (isMovie && item.duration) {
+        metaText += ' • ' + item.duration + ' мин';
+    } else if (!isMovie && item.seasons) {
+        metaText += ' • ' + item.seasons + ' сез.';
+    }
+
+    // Звёзды
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        stars += i <= rating ? '★' : '☆';
+    }
+
+    document.getElementById('fortunaPoster').src = poster;
+    document.getElementById('fortunaTitle').textContent = title;
+    document.getElementById('fortunaMeta').textContent = metaText;
+    document.getElementById('fortunaStars').textContent = stars;
+}
+
+function fortunaAgain() {
+    document.getElementById('fortunaOverlay').classList.remove('active');
+    spinFortuna(fortunaType);
+}
+
+function fortunaOpenResult() {
+    document.getElementById('fortunaOverlay').classList.remove('active');
+
+    if (!fortunaResult) return;
+
+    const isMovie = fortunaResult.duration !== undefined || fortunaResult.type === 'movie';
+
+    // ЗАМЕНИТЕ названия функций на те, что есть в вашем коде:
+    if (isMovie) {
+        showMovieDetails(fortunaResult);   // ← ваша функция открытия фильма
+    } else {
+        showSeriesDetails(fortunaResult);  // ← ваша функция открытия сериала
+    }
+}
 
     checkUser();
 
