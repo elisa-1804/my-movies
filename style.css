@@ -239,7 +239,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     align-items: center; 
     justify-content: center; 
     padding: 20px; 
-    
+
     /* ФИКС: Запрещаем прокрутке «пробивать» модалку и двигать задний фон */
     overscroll-behavior: contain; 
 }
@@ -2173,8 +2173,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     background-color: #29292e;
 }
 /* ===== ИСПРАВЛЕННЫЙ CSS ДЛЯ ФОРТУНЫ ===== */
-/* Оверлей (шторка) */
-#fortunaOverlay {
+/* Оверлей: просто затемнение. Кнопки действий прижаты к низу. */
+.fortuna-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -2182,25 +2182,23 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     height: 100%;
     z-index: 9999;
     background-color: rgba(0, 0, 0, 0.85);
-    display: none; /* Скрыт по умолчанию */
-    
-    /* Центрируем только кнопки действий внутри шторки */
+    display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end; /* Кнопки прижаты к низу шторки */
+    justify-content: flex-end;
     padding: 20px;
     box-sizing: border-box;
 }
 
-#fortunaOverlay.active {
+.fortuna-overlay.active {
     display: flex;
 }
 
-/* Кнопки действий (внутри оверлея) */
+/* Кнопки действий (видны только когда оверлей активен) */
 .fortuna-overlay-actions {
     display: flex;
     gap: 12px;
-    margin-bottom: 40px; /* Отступ от низа экрана */
+    margin-bottom: 40px;
 }
 
 .fortuna-overlay-actions button {
@@ -2226,17 +2224,15 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     padding: 8px 16px;
     font-size: 12px;
 }
-#fortunaOverlay.spinning .fortuna-stop-btn { display: block; }
+.fortuna-overlay.spinning .fortuna-stop-btn { display: block; }
 
-/* --- Контент страницы (карусель и кнопки выбора) --- */
-
+/* Контент страницы */
 .fortuna-page-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Кнопки выбора типа */
 .fortuna-buttons {
     display: flex;
     justify-content: center;
@@ -2315,14 +2311,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     z-index: 1;
 }
 
-/* Карточки НЕ в центре */
 .fortuna-carousel-card:not(.center):not(.winner) {
     transform: scale(0.85);
     opacity: 0.4;
     filter: none;
 }
 
-/* Центральная карточка (не победитель) */
 .fortuna-carousel-card.center:not(.winner) {
     opacity: 1;
     transform: scale(1.15);
@@ -2331,7 +2325,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     z-index: 10;
 }
 
-/* Победитель */
 .fortuna-carousel-card.winner {
     animation: fortuna-winner-pulse 1s infinite;
     border-color: #00b4ff;
