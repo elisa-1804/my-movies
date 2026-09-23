@@ -2198,15 +2198,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: flex;
 }
 /* Карусель */
-.fortuna-carousel {
-    width: 100%;
-    max-width: 500px;
-    overflow: hidden;
-    position: relative;
-    height: 260px;
-    display: flex;
-    align-items: center;
-}
 
 .fortuna-carousel-track {
     display: flex;
@@ -2236,16 +2227,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     opacity: 1;
     transform: scale(1.15);
     z-index: 10;
-}
-
-.fortuna-carousel-card.winner {
-    border: 3px solid #06B6D4;
-    animation: fortunaWinGlow 0.6s ease-in-out infinite alternate;
-}
-
-@keyframes fortunaWinGlow {
-    0% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
-    100% { box-shadow: 0 0 45px rgba(6, 182, 212, 0.8), 0 0 80px rgba(6, 182, 212, 0.3); }
 }
 
 .fortuna-carousel-card img {
@@ -2290,11 +2271,17 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     cursor: pointer;
 }
 
-.fortuna-stop-btn {
-    margin-top: 25px;
-}
 .fortuna-container {
-    padding: 80px 0 20px;
+  width: 100vw;
+  max-width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
 }
 
 .fortuna-buttons {
@@ -2337,4 +2324,63 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-weight: 600;
     color: #fff;
     white-space: nowrap;
+}
+/* --- Стили кнопок --- */
+
+/* Кнопка "Открыть": голубой фон, темный текст */
+.btn-open-custom {
+    background-color: #00b4ff;
+    color: #000;
+}
+
+/* Кнопка "Ещё раз": прозрачная, голубая обводка */
+.btn-again-custom {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #00b4ff;
+}
+
+/* Кнопка "Стоп": скрыта по умолчанию */
+.fortuna-stop-btn {
+    display: none;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+/* Показываем "Стоп", когда у оверлея есть класс spinning (добавляет JS) */
+#fortunaOverlay.spinning .fortuna-stop-btn {
+    display: block;
+}
+
+/* --- Стили карусели --- */
+
+/* Растягиваем на экран, но не шире 90% (чтобы не обрезало на телефонах) */
+.fortuna-carousel {
+    max-width: 90vw;
+    height: 40vh; /* Высота ~40% от экрана */
+    justify-content: center;
+    margin: 0 auto;
+}
+
+/* Увеличиваем карточки */
+.fortuna-carousel-card {
+    width: 160px;
+    height: 240px;
+}
+
+/* Тонкая неоновая рамка для победителя */
+.fortuna-carousel-card.winner {
+    border: 2px solid #00b4ff;
+    box-shadow: 0 0 15px rgba(0, 180, 255, 0.6);
+    animation: none; /* Отключаем старое мерцание */
+}
+
+/* Активная (центральная) карточка: чуть крупнее и со свечением */
+.fortuna-carousel-card.center {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(0, 180, 255, 0.5));
 }
