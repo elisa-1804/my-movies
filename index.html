@@ -2897,7 +2897,6 @@ function finishFortuna() {
 
     const track = document.getElementById('fortunaTrack');
     const container = document.querySelector('.fortuna-carousel');
-    
     if (!track || !container) return;
 
     const containerWidth = container.offsetWidth;
@@ -2910,49 +2909,88 @@ function finishFortuna() {
 
     setTimeout(function() {
         updateCenterCard();
-        
         const winner = fortunaCards[fortunaCenterIdx];
+
         if (winner) {
-            // Сбрасываем все классы у всех карточек
-            fortunaCards.forEach(c => {
+            // Сбрасываем классы и инлайн-стили у всех
+            fortunaCards.forEach(function(c) {
                 c.element.classList.remove('center', 'winner');
                 c.element.style.animation = 'none';
-                c.element.offsetHeight; // force reflow
+                c.element.style.transform = '';
+                c.element.style.opacity = '';
+                c.element.style.boxShadow = '';
+                c.element.style.filter = '';
             });
 
-            // Добавляем ТОЛЬКО класс winner (анимация останется)
+            // Принудительный reflow, чтобы браузер "забыл" старую анимацию
+            void winner.element.offsetWidth;
+
+            // ОЧИЩАЕМ инлайн animation и добавляем класс — CSS сделает всё остальное
+            winner.element.style.animation = '';
             winner.element.classList.add('winner');
+            fortunaResult = winner.item;
         }
 
         const overlay = document.getElementById('fortunaOverlay');
-        if (overlay) {
-            overlay.classList.remove('spinning');
-        }
-        
+        if (overlay) overlay.classList.remove('spinning');
         track.style.transition = '';
     }, 650);
 }
 
-// Функции для кнопок оверлея
 function stopFortuna() {
-    finishFortuna();
+    if (fortunaAnimId) {
+        cancelAnimationFrame(fortunaAnimId);
+        fortunaAnimId = null;
+    }
+    fortunaSpinning = false;
+
+    const track = document.getElementById('fortunaTrack');
+    const overlay = document.getElementById('fortunaOverlay');
+
+    if (track) {
+        track.innerHTML = '';
+        track.style.transition = '';
+        track.style.transform = '';
+    }
+
+    fortunaCards = [];
+    fortunaResult = null;
+
+    if (overlay) {
+        overlay.classList.remove('active', 'spinning');
+    }
 }
 
 function fortunaAgain() {
-    const overlay = document.getElementById('fortunaOverlay');
-    if (overlay) {
-        overlay.classList.remove('active');
-        // Тут можно перезапустить спин, если нужно
+    const track = document.getElementById('fortunaTrack');
+    if (track) {
+        track.innerHTML = '';
+        track.style.transition = '';
+        track.style.transform = '';
     }
+    fortunaCards = [];
+
+    const overlay = document.getElementById('fortunaOverlay');
+    if (overlay) overlay.classList.remove('active');
+
+    setTimeout(function() {
+        spinFortuna(fortunaType);
+    }, 300);
 }
 
 function fortunaOpenResult() {
-    // Логика открытия выбранного фильма
     const overlay = document.getElementById('fortunaOverlay');
-    if (overlay) {
-        overlay.classList.remove('active');
+    if (overlay) overlay.classList.remove('active', 'spinning');
+
+    if (!fortunaResult) return;
+
+    if (fortunaResult._itemType === 'movie') {
+        showDetails(fortunaResult.id);
+    } else {
+        showSeriesDetails(fortunaResult.id);
     }
 }
+
 
 
 
