@@ -2293,3 +2293,48 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 .fortuna-stop-btn {
     margin-top: 25px;
 }
+.fortuna-container {
+    padding: 80px 0 20px;
+}
+
+.fortuna-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.fortuna-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.fortuna-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+}
+
+.fortuna-btn-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.fortuna-btn-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+}
