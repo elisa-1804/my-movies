@@ -651,13 +651,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     aspect-ratio: 1 / 1;
 }
 
-/* Пятая плитка (Статистика) - делаем шире */
 .hub-tile-card:nth-child(5) {
-    grid-column: span 2; /* Занимает 2 колонки */
-    aspect-ratio: 2 / 1; /* Соотношение 2:1 */
-    height: 110px;
+    aspect-ratio: 1 / 1;
 }
-
+.hub-tile-card:nth-child(6) {
+    aspect-ratio: 1 / 1;
+}
 
 /* Белая PNG иконка по центру квадрата */
 .hub-tile-icon {
@@ -2181,13 +2180,19 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 /* ===== СТИЛИ КОЛЕСА ФОРТУНЫ (ПОЛНАЯ ЗАМЕНА) ===== */
 
-/* Контейнер для центрирования кнопок на странице фортуны */
+/* Страница фортуны — flex-контейнер, центрирует кнопки */
+#fortunaPage.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Контейнер для центрирования кнопок */
 .fortuna-container {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 16px;
+    padding: 90px 16px 0;
     box-sizing: border-box;
     width: 100%;
 }
@@ -2202,7 +2207,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     max-width: 480px;
 }
 
-/* Отдельные кнопки выбора */
+/* Кнопки выбора */
 .fortuna-btn {
     background-color: #202024;
     border: 1px solid #29292e;
@@ -2218,8 +2223,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     cursor: pointer;
     transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
     user-select: none;
-    position: relative;
-    overflow: hidden;
 }
 
 .fortuna-btn:hover {
@@ -2237,22 +2240,15 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     object-fit: contain;
     pointer-events: none;
     display: block;
-    filter: brightness(0.7);
-}
-
-.fortuna-btn:hover .fortuna-btn-icon {
-    filter: brightness(1);
 }
 
 .fortuna-btn-label {
     font-size: 14px;
     font-weight: 600;
     color: #E2E8F0;
-    text-align: center;
-    line-height: 1.2;
 }
 
-/* Оверлей анимации (модальное окно) */
+/* Оверлей */
 #fortunaOverlay {
     display: none;
     position: fixed;
@@ -2263,14 +2259,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     justify-content: center;
     padding: 20px;
     overscroll-behavior: contain;
-    backdrop-filter: blur(4px);
 }
 
 #fortunaOverlay.active {
     display: flex;
 }
 
-/* Карточка результата внутри оверлея */
 .fortuna-overlay-card {
     background-color: #202024;
     border-radius: 12px;
@@ -2280,7 +2274,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     text-align: center;
     border: 1px solid #29292e;
     transition: border-color 0.3s, box-shadow 0.3s;
-    position: relative;
 }
 
 .fortuna-overlay-card.spinning {
@@ -2293,7 +2286,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     animation: fortuna-pulse 0.8s ease-in-out infinite;
 }
 
-/* Анимации */
 @keyframes fortuna-shake {
     0%   { transform: translateX(-2px) rotate(-1deg); }
     50%  { transform: translateX(2px)  rotate(1deg); }
@@ -2305,7 +2297,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     50%      { box-shadow: 0 0 30px rgba(6, 182, 212, 0.6); }
 }
 
-/* Элементы внутри карточки результата */
 .fortuna-overlay-poster {
     width: 100%;
     height: 220px;
@@ -2320,7 +2311,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-weight: 600;
     color: #E2E8F0;
     margin-bottom: 6px;
-    line-height: 1.3;
 }
 
 .fortuna-overlay-meta {
@@ -2333,14 +2323,12 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-size: 14px;
     color: #fba94c;
     margin-bottom: 16px;
-    font-weight: 500;
 }
 
 .fortuna-overlay-actions {
     display: flex;
     gap: 10px;
     justify-content: center;
-    margin-top: 10px;
 }
 
 .fortuna-again-btn {
@@ -2352,11 +2340,6 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: color 0.2s;
-}
-
-.fortuna-again-btn:hover {
-    color: #fff;
 }
 
 .fortuna-open-btn {
@@ -2368,9 +2351,4 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.fortuna-open-btn:hover {
-    background-color: #049dd9;
 }
