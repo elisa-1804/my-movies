@@ -2350,13 +2350,15 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     background-color: #f75a68;
     color: white;
     border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    font-size: 14px;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     display: none;
+    margin-top: 20px;
 }
+
 
 .fortuna-stop-btn.visible {
     display: block;
