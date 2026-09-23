@@ -220,43 +220,43 @@
 
         
 <!-- СТРАНИЦА ФОРТУНА -->
+<!-- 1. Оверлей (шторка) - только затемнение и кнопки действий -->
 <div id="fortunaOverlay">
-    <!-- Обертка для центрирования контента -->
-    <div class="fortuna-content-wrapper">
-        
-        <!-- Кнопки выбора типа (Любимое, Фильм, Сериал) -->
-        <div class="fortuna-buttons">
-            <div class="fortuna-btn" onclick="spinFortuna('love')">
-                <span class="fortuna-btn-icon">❤️</span>
-                <span class="fortuna-btn-label">Любимое</span>
-            </div>
-            <div class="fortuna-btn" onclick="spinFortuna('film')">
-                <span class="fortuna-btn-icon">🎬</span>
-                <span class="fortuna-btn-label">Фильм</span>
-            </div>
-            <div class="fortuna-btn" onclick="spinFortuna('serial')">
-                <span class="fortuna-btn-icon">📺</span>
-                <span class="fortuna-btn-label">Сериал</span>
-            </div>
-        </div>
-
-        <!-- Сама карусель -->
-        <div class="fortuna-carousel">
-            <div id="fortunaTrack" class="fortuna-carousel-track">
-                <!-- Сюда JS будет добавлять карточки -->
-            </div>
-        </div>
-
-        <!-- Кнопки действий (Стоп, Ещё раз, Открыть) -->
-        <div class="fortuna-overlay-actions">
-            <button id="fortunaStopBtn" class="fortuna-stop-btn" onclick="stopFortuna()">Стоп</button>
-            <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
-            <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
-        </div>
+    <!-- Кнопки действий (Стоп, Ещё раз, Открыть) -->
+    <div class="fortuna-overlay-actions">
+        <button id="fortunaStopBtn" class="fortuna-stop-btn" onclick="stopFortuna()">Стоп</button>
+        <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
+        <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
     </div>
 </div>
 
+<!-- 2. Контент страницы (карусель и кнопки выбора) -->
+<div class="fortuna-page-container">
+    
+    <!-- Кнопки выбора типа (Любимое, Фильм, Сериал) -->
+    <div class="fortuna-buttons">
+        <div class="fortuna-btn" onclick="spinFortuna('love')">
+            <span class="fortuna-btn-icon">❤️</span>
+            <span class="fortuna-btn-label">Любимое</span>
+        </div>
+        <div class="fortuna-btn" onclick="spinFortuna('film')">
+            <span class="fortuna-btn-icon">🎬</span>
+            <span class="fortuna-btn-label">Фильм</span>
+        </div>
+        <div class="fortuna-btn" onclick="spinFortuna('serial')">
+            <span class="fortuna-btn-icon">📺</span>
+            <span class="fortuna-btn-label">Сериал</span>
+        </div>
+    </div>
 
+    <!-- Сама карусель -->
+    <div class="fortuna-carousel">
+        <div id="fortunaTrack" class="fortuna-carousel-track">
+            <!-- Сюда JS добавляет карточки -->
+        </div>
+    </div>
+
+</div>
 
         
        <!-- 7. СТРАНИЦА ЖАНРОВ -->
@@ -2891,33 +2891,39 @@ function finishFortuna() {
 
     const track = document.getElementById('fortunaTrack');
     const container = document.querySelector('.fortuna-carousel');
+    
     if (!track || !container) return;
 
     const containerWidth = container.offsetWidth;
+    // Расчет позиции
     const targetIdx = Math.round((fortunaPosition + containerWidth / 2 - CARD_WIDTH / 2) / (CARD_WIDTH + GAP));
     const targetPosition = targetIdx * (CARD_WIDTH + GAP);
 
+    // Плавная прокрутка ленты
     track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = 'translateX(' + (-targetPosition) + 'px)';
     fortunaPosition = targetPosition;
 
     setTimeout(function() {
-        updateCenterCard();
+        updateCenterCard(); // Обновляем логику "центра"
+        
         const winner = fortunaCards[fortunaCenterIdx];
         if (winner) {
-            // Сбрасываем все состояния
+            // 1. Сбрасываем все классы у всех карточек
             fortunaCards.forEach(c => {
                 c.element.classList.remove('center', 'winner');
-                c.element.style.animation = 'none';
-                c.element.offsetHeight; // force reflow
+                c.element.style.animation = 'none'; // Сброс анимации
+                c.element.offsetHeight; // Force reflow
             });
-            // Добавляем только класс победителя
+
+            // 2. Добавляем ТОЛЬКО класс winner
             winner.element.classList.add('winner');
         }
 
+        // Убираем класс spinning у оверлея, чтобы показать кнопки действий
         const overlay = document.getElementById('fortunaOverlay');
         if (overlay) overlay.classList.remove('spinning');
-
+        
         track.style.transition = '';
     }, 650);
 }
