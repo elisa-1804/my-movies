@@ -2224,13 +2224,18 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 .fortuna-stop-btn {
     display: none;
-    background-color: #333;
+    background-color: #e50914; /* Сделаем её поярче, например красной */
     color: #fff;
     border: none;
-    padding: 8px 16px;
-    font-size: 12px;
+    padding: 10px 24px;
+    font-size: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
 }
-.fortuna-overlay.spinning .fortuna-stop-btn { display: block; }
+.fortuna-overlay.spinning .fortuna-stop-btn {
+    display: block;
+}
 
 /* Контент страницы */
 .fortuna-page-container {
