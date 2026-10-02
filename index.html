@@ -2759,22 +2759,16 @@ if (typeof fortunaResult === 'undefined') window.fortunaResult = null;
 
 // Главная функция запуска
 function spinFortuna(typeOrItems) {
-    // Если уже крутится — блокируем повторные клики
     if (window.fortunaSpinning) return;
 
     const overlay = document.getElementById('fortunaOverlay');
     const track = document.getElementById('fortunaTrack');
     
-    if (!overlay || !track) {
-        console.error("Критическая ошибка: Не найдены HTML-элементы fortunaOverlay или fortunaTrack!");
-        return;
-    }
+    if (!overlay || !track) return;
 
-    // 1. Приведение входных данных к единому массиву
     let items = [];
     if (typeof typeOrItems === 'string') {
-        window.fortunaType = typeOrItems; // Запоминаем тип ('film', 'serial', 'love') для кнопки "Заново"
-        
+        window.fortunaType = typeOrItems;
         if (typeOrItems === 'film') {
             if (typeof movies !== 'undefined' && movies.length > 0) items = movies;
             else if (typeof moviesList !== 'undefined' && moviesList.length > 0) items = moviesList;
@@ -2790,9 +2784,7 @@ function spinFortuna(typeOrItems) {
         items = typeOrItems;
     }
 
-    // 2. Аварийная заглушка (если база пустая или еще не загрузилась)
     if (!items || items.length === 0) {
-        console.warn("Массив данных пуст, используем тестовый набор фильмов");
         items = [
             { id: 991, title: "Интерстеллар", poster: "https://unsplash.com", rating: 5 },
             { id: 992, title: "Начало", poster: "https://unsplash.com", rating: 5 },
@@ -2801,29 +2793,29 @@ function spinFortuna(typeOrItems) {
         ];
     }
 
-    // 3. Подготовка ленты карточек
+    // Очистка и сброс трека
     track.innerHTML = '';
     track.style.transition = 'none';
     
     const cardWidth = 160; 
     const gap = 12;
-    
-    // Исходное положение: центрируем самую первую карточку на экране
-    const initialCenteredOffset = (window.innerWidth / 2) - (cardWidth / 2);
-    track.style.transform = `translateX(${initialCenteredOffset}px)`;
+    const step = cardWidth + gap; // 172px на одну карточку
 
-    // Убираем дубликаты из исходного массива по id
+    // Фиксируем начальную точку: первая карточка встает ровно центром на центр экрана
+    const centerScreen = window.innerWidth / 2;
+    const startLeft = centerScreen - (cardWidth / 2);
+    track.style.left = `${startLeft}px`;
+    track.style.transform = 'translateX(0px)';
+
     const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
-
-    // Клонируем элементы, создавая длинный «паровоз» из 60 карточек
     const baseItems = [];
     const shuffled = uniqueItems.slice().sort(() => Math.random() - 0.5);
     const repeatCount = 60; 
+    
     for (let i = 0; i < repeatCount; i++) {
         baseItems.push(shuffled[i % shuffled.length]);
     }
 
-    // Рендерим карточки в HTML
     baseItems.forEach(item => {
         const card = document.createElement('div');
         card.className = 'fortuna-carousel-card';
@@ -2844,33 +2836,29 @@ function spinFortuna(typeOrItems) {
         track.appendChild(card);
     });
 
-    // 4. Включение режимов оверлея
     window.fortunaSpinning = true;
     overlay.classList.add('active', 'spinning');
 
-    // Выбираем случайную карточку-победителя (ближе к концу ленты, например 45-ю)
-    const targetCardIdx = 42 + Math.floor(Math.random() * 10);
+    // Выбираем карточку-победителя (например, 45-ю в ленте)
+    const targetCardIdx = 45; 
     window.fortunaResult = baseItems[targetCardIdx]; 
 
-    // Расчет финальной точки остановки
-    const distanceToTarget = targetCardIdx * (cardWidth + gap);
-    const finalTransformValue = initialCenteredOffset - distanceToTarget;
+    // Сдвигаем трек влево ровно на нужное количество карточек
+    const finalShift = -(targetCardIdx * step);
 
-    const duration = 7; // Время кручения в секундах
+    const duration = 7; 
     const ease = 'cubic-bezier(0.1, 1, 0.1, 1)'; 
 
-    // Запуск прокрутки карусели
+    // Запуск плавной анимации
     setTimeout(() => {
         track.style.transition = `transform ${duration}s ${ease}`;
-        track.style.transform = `translateX(${finalTransformValue}px)`;
+        track.style.transform = `translateX(${finalShift}px)`;
     }, 50);
 
-    // Таймер автоматической остановки
     window.fortunaAnimId = setTimeout(() => {
         if (window.fortunaSpinning) stopFortuna();
     }, duration * 1000 + 100);
 }
-
 // Функция принудительного или автоматического стопа
 function stopFortuna() {
     if (!window.fortunaSpinning) return;
@@ -2878,40 +2866,73 @@ function stopFortuna() {
     clearTimeout(window.fortunaAnimId);
 
     const overlay = document.getElementById('fortunaOverlay');
+    const track = document.getElementById('fortunaTrack');
+    
     if (overlay) overlay.classList.remove('spinning'); 
 
+    if (track) {
+        // 1. Узнаем, где ИМЕННО сейчас находится лента во время анимации
+        const computedStyle = window.getComputedStyle(track);
+        const matrix = new WebKitCSSMatrix(computedStyle.transform);
+        const currentX = matrix.m41; // текущий сдвиг в пикселях
+
+        // 2. Мгновенно фиксируем ленту в этой точке (стопорим анимацию)
+        track.style.transition = 'none';
+        track.style.transform = `translateX(${currentX}px)`;
+    }
+
+    // 3. Вызываем подсчет победителя на основе того, где остановились
     finishFortuna();
 }
+
 
 // Финализация: поиск карточки на экране и её подсветка
 function finishFortuna() {
     const track = document.getElementById('fortunaTrack');
-    if (!track || !window.fortunaResult) return;
+    if (!track) return;
 
     const cards = Array.from(track.children);
+    if (cards.length === 0) return;
+
+    // Сбрасываем старую подсветку
     cards.forEach(card => card.classList.remove('winner', 'center'));
 
-    // Ищем карточки с выпавшим ID
-    const matchingCards = cards.filter(card => card.dataset.itemId == window.fortunaResult.id);
+    // Находим физический центр экрана
+    const screenCenter = window.innerWidth / 2;
     
-    if (matchingCards.length > 0) {
-        const screenCenter = window.innerWidth / 2;
-        let closestCard = matchingCards[0];
-        let minDistance = Infinity;
+    let winnerCard = null;
+    let minDistance = Infinity;
 
-        // Из дубликатов выбираем ту карточку, которая ближе всего к центру экрана физически
-        matchingCards.forEach(card => {
-            const rect = card.getBoundingClientRect();
-            const cardCenter = rect.left + (rect.width / 2);
-            const distance = Math.abs(screenCenter - cardCenter);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestCard = card;
-            }
-        });
+    // Перебираем все карточки и ищем ту, которая ближе всего к центру экрана прямо сейчас
+    cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + (rect.width / 2);
+        const distance = Math.abs(screenCenter - cardCenter);
 
-        // Добавляем CSS классы для запуска пульсации победителя
-        closestCard.classList.add('winner', 'center');
+        if (distance < minDistance) {
+            minDistance = distance;
+            winnerCard = card;
+        }
+    });
+
+    if (winnerCard) {
+        // Подсвечиваем реального победителя
+        winnerCard.classList.add('winner', 'center');
+        
+        // Записываем результат для кнопки "Открыть"
+        const itemId = winnerCard.dataset.itemId;
+        
+        // Ищем объект фильма/сериала по ID в наших массивах, чтобы работала кнопка "Открыть"
+        let sourceList = [];
+        if (typeof movies !== 'undefined') sourceList = sourceList.concat(movies);
+        if (typeof moviesList !== 'undefined') sourceList = sourceList.concat(moviesList);
+        if (typeof allMovies !== 'undefined') sourceList = sourceList.concat(allMovies);
+        if (typeof serials !== 'undefined') sourceList = sourceList.concat(serials);
+        if (typeof favorites !== 'undefined') sourceList = sourceList.concat(favorites);
+
+        window.fortunaResult = sourceList.find(item => item.id == itemId) || { id: itemId };
+        
+        console.log('🎯 ЧЕСТНЫЙ ВЫБОР ОСТАНОВКИ:', window.fortunaResult);
     }
 }
 
