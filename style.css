@@ -2337,25 +2337,25 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     z-index: 10;
 }
 
+/* Состояние победителя: плавно фиксируем размер и включаем неон */
 .fortuna-carousel-card.winner {
     opacity: 1;
     z-index: 20;
-    border: 3px solid #00b4ff;
-    transform: scale(1.15) !important; /* Фиксируем размер, чтобы карточка не дергалась грубо */
-    animation: fortuna-glow-pulse 2s infinite ease-in-out;
+    border-color: #00b4ff;
+    transform: scale(1.15); /* Просто фиксируем размер БЕЗ дерганий */
+    animation: fortuna-winner-pulse 1.8s infinite ease-in-out; /* Имя совпадает! */
 }
 
-
+/* Чистая неоновая пульсация под твоим названием */
 @keyframes fortuna-winner-pulse {
-   0%, 100% {
-        box-shadow: 0 0 15px rgba(0, 180, 255, 0.4), inset 0 0 10px rgba(0, 180, 255, 0.2);
-        filter: drop-shadow(0 0 10px rgba(0, 180, 255, 0.5));
+    0%, 100% {
+        box-shadow: 0 0 15px 2px rgba(0, 180, 255, 0.5);
     }
     50% {
-        box-shadow: 0 0 30px rgba(0, 180, 255, 0.8), inset 0 0 15px rgba(0, 180, 255, 0.4);
-        filter: drop-shadow(0 0 20px rgba(0, 180, 255, 0.9));
+        box-shadow: 0 0 35px 6px rgba(0, 180, 255, 0.9);
     }
 }
+
 
 
 .fortuna-carousel-card img {
