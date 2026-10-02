@@ -2291,7 +2291,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    height: 260px;
+    height: 320px;
     overflow: hidden;
     background: transparent;
     z-index: 10000;
@@ -2302,21 +2302,8 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     gap: 12px;
     position: absolute;
     left: 0;
-    top: 10px;
+    top: 40px; /* Немного опустили трек внутри карусели для баланса */
     will-change: transform;
-}
-/* ДОБАВЬ ЭТО: Красная стрелка-указатель по центру, чтобы было понятно, кто выиграл */
-.fortuna-carousel::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 30px;
-    background-color: #e50914;
-    z-index: 10005;
-    box-shadow: 0 0 10px #e50914;
 }
 
 .fortuna-carousel-card {
@@ -2329,19 +2316,17 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    
-    opacity: 0.4;
+    opacity: 0.3;
     transform-origin: center center;
-    transition: opacity 0.25s ease, transform 0.25s ease, border 0.25s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     border: 3px solid transparent;
     box-sizing: border-box;
     z-index: 1;
-    box-shadow: none; /* Явно убираем любые тени по умолчанию */
 }
 
 .fortuna-carousel-card:not(.center):not(.winner) {
     transform: scale(0.85);
-    opacity: 0.4;
+    opacity: 0.3;
 }
 
 .fortuna-carousel-card.center:not(.winner) {
@@ -2353,23 +2338,22 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 .fortuna-carousel-card.winner {
-    animation: fortuna-winner-pulse 1.2s infinite;
-    border: 4px solid #00b4ff;
+    opacity: 1;
     z-index: 20;
-    transform: scale(1.15) !important;
-    box-shadow: 0 0 0 0 rgba(0, 180, 255, 0.7);
-    filter: drop-shadow(0 0 20px rgba(0, 180, 255, 0.8)) !important;
+    border: 3px solid #00b4ff;
+    transform: scale(1.15) !important; /* Фиксируем размер, чтобы карточка не дергалась грубо */
+    animation: fortuna-glow-pulse 2s infinite ease-in-out;
 }
 
 
 @keyframes fortuna-winner-pulse {
-    0%, 100% {
-        transform: scale(1.15);
-        box-shadow: 0 0 0 0 rgba(0, 180, 255, 0.7);
+   0%, 100% {
+        box-shadow: 0 0 15px rgba(0, 180, 255, 0.4), inset 0 0 10px rgba(0, 180, 255, 0.2);
+        filter: drop-shadow(0 0 10px rgba(0, 180, 255, 0.5));
     }
     50% {
-        transform: scale(1.25);
-        box-shadow: 0 0 0 15px rgba(0, 180, 255, 0.8);
+        box-shadow: 0 0 30px rgba(0, 180, 255, 0.8), inset 0 0 15px rgba(0, 180, 255, 0.4);
+        filter: drop-shadow(0 0 20px rgba(0, 180, 255, 0.9));
     }
 }
 
