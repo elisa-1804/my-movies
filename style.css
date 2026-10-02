@@ -2185,7 +2185,7 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;  /* <-- карусель по центру экрана */
     padding: 20px;
     box-sizing: border-box;
 }
@@ -2194,12 +2194,16 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     display: flex;
 }
 
-/* Кнопки действий (видны только когда оверлей активен) */
 .fortuna-overlay-actions {
+    position: absolute;       /* <-- кнопки прижаты к низу */
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     gap: 12px;
-    margin-bottom: 40px;
 }
+
+
 
 .fortuna-overlay-actions button {
     padding: 10px 24px;
