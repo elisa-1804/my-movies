@@ -2195,12 +2195,14 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 }
 
 .fortuna-overlay-actions {
-    position: absolute;       /* <-- кнопки прижаты к низу */
+    position: absolute;
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 12px;
+    z-index: 10001; /* выше оверлея и карусели */
+    pointer-events: auto;
 }
 
 
@@ -2282,12 +2284,13 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
     position: relative;
     overflow: hidden;
     max-width: 90vw;
-    height: 40vh;
+    max-height: 60vh;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
     background: transparent;
+    z-index: 10000; /* ниже кнопок */
 }
 
 .fortuna-carousel-track {
