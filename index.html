@@ -2746,46 +2746,52 @@ function formatDuration(minutes) {
         switchPage('homePage', 'Главная');
     }
 
-// === ОСНОВНАЯ ФУНКЦИЯ ЗАПУСКА ===
-function spinFortuna(items) {
-    if (typeof items === 'string') {
-        fortunaType = items; 
-        if (items === 'film') {
-            if (typeof movies !== 'undefined' && movies.length > 0) items = movies;
-            else if (typeof moviesList !== 'undefined' && moviesList.length > 0) items = moviesList;
-            else if (typeof allMovies !== 'undefined' && allMovies.length > 0) items = allMovies;
-            else items = [];
-        } 
-        else if (items === 'serial') {
-            if (typeof serials !== 'undefined' && serials.length > 0) items = serials;
-            else if (typeof serialsList !== 'undefined' && serialsList.length > 0) items = serialsList;
-            else items = [];
-        } 
-        else if (items === 'love') {
-            if (typeof favorites !== 'undefined' && favorites.length > 0) items = favorites;
-            else if (typeof favoritesList !== 'undefined' && favoritesList.length > 0) items = favoritesList;
-            else items = [];
-        }
-    }
+// =========================================================================
+//                  ПОЛНЫЙ И ОЧИЩЕННЫЙ БЛОК КОЛЕСА ФОРТУНЫ
+// =========================================================================
 
-    if (fortunaSpinning) return;
+// Глобальные переменные состояния (убедись, что они не дублируются выше)
+if (typeof fortunaSpinning === 'undefined') window.fortunaSpinning = false;
+if (typeof fortunaAnimId === 'undefined') window.fortunaAnimId = null;
+if (typeof fortunaType === 'undefined') window.fortunaType = '';
+if (typeof fortunaResult === 'undefined') window.fortunaResult = null;
+
+// Главная функция запуска
+function spinFortuna(typeOrItems) {
+    // Если уже крутится — блокируем повторные клики
+    if (window.fortunaSpinning) return;
 
     const overlay = document.getElementById('fortunaOverlay');
     const track = document.getElementById('fortunaTrack');
     
-    if (!overlay || !track) return;
+    if (!overlay || !track) {
+        console.error("Критическая ошибка: Не найдены HTML-элементы fortunaOverlay или fortunaTrack!");
+        return;
+    }
 
-    // 1. СБРОС: Сначала возвращаем ленту в самый центр экрана, а не в край!
-    track.innerHTML = '';
-    track.style.transition = 'none';
-    
-    const cardWidth = 160; 
-    const gap = 12;
-    // Сдвиг, чтобы первая карточка изначально встала ровно по центру экрана
-    const initialCenteredOffset = (window.innerWidth / 2) - (cardWidth / 2);
-    track.style.transform = `translateX(${initialCenteredOffset}px)`;
+    // 1. Приведение входных данных к единому массиву
+    let items = [];
+    if (typeof typeOrItems === 'string') {
+        window.fortunaType = typeOrItems; // Запоминаем тип ('film', 'serial', 'love') для кнопки "Заново"
+        
+        if (typeOrItems === 'film') {
+            if (typeof movies !== 'undefined' && movies.length > 0) items = movies;
+            else if (typeof moviesList !== 'undefined' && moviesList.length > 0) items = moviesList;
+            else if (typeof allMovies !== 'undefined' && allMovies.length > 0) items = allMovies;
+        } else if (typeOrItems === 'serial') {
+            if (typeof serials !== 'undefined' && serials.length > 0) items = serials;
+            else if (typeof serialsList !== 'undefined' && serialsList.length > 0) items = serialsList;
+        } else if (typeOrItems === 'love') {
+            if (typeof favorites !== 'undefined' && favorites.length > 0) items = favorites;
+            else if (typeof favoritesList !== 'undefined' && favoritesList.length > 0) items = favoritesList;
+        }
+    } else if (Array.isArray(typeOrItems)) {
+        items = typeOrItems;
+    }
 
+    // 2. Аварийная заглушка (если база пустая или еще не загрузилась)
     if (!items || items.length === 0) {
+        console.warn("Массив данных пуст, используем тестовый набор фильмов");
         items = [
             { id: 991, title: "Интерстеллар", poster: "https://unsplash.com", rating: 5 },
             { id: 992, title: "Начало", poster: "https://unsplash.com", rating: 5 },
@@ -2794,8 +2800,21 @@ function spinFortuna(items) {
         ];
     }
 
+    // 3. Подготовка ленты карточек
+    track.innerHTML = '';
+    track.style.transition = 'none';
+    
+    const cardWidth = 160; 
+    const gap = 12;
+    
+    // Исходное положение: центрируем самую первую карточку на экране
+    const initialCenteredOffset = (window.innerWidth / 2) - (cardWidth / 2);
+    track.style.transform = `translateX(${initialCenteredOffset}px)`;
+
+    // Убираем дубликаты из исходного массива по id
     const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
 
+    // Клонируем элементы, создавая длинный «паровоз» из 60 карточек
     const baseItems = [];
     const shuffled = uniqueItems.slice().sort(() => Math.random() - 0.5);
     const repeatCount = 60; 
@@ -2803,12 +2822,13 @@ function spinFortuna(items) {
         baseItems.push(shuffled[i % shuffled.length]);
     }
 
+    // Рендерим карточки в HTML
     baseItems.forEach(item => {
         const card = document.createElement('div');
         card.className = 'fortuna-carousel-card';
         card.dataset.itemId = item.id;
         
-        const poster = item.poster || defaultPoster;
+        const poster = item.poster || (typeof defaultPoster !== 'undefined' ? defaultPoster : "https://unsplash.com");
         const title = item.title || 'Без названия';
         const rating = item.rating || 0;
         
@@ -2823,107 +2843,62 @@ function spinFortuna(items) {
         track.appendChild(card);
     });
 
-    fortunaSpinning = true;
+    // 4. Включение режимов оверлея
+    window.fortunaSpinning = true;
     overlay.classList.add('active', 'spinning');
-    
-    // Выбираем карточку-победителя ближе к концу ленты
-    const targetCardIdx = 45 + Math.floor(Math.random() * 8);
-    fortunaResult = baseItems[targetCardIdx]; 
 
-    // 2. РАСЧЕТ АНИМАЦИИ: Теперь крутим от начального центрального положения
-    // Нам нужно прокрутить ровно на расстояние до targetCardIdx
+    // Выбираем случайную карточку-победителя (ближе к концу ленты, например 45-ю)
+    const targetCardIdx = 42 + Math.floor(Math.random() * 10);
+    window.fortunaResult = baseItems[targetCardIdx]; 
+
+    // Расчет финальной точки остановки
     const distanceToTarget = targetCardIdx * (cardWidth + gap);
     const finalTransformValue = initialCenteredOffset - distanceToTarget;
 
-    const duration = 7; 
-    const ease = 'cubic-bezier(0.1, 1, 0.1, 1)'; // Плавное торможение
+    const duration = 7; // Время кручения в секундах
+    const ease = 'cubic-bezier(0.1, 1, 0.1, 1)'; 
 
-    // Запускаем прокрутку с минимальной задержкой, чтобы браузер успел применить стили сброса
+    // Запуск прокрутки карусели
     setTimeout(() => {
         track.style.transition = `transform ${duration}s ${ease}`;
         track.style.transform = `translateX(${finalTransformValue}px)`;
     }, 50);
 
-    fortunaAnimId = setTimeout(() => {
-        if (fortunaSpinning) stopFortuna();
+    // Таймер автоматической остановки
+    window.fortunaAnimId = setTimeout(() => {
+        if (window.fortunaSpinning) stopFortuna();
     }, duration * 1000 + 100);
 }
 
+// Функция принудительного или автоматического стопа
+function stopFortuna() {
+    if (!window.fortunaSpinning) return;
+    window.fortunaSpinning = false;
+    clearTimeout(window.fortunaAnimId);
 
+    const overlay = document.getElementById('fortunaOverlay');
+    if (overlay) overlay.classList.remove('spinning'); 
 
-
-// === СОЗДАНИЕ КАРТОЧКИ ===
-function createCarouselCard(item) {
-    const card = document.createElement('div');
-    card.className = 'fortuna-carousel-card';
-    const poster = item.poster || defaultPoster;
-    const title = item.title || 'Без названия';
-    const rating = item.rating || 0;
-    let stars = '';
-    for (let i = 1; i <= 5; i++) stars += i <= rating ? '★' : '☆';
-
-    card.innerHTML =
-        '<img src="' + poster + '" alt="' + title + '">' +
-        '<div class="carousel-card-title">' + title + '</div>' +
-        '<div class="carousel-card-rating">' + stars + '</div>';
-    return card;
+    finishFortuna();
 }
 
-// === ОБНОВЛЕНИЕ ЦЕНТРАЛЬНОЙ КАРТОЧКИ ===
-function updateCenterCard() {
-    const container = document.querySelector('.fortuna-carousel');
-    if (!container) return;
-
-    const containerWidth = container.offsetWidth;
-    const centerPos = fortunaPosition + containerWidth / 2;
-
-    let closestIdx = 0;
-    let closestDist = Infinity;
-
-    for (let i = 0; i < fortunaCards.length; i++) {
-        const cardCenter = i * (CARD_WIDTH + GAP) + CARD_WIDTH / 2;
-        const dist = Math.abs(cardCenter - centerPos);
-        if (dist < closestDist) {
-            closestDist = dist;
-            closestIdx = i;
-        }
-    }
-
-    // Сбрасываем классы у всех
-    fortunaCards.forEach(c => {
-        c.element.classList.remove('center', 'winner');
-    });
-
-    // Ставим класс только текущей центральной
-    const centerCard = fortunaCards[closestIdx];
-    centerCard.element.classList.add('center');
-
-    fortunaCenterIdx = closestIdx;
-}
-
-
-
-// === ФИНАЛИЗАЦИЯ ВЫБОРА (ЭТОЙ ФУНКЦИИ ТЕБЕ НЕ ХВАТАЛО) ===
+// Финализация: поиск карточки на экране и её подсветка
 function finishFortuna() {
     const track = document.getElementById('fortunaTrack');
-    if (!track || !fortunaResult) return;
+    if (!track || !window.fortunaResult) return;
 
     const cards = Array.from(track.children);
-    
-    // Перебираем все карточки на ленте
-    cards.forEach(card => {
-        card.classList.remove('winner', 'center');
-    });
+    cards.forEach(card => card.classList.remove('winner', 'center'));
 
-    // Находим карточки, у которых ID совпадает с выпавшим фильмом
-    const matchingCards = cards.filter(card => card.dataset.itemId == fortunaResult.id);
+    // Ищем карточки с выпавшим ID
+    const matchingCards = cards.filter(card => card.dataset.itemId == window.fortunaResult.id);
     
     if (matchingCards.length > 0) {
-        // Берем ту карточку из дубликатов, которая физически находится ближе к центру экрана
         const screenCenter = window.innerWidth / 2;
         let closestCard = matchingCards[0];
         let minDistance = Infinity;
 
+        // Из дубликатов выбираем ту карточку, которая ближе всего к центру экрана физически
         matchingCards.forEach(card => {
             const rect = card.getBoundingClientRect();
             const cardCenter = rect.left + (rect.width / 2);
@@ -2934,52 +2909,39 @@ function finishFortuna() {
             }
         });
 
-        // Добавляем класс победителя нужной карточке
+        // Добавляем CSS классы для запуска пульсации победителя
         closestCard.classList.add('winner', 'center');
     }
-
-    console.log('✅ ПОБЕДИТЕЛЬ ВЫДЕЛЕН:', fortunaResult);
 }
 
-function stopFortuna() {
-    if (!fortunaSpinning) return;
-    fortunaSpinning = false;
-    clearTimeout(fortunaAnimId);
-
-    const overlay = document.getElementById('fortunaOverlay');
-    if (overlay) {
-        // Убираем класс spinning, чтобы CSS показал кнопки "Заново" и "Открыть"
-        overlay.classList.remove('spinning'); 
-    }
-
-    finishFortuna();
-}
-           
+// Кнопка "Заново"
 function fortunaAgain() {
-    fortunaSpinning = false;
-    fortunaResult = null;
+    window.fortunaSpinning = false;
+    window.fortunaResult = null;
 
     const overlay = document.getElementById('fortunaOverlay');
     if (overlay) overlay.classList.remove('active', 'spinning');
 
-    // Небольшой таймаут для сброса оверлея перед новым запуском
-    setTimeout(function() {
-        if (fortunaType) {
-            spinFortuna(fortunaType);
+    // Запускаем заново по сохраненному типу с небольшой задержкой
+    setTimeout(() => {
+        if (window.fortunaType) {
+            spinFortuna(window.fortunaType);
         }
     }, 300);
 }
 
+// Кнопка "Открыть"
 function fortunaOpenResult() {
     const overlay = document.getElementById('fortunaOverlay');
     if (overlay) overlay.classList.remove('active', 'spinning');
 
-    if (!fortunaResult) return;
+    if (!window.fortunaResult) return;
 
-    if (fortunaResult._itemType === 'movie') {
-        showDetails(fortunaResult.id);
+    // Вызываем функции детального просмотра твоего сайта (проверь их наличие в коде)
+    if (window.fortunaResult._itemType === 'movie' || window.fortunaType === 'film') {
+        if (typeof showDetails === 'function') showDetails(window.fortunaResult.id);
     } else {
-        showSeriesDetails(fortunaResult.id);
+        if (typeof showSeriesDetails === 'function') showSeriesDetails(window.fortunaResult.id);
     }
 }
 
