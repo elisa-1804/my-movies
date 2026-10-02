@@ -2286,22 +2286,37 @@ header h1 { font-size: 22px; font-weight: 600; color: #E2E8F0; }
 
 /* Карусель */
 .fortuna-carousel {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 260px;
     overflow: hidden;
-    max-width: 90vw;
-    max-height: 60vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
     background: transparent;
-    z-index: 10000; /* ниже кнопок */
+    z-index: 10000;
 }
 
 .fortuna-carousel-track {
     display: flex;
     gap: 12px;
+    position: absolute;
+    left: 0;
+    top: 10px;
     will-change: transform;
+}
+/* ДОБАВЬ ЭТО: Красная стрелка-указатель по центру, чтобы было понятно, кто выиграл */
+.fortuna-carousel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 30px;
+    background-color: #e50914;
+    z-index: 10005;
+    box-shadow: 0 0 10px #e50914;
 }
 
 .fortuna-carousel-card {
