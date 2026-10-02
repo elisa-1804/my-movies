@@ -2766,35 +2766,48 @@ function spinFortuna(typeOrItems) {
     
     if (!overlay || !track) return;
 
-    // Пытаемся автоматически собрать ВСЕ фильмы, которые есть на сайте
-    let sourceItems = [];
+    // === ЖЕСТКАЯ ПРИВЯЗКА К ТАБЛИЦАМ / МАССИВАМ ===
+    let finalItems = [];
     
     if (typeof typeOrItems === 'string') {
-        window.fortunaType = typeOrItems;
+        window.fortunaType = typeOrItems; // Запоминаем для кнопки "Заново" и "Открыть"
         
         if (typeOrItems === 'film') {
-            if (typeof movies !== 'undefined' && movies.length > 0) sourceItems = movies;
-            else if (typeof moviesList !== 'undefined' && moviesList.length > 0) sourceItems = moviesList;
-            else if (typeof allMovies !== 'undefined' && allMovies.length > 0) sourceItems = allMovies;
-        } else if (typeOrItems === 'serial') {
-            if (typeof serials !== 'undefined' && serials.length > 0) sourceItems = serials;
-            else if (typeof serialsList !== 'undefined' && serialsList.length > 0) sourceItems = serialsList;
-        } else if (typeOrItems === 'love') {
-            if (typeof favorites !== 'undefined' && favorites.length > 0) sourceItems = favorites;
-            else if (typeof favoritesList !== 'undefined' && favoritesList.length > 0) sourceItems = favoritesList;
+            // Забираем данные строго из таблицы/массива фильмов
+            if (typeof movies !== 'undefined' && movies.length > 0) finalItems = movies;
+            else if (typeof moviesList !== 'undefined' && moviesList.length > 0) finalItems = moviesList;
+            else if (typeof allMovies !== 'undefined' && allMovies.length > 0) finalItems = allMovies;
+        } 
+        else if (typeOrItems === 'serial') {
+            // Забираем данные строго из таблицы/массива сериалов
+            if (typeof serials !== 'undefined' && serials.length > 0) finalItems = serials;
+            else if (typeof serialsList !== 'undefined' && serialsList.length > 0) finalItems = serialsList;
+            else if (typeof allSerials !== 'undefined' && allSerials.length > 0) finalItems = allSerials;
+        } 
+        else if (typeOrItems === 'love') {
+            // Забираем данные строго из таблицы/массива избранного
+            if (typeof favorites !== 'undefined' && favorites.length > 0) finalItems = favorites;
+            else if (typeof favoritesList !== 'undefined' && favoritesList.length > 0) finalItems = favoritesList;
+            
+            // Если отдельного массива нет, пробуем отфильтровать фильмы и сериалы, у которых стоит лайк
+            if (finalItems.length === 0) {
+                let allCombined = [];
+                if (typeof movies !== 'undefined') allCombined = allCombined.concat(movies);
+                if (typeof serials !== 'undefined') allCombined = allCombined.concat(serials);
+                finalItems = allCombined.filter(item => item.isFavorite || item.favorite || item.is_favorite);
+            }
         }
     } else if (Array.isArray(typeOrItems)) {
-        sourceItems = typeOrItems;
+        finalItems = typeOrItems;
     }
 
-    // Если база пуста, мы НЕ используем заглушку из 4 фильмов! 
-    // Вместо этого ищем ЛЮБОЙ массив на сайте, где есть хоть какие-то данные (например, allMovies)
-    if (!sourceItems || sourceItems.length === 0) {
-        if (typeof allMovies !== 'undefined' && allMovies.length > 0) sourceItems = allMovies;
-        else if (typeof movies !== 'undefined' && movies.length > 0) sourceItems = movies;
-        else if (typeof moviesList !== 'undefined' && moviesList.length > 0) sourceItems = moviesList;
+    // Если база пустая
+    if (!finalItems || finalItems.length === 0) {
+        alert('В этой категории пока нет элементов или данные еще загружаются!');
+        return;
     }
 
+    // Сброс трека карусели
     track.innerHTML = '';
     track.style.transition = 'none';
     
@@ -2807,19 +2820,12 @@ function spinFortuna(typeOrItems) {
     track.style.left = `${startLeft}px`;
     track.style.transform = 'translateX(0px)';
 
-    // 1. Очищаем от дубликатов исходную базу
-    const uniqueItems = [...new Map(sourceItems.map(i => [i.id, i])).values()];
-    
-    // 2. Случайно перемешиваем всю твою базу из 200 фильмов
+    const uniqueItems = [...new Map(finalItems.map(i => [i.id, i])).values()];
     const shuffled = uniqueItems.slice().sort(() => Math.random() - 0.5);
-    
-    // 3. Строим ленту из 60 карточек
     const baseItems = [];
     const repeatCount = 60; 
     
     for (let i = 0; i < repeatCount; i++) {
-        // Если твоих уникальных фильмов МЕНЬШЕ 60 (например, в Избранном), они повторятся.
-        // Но если фильмов 200 — первые 60 карточек на ленте будут АБСОЛЮТНО УНИКАЛЬНЫМИ!
         baseItems.push(shuffled[i % shuffled.length]);
     }
 
@@ -2846,7 +2852,6 @@ function spinFortuna(typeOrItems) {
     window.fortunaSpinning = true;
     overlay.classList.add('active', 'spinning');
 
-    // Нацеливаемся строго на 45-ю карточку (она будет полностью уникальной)
     const targetCardIdx = 45; 
     window.fortunaResult = baseItems[targetCardIdx]; 
 
@@ -2938,11 +2943,31 @@ function fortunaOpenResult() {
 
     if (!window.fortunaResult) return;
 
-    // Вызываем функции детального просмотра твоего сайта (проверь их наличие в коде)
-    if (window.fortunaResult._itemType === 'movie' || window.fortunaType === 'film') {
-        if (typeof showDetails === 'function') showDetails(window.fortunaResult.id);
-    } else {
-        if (typeof showSeriesDetails === 'function') showSeriesDetails(window.fortunaResult.id);
+    // 1. Проверяем, какой тип крутился изначально в колесе
+    if (window.fortunaType === 'serial') {
+        if (typeof showSeriesDetails === 'function') {
+            showSeriesDetails(window.fortunaResult.id);
+            return;
+        }
+    } 
+    
+    if (window.fortunaType === 'film') {
+        if (typeof showDetails === 'function') {
+            showDetails(window.fortunaResult.id);
+            return;
+        }
+    }
+
+    // 2. Если крутилось "Любимое" (где намешаны и те, и другие), проверяем по внутренней структуре
+    const currentId = window.fortunaResult.id;
+    
+    // Если этот ID есть в массиве сериалов — открываем как сериал
+    const isSerial = typeof serials !== 'undefined' && serials.some(s => s.id === currentId);
+    
+    if (isSerial && typeof showSeriesDetails === 'function') {
+        showSeriesDetails(currentId);
+    } else if (typeof showDetails === 'function') {
+        showDetails(currentId);
     }
 }
 
