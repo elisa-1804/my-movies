@@ -239,9 +239,15 @@
     </div>
 
     <div id="fortunaActions" class="fortuna-overlay-actions">
-        <button id="fortunaStopBtn" class="fortuna-stop-btn" onclick="stopFortuna()">Стоп</button>
-        <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
-        <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
+       <!-- Замени favoritesList на имя твоего массива избранного -->
+<div class="fortuna-btn" onclick="spinFortuna(favoritesList)">Любимое</div>
+
+<!-- Замени moviesList на имя твоего массива фильмов -->
+<div class="fortuna-btn" onclick="spinFortuna(moviesList)">Фильм</div>
+
+<!-- Замени serialsList на имя твоего массива сериалов -->
+<div class="fortuna-btn" onclick="spinFortuna(serialsList)">Сериал</div>
+
     </div>
 </div>
 
@@ -2741,7 +2747,7 @@ function formatDuration(minutes) {
     }
 
 // === ОСНОВНАЯ ФУНКЦИЯ ЗАПУСКА ===
-function spinFortuna(category) {
+function spinFortuna(items) {
     if (fortunaSpinning) return;
 
     const overlay = document.getElementById('fortunaOverlay');
@@ -2753,29 +2759,23 @@ function spinFortuna(category) {
 
     if (!overlay || !track || !actions || !stopBtn) return;
 
-    // Сброс стилей
+    // Сброс карусели
     track.innerHTML = '';
     track.style.transform = 'translateX(0)';
     track.style.transition = 'none';
 
-    // Подготовка данных
-    let items = [];
-    if (category === 'love') items = favoritesList; // замените на ваш массив избранного
-    else if (category === 'film') items = moviesList; // замените на ваш массив фильмов
-    else if (category === 'serial') items = serialsList; // замените на ваш массив сериалов
-
-    if (items.length === 0) {
-        console.warn('Нет контента для категории:', category);
+    if (!items || items.length === 0) {
+        console.warn('Нет контента для этой категории');
         return;
     }
 
     // Уникальные по ID
     const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
 
-    // Формируем длинный массив для карусели (без бесконечного цикла)
+    // Формируем длинную ленту (30 карточек)
     const baseItems = [];
     const shuffled = uniqueItems.slice().sort(() => Math.random() - 0.5);
-    const repeatCount = 30; // 30 карточек в ленте
+    const repeatCount = 30;
     for (let i = 0; i < repeatCount; i++) {
         baseItems.push(shuffled[i % shuffled.length]);
     }
@@ -2784,6 +2784,7 @@ function spinFortuna(category) {
     baseItems.forEach(item => {
         const card = document.createElement('div');
         card.className = 'fortuna-carousel-card';
+        card.dataset.itemId = item.id; // Сохраняем ID для финиша
         card.innerHTML = `
             <img src="${item.poster}" alt="${item.title}" class="fortuna-card-img">
             <div class="fortuna-card-info">
@@ -2794,27 +2795,28 @@ function spinFortuna(category) {
         track.appendChild(card);
     });
 
-    // Активация оверлея и кнопок
+    // Показываем оверлей и кнопки
     overlay.classList.add('active');
     fortunaSpinning = true;
     fortunaResult = null;
 
+    // Гарантированно включаем кнопки действий
     if (actions) {
         actions.style.opacity = '1';
         actions.style.pointerEvents = 'auto';
     }
-
     if (stopBtn) stopBtn.style.display = 'block';
     if (againBtn) againBtn.style.display = 'none';
     if (openBtn) openBtn.style.display = 'none';
 
     // Запуск вращения
-    const cardWidth = 220; // ширина карточки в px (должна совпадать с CSS)
-    const gap = 16;        // отступ между карточками в px (должен совпадать с CSS)
+    const cardWidth = 220; // ВАЖНО: должно совпадать с шириной карточки в CSS
+    const gap = 16;        // ВАЖНО: должно совпадать с gap в CSS
     const totalWidth = baseItems.length * (cardWidth + gap);
+    
+    // Случайная точка остановки
     const randomOffset = Math.floor(Math.random() * (totalWidth - window.innerWidth));
-
-    const duration = 8 + Math.random() * 4; // 8–12 секунд
+    const duration = 8 + Math.random() * 4; // 8-12 секунд
     const ease = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
     track.style.transition = `transform ${duration}s ${ease}`;
@@ -2885,14 +2887,11 @@ function finishFortuna() {
     const cards = Array.from(track.children);
     if (cards.length === 0) return;
 
-    // Находим карточку, которая сейчас в центре экрана
-    const trackRect = track.getBoundingClientRect();
     const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-
     let winnerCard = null;
     let minDistance = Infinity;
 
+    // Ищем карточку, которая ближе всего к центру экрана
     cards.forEach(card => {
         const rect = card.getBoundingClientRect();
         const cardCenterX = rect.left + rect.width / 2;
@@ -2905,16 +2904,20 @@ function finishFortuna() {
 
     if (!winnerCard) return;
 
-    // Сбрасываем класс winner у всех
+    // Сбрасываем класс у всех и даем победителю
     cards.forEach(c => c.classList.remove('winner'));
-
-    // Применяем к победителю
     winnerCard.classList.add('winner');
+    
+    // Центрируем победителя
     winnerCard.scrollIntoView({ block: 'center', behavior: 'auto' });
 
     // Сохраняем данные победителя
-    fortunaResult = winnerCard.dataset.itemId ? getItemById(winnerCard.dataset.itemId) : null; // замените логику получения объекта
-    console.log('✅ ВЫПАЛО:', fortunaResult ? fortunaResult.title : 'не удалось определить');
+    const itemId = winnerCard.dataset.itemId;
+    // Тут логика простая: мы уже знаем объект, если нужно, можно найти его в исходном массиве
+    // Но для отображения в интерфейсе достаточно того, что карточка уже подсвечена
+    fortunaResult = { id: itemId }; 
+    
+    console.log('✅ ВЫПАЛО ID:', itemId);
 }
 
 function stopFortuna() {
