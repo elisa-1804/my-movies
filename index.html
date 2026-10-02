@@ -229,38 +229,40 @@
             <h1>Колесо фортуны</h1>
         </div>
     </div>
-    <!-- Оверлей: только фон и кнопки действий -->
-    <div id="fortunaOverlay" class="fortuna-overlay">
-        <div class="fortuna-overlay-actions">
-            <button id="fortunaStopBtn" class="fortuna-stop-btn" onclick="stopFortuna()">Стоп</button>
-            <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
-            <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
+<!-- Оверлей: фон + карусель + кнопки действий -->
+<div id="fortunaOverlay" class="fortuna-overlay">
+    <!-- Карусель перенесена СЮДА, внутрь оверлея -->
+    <div class="fortuna-carousel">
+        <div id="fortunaTrack" class="fortuna-carousel-track">
+            <!-- Карточки добавляются JS сюда -->
         </div>
     </div>
 
-    <!-- Контент страницы: кнопки выбора типа + карусель -->
-    <div class="fortuna-page-container">
-        <div class="fortuna-buttons">
-            <div class="fortuna-btn" onclick="spinFortuna('love')">
-                <span class="fortuna-btn-icon">❤️</span>
-                <span class="fortuna-btn-label">Любимое</span>
-            </div>
-            <div class="fortuna-btn" onclick="spinFortuna('film')">
-                <span class="fortuna-btn-icon">🎬</span>
-                <span class="fortuna-btn-label">Фильм</span>
-            </div>
-            <div class="fortuna-btn" onclick="spinFortuna('serial')">
-                <span class="fortuna-btn-icon">📺</span>
-                <span class="fortuna-btn-label">Сериал</span>
-            </div>
-        </div>
+    <div id="fortunaActions" class="fortuna-overlay-actions">
+        <button id="fortunaStopBtn" class="fortuna-stop-btn" onclick="stopFortuna()">Стоп</button>
+        <button class="fortuna-again-btn" onclick="fortunaAgain()">Ещё раз</button>
+        <button class="fortuna-open-btn" onclick="fortunaOpenResult()">Открыть</button>
+    </div>
+</div>
 
-        <div class="fortuna-carousel">
-            <div id="fortunaTrack" class="fortuna-carousel-track">
-                <!-- Карточки добавляются JS сюда -->
-            </div>
+<!-- Контент страницы: только кнопки выбора типа -->
+<div class="fortuna-page-container">
+    <div class="fortuna-buttons">
+        <div class="fortuna-btn" onclick="spinFortuna('love')">
+            <span class="fortuna-btn-icon">❤️</span>
+            <span class="fortuna-btn-label">Любимое</span>
+        </div>
+        <div class="fortuna-btn" onclick="spinFortuna('film')">
+            <span class="fortuna-btn-icon">🎬</span>
+            <span class="fortuna-btn-label">Фильм</span>
+        </div>
+        <div class="fortuna-btn" onclick="spinFortuna('serial')">
+            <span class="fortuna-btn-icon">📺</span>
+            <span class="fortuna-btn-label">Сериал</span>
         </div>
     </div>
+</div>
+
 </div>
 
 
@@ -2779,13 +2781,8 @@ function spinFortuna(type) {
     fortunaCards = [];
 
     // Логика уникальных карточек
-    const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
-    if (uniqueItems.length < 10) {
-        while (uniqueItems.length < 10) {
-            const rnd = items[Math.floor(Math.random() * items.length)];
-            if (!uniqueItems.some(u => u.id === rnd.id)) uniqueItems.push(rnd);
-        }
-    }
+const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
+
 
     const shuffled = uniqueItems.slice();
     for (let i = shuffled.length - 1; i > 0; i--) {
