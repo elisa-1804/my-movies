@@ -2855,8 +2855,11 @@ function spinFortuna(typeOrItems) {
         track.style.transform = `translateX(${finalShift}px)`;
     }, 50);
 
-    window.fortunaAnimId = setTimeout(() => {
-        if (window.fortunaSpinning) stopFortuna();
+window.fortunaAnimId = setTimeout(() => {
+        if (window.fortunaSpinning) {
+            window.fortunaSpinning = false; // Выключаем статус кручения
+            finishFortuna(); // Показываем результат и красивый неоновый свет!
+        }
     }, duration * 1000 + 100);
 }
 // Функция принудительного или автоматического стопа
@@ -2868,12 +2871,11 @@ function stopFortuna() {
     const track = document.getElementById('fortunaTrack');
     
     if (overlay) {
-        // Убираем все активные классы и полностью закрываем оверлей
+        // Закрываем оверлей, ТОЛЬКО если человек сам нажал кнопку СТОП во время кручения
         overlay.classList.remove('active', 'spinning'); 
     }
 
     if (track) {
-        // Полностью очищаем карусель, сбрасывая всё в ноль
         track.innerHTML = '';
         track.style.transition = 'none';
         track.style.transform = 'translateX(0px)';
@@ -2886,19 +2888,26 @@ function stopFortuna() {
 
 // Финализация: поиск карточки на экране и её подсветка
 function finishFortuna() {
+    // ВАЖНО: Мы НЕ закрываем оверлей! Мы просто выключаем режим spinning, чтобы показать кнопки "Заново" и "Открыть"
+    const overlay = document.getElementById('fortunaOverlay');
+    if (overlay) {
+        overlay.classList.remove('spinning'); 
+    }
+
     const track = document.getElementById('fortunaTrack');
     if (!track || !window.fortunaResult) return;
 
     const cards = Array.from(track.children);
     cards.forEach(card => card.classList.remove('winner', 'center'));
 
-    // Так как при полном докручивании мы жестко целимся в 45-ю карточку, подсвечиваем её
-    const winnerCard = cards[45];
+    // Так как при автоматическом финише мы выбрали 45-ю карточку, берём и подсвечиваем её на экране
+    const winnerCard = cards[45]; 
     
     if (winnerCard) {
         winnerCard.classList.add('winner', 'center');
     }
-    console.log('🎯 Автоматический выбор: ', window.fortunaResult);
+    
+    console.log('🎯 Автоматический выбор успешно показан:', window.fortunaResult);
 }
 
 // Кнопка "Заново"
