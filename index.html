@@ -630,7 +630,8 @@
     const SUPABASE_URL = "https://ppjezzfhwsartggywzyp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ChDY37tmdQzyKO_xUe_kEw_D5zTO4og";
    
-    let currentUser = null, movies = [], genres = [], currentFormRating = 0, isSignUpMode = false;
+  let currentUser = null, movies = [], serials = [], genres = [], currentFormRating = 0, isSignUpMode = false;
+
     let currentFavTab = 'movie'; // Переключатель вкладок Избранного по умолчанию
     let currentStatsTab = 'movie';
     const defaultPoster = "https://unsplash.com";
@@ -2766,48 +2767,38 @@ function spinFortuna(typeOrItems) {
     
     if (!overlay || !track) return;
 
-    // === ЖЕСТКАЯ ПРИВЯЗКА К ТАБЛИЦАМ / МАССИВАМ ===
     let finalItems = [];
     
     if (typeof typeOrItems === 'string') {
-        window.fortunaType = typeOrItems; // Запоминаем для кнопки "Заново" и "Открыть"
+        window.fortunaType = typeOrItems; // запоминаем выбор для кнопок "Заново" / "Открыть"
         
         if (typeOrItems === 'film') {
-            // Забираем данные строго из таблицы/массива фильмов
-            if (typeof movies !== 'undefined' && movies.length > 0) finalItems = movies;
-            else if (typeof moviesList !== 'undefined' && moviesList.length > 0) finalItems = moviesList;
-            else if (typeof allMovies !== 'undefined' && allMovies.length > 0) finalItems = allMovies;
+            // Берем строго твой массив фильмов
+            if (typeof movies !== 'undefined') finalItems = movies;
         } 
         else if (typeOrItems === 'serial') {
-            // Забираем данные строго из таблицы/массива сериалов
-            if (typeof serials !== 'undefined' && serials.length > 0) finalItems = serials;
-            else if (typeof serialsList !== 'undefined' && serialsList.length > 0) finalItems = serialsList;
-            else if (typeof allSerials !== 'undefined' && allSerials.length > 0) finalItems = allSerials;
+            // Берем строго твой массив сериалов, который мы только что нашли!
+            if (typeof series !== 'undefined') finalItems = series;
         } 
         else if (typeOrItems === 'love') {
-            // Забираем данные строго из таблицы/массива избранного
-            if (typeof favorites !== 'undefined' && favorites.length > 0) finalItems = favorites;
-            else if (typeof favoritesList !== 'undefined' && favoritesList.length > 0) finalItems = favoritesList;
+            // Собираем избранное из фильмов и сериалов по твоему свойству .favorite
+            let allCombined = [];
+            if (typeof movies !== 'undefined') allCombined = allCombined.concat(movies);
+            if (typeof series !== 'undefined') allCombined = allCombined.concat(series);
             
-            // Если отдельного массива нет, пробуем отфильтровать фильмы и сериалы, у которых стоит лайк
-            if (finalItems.length === 0) {
-                let allCombined = [];
-                if (typeof movies !== 'undefined') allCombined = allCombined.concat(movies);
-                if (typeof serials !== 'undefined') allCombined = allCombined.concat(serials);
-                finalItems = allCombined.filter(item => item.isFavorite || item.favorite || item.is_favorite);
-            }
+            finalItems = allCombined.filter(item => item.favorite === true || item.favorite === 'true');
         }
     } else if (Array.isArray(typeOrItems)) {
         finalItems = typeOrItems;
     }
 
-    // Если база пустая
+    // Если список пуст
     if (!finalItems || finalItems.length === 0) {
-        alert('В этой категории пока нет элементов или данные еще загружаются!');
+        alert('Категория пуста или данные еще загружаются с сервера!');
         return;
     }
 
-    // Сброс трека карусели
+    // Сброс и центрирование первой карточки
     track.innerHTML = '';
     track.style.transition = 'none';
     
@@ -2820,7 +2811,10 @@ function spinFortuna(typeOrItems) {
     track.style.left = `${startLeft}px`;
     track.style.transform = 'translateX(0px)';
 
+    // Убираем дубликаты из исходной базы, чтобы рандом был честным
     const uniqueItems = [...new Map(finalItems.map(i => [i.id, i])).values()];
+    
+    // Перемешиваем всю твою базу без повторов
     const shuffled = uniqueItems.slice().sort(() => Math.random() - 0.5);
     const baseItems = [];
     const repeatCount = 60; 
@@ -2852,6 +2846,7 @@ function spinFortuna(typeOrItems) {
     window.fortunaSpinning = true;
     overlay.classList.add('active', 'spinning');
 
+    // Нацеливаемся ровно на 45-ю уникальную карточку
     const targetCardIdx = 45; 
     window.fortunaResult = baseItems[targetCardIdx]; 
 
@@ -2943,27 +2938,30 @@ function fortunaOpenResult() {
 
     if (!window.fortunaResult) return;
 
-    // 1. Проверяем, какой тип крутился изначально в колесе
+    const currentId = window.fortunaResult.id;
+
+    // 1. Если крутили Сериалы — открываем как сериал
     if (window.fortunaType === 'serial') {
         if (typeof showSeriesDetails === 'function') {
-            showSeriesDetails(window.fortunaResult.id);
-            return;
-        }
-    } 
-    
-    if (window.fortunaType === 'film') {
-        if (typeof showDetails === 'function') {
-            showDetails(window.fortunaResult.id);
+            showSeriesDetails(currentId);
             return;
         }
     }
 
-    // 2. Если крутилось "Любимое" (где намешаны и те, и другие), проверяем по внутренней структуре
-    const currentId = window.fortunaResult.id;
-    
-    // Если этот ID есть в массиве сериалов — открываем как сериал
-    const isSerial = typeof serials !== 'undefined' && serials.some(s => s.id === currentId);
-    
+    // 2. Если крутили Фильмы — открываем как фильм
+    if (window.fortunaType === 'film') {
+        if (typeof showDetails === 'function') {
+            showDetails(currentId);
+            return;
+        }
+    }
+
+    // 3. Если крутили "Любимое", проверяем, в каком массиве лежит этот ID
+    let isSerial = false;
+    if (typeof series !== 'undefined' && Array.isArray(series)) {
+        isSerial = series.some(s => s.id === currentId);
+    }
+
     if (isSerial && typeof showSeriesDetails === 'function') {
         showSeriesDetails(currentId);
     } else if (typeof showDetails === 'function') {
