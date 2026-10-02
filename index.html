@@ -2784,6 +2784,7 @@ function spinFortuna(typeOrItems) {
         items = typeOrItems;
     }
 
+    // ЕСЛИ БАЗА СОВСЕМ ПУСТАЯ И НЕ ЗАГРУЗИЛАСЬ (Аварийный случай)
     if (!items || items.length === 0) {
         items = [
             { id: 991, title: "Интерстеллар", poster: "https://unsplash.com", rating: 5 },
@@ -2793,26 +2794,30 @@ function spinFortuna(typeOrItems) {
         ];
     }
 
-    // Очистка и сброс трека
     track.innerHTML = '';
     track.style.transition = 'none';
     
     const cardWidth = 160; 
     const gap = 12;
-    const step = cardWidth + gap; // 172px на одну карточку
+    const step = cardWidth + gap; 
 
-    // Фиксируем начальную точку: первая карточка встает ровно центром на центр экрана
     const centerScreen = window.innerWidth / 2;
     const startLeft = centerScreen - (cardWidth / 2);
     track.style.left = `${startLeft}px`;
     track.style.transform = 'translateX(0px)';
 
+    // Убираем дубликаты из твоей базы
     const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
-    const baseItems = [];
+    
+    // Перемешиваем ВСЮ твою реальную базу фильмов (все 200 штук)
     const shuffled = uniqueItems.slice().sort(() => Math.random() - 0.5);
+    
+    // Нам нужна лента из 60 карточек для долгого кручения
+    const baseItems = [];
     const repeatCount = 60; 
     
     for (let i = 0; i < repeatCount; i++) {
+        // Берем каждый раз следующий уникальный фильм из твоей перемешанной базы
         baseItems.push(shuffled[i % shuffled.length]);
     }
 
@@ -2839,26 +2844,24 @@ function spinFortuna(typeOrItems) {
     window.fortunaSpinning = true;
     overlay.classList.add('active', 'spinning');
 
-    // Выбираем карточку-победителя (например, 45-ю в ленте)
+    // Нацеливаемся на 45-ю карточку в ленте (это будет абсолютно случайный фильм из твоих 200)
     const targetCardIdx = 45; 
     window.fortunaResult = baseItems[targetCardIdx]; 
 
-    // Сдвигаем трек влево ровно на нужное количество карточек
     const finalShift = -(targetCardIdx * step);
-
     const duration = 7; 
     const ease = 'cubic-bezier(0.1, 1, 0.1, 1)'; 
 
-    // Запуск плавной анимации
     setTimeout(() => {
         track.style.transition = `transform ${duration}s ${ease}`;
         track.style.transform = `translateX(${finalShift}px)`;
     }, 50);
 
-window.fortunaAnimId = setTimeout(() => {
+    // Таймер авто-остановки: теперь он корректно вызывает финал без закрытия
+    window.fortunaAnimId = setTimeout(() => {
         if (window.fortunaSpinning) {
-            window.fortunaSpinning = false; // Выключаем статус кручения
-            finishFortuna(); // Показываем результат и красивый неоновый свет!
+            window.fortunaSpinning = false;
+            finishFortuna();
         }
     }, duration * 1000 + 100);
 }
