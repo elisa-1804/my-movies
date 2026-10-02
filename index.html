@@ -2766,32 +2766,33 @@ function spinFortuna(typeOrItems) {
     
     if (!overlay || !track) return;
 
-    let items = [];
+    // Пытаемся автоматически собрать ВСЕ фильмы, которые есть на сайте
+    let sourceItems = [];
+    
     if (typeof typeOrItems === 'string') {
         window.fortunaType = typeOrItems;
+        
         if (typeOrItems === 'film') {
-            if (typeof movies !== 'undefined' && movies.length > 0) items = movies;
-            else if (typeof moviesList !== 'undefined' && moviesList.length > 0) items = moviesList;
-            else if (typeof allMovies !== 'undefined' && allMovies.length > 0) items = allMovies;
+            if (typeof movies !== 'undefined' && movies.length > 0) sourceItems = movies;
+            else if (typeof moviesList !== 'undefined' && moviesList.length > 0) sourceItems = moviesList;
+            else if (typeof allMovies !== 'undefined' && allMovies.length > 0) sourceItems = allMovies;
         } else if (typeOrItems === 'serial') {
-            if (typeof serials !== 'undefined' && serials.length > 0) items = serials;
-            else if (typeof serialsList !== 'undefined' && serialsList.length > 0) items = serialsList;
+            if (typeof serials !== 'undefined' && serials.length > 0) sourceItems = serials;
+            else if (typeof serialsList !== 'undefined' && serialsList.length > 0) sourceItems = serialsList;
         } else if (typeOrItems === 'love') {
-            if (typeof favorites !== 'undefined' && favorites.length > 0) items = favorites;
-            else if (typeof favoritesList !== 'undefined' && favoritesList.length > 0) items = favoritesList;
+            if (typeof favorites !== 'undefined' && favorites.length > 0) sourceItems = favorites;
+            else if (typeof favoritesList !== 'undefined' && favoritesList.length > 0) sourceItems = favoritesList;
         }
     } else if (Array.isArray(typeOrItems)) {
-        items = typeOrItems;
+        sourceItems = typeOrItems;
     }
 
-    // ЕСЛИ БАЗА СОВСЕМ ПУСТАЯ И НЕ ЗАГРУЗИЛАСЬ (Аварийный случай)
-    if (!items || items.length === 0) {
-        items = [
-            { id: 991, title: "Интерстеллар", poster: "https://unsplash.com", rating: 5 },
-            { id: 992, title: "Начало", poster: "https://unsplash.com", rating: 5 },
-            { id: 993, title: "Темный рыцарь", poster: "https://unsplash.com", rating: 5 },
-            { id: 994, title: "Матрица", poster: "https://unsplash.com", rating: 5 }
-        ];
+    // Если база пуста, мы НЕ используем заглушку из 4 фильмов! 
+    // Вместо этого ищем ЛЮБОЙ массив на сайте, где есть хоть какие-то данные (например, allMovies)
+    if (!sourceItems || sourceItems.length === 0) {
+        if (typeof allMovies !== 'undefined' && allMovies.length > 0) sourceItems = allMovies;
+        else if (typeof movies !== 'undefined' && movies.length > 0) sourceItems = movies;
+        else if (typeof moviesList !== 'undefined' && moviesList.length > 0) sourceItems = moviesList;
     }
 
     track.innerHTML = '';
@@ -2806,18 +2807,19 @@ function spinFortuna(typeOrItems) {
     track.style.left = `${startLeft}px`;
     track.style.transform = 'translateX(0px)';
 
-    // Убираем дубликаты из твоей базы
-    const uniqueItems = [...new Map(items.map(i => [i.id, i])).values()];
+    // 1. Очищаем от дубликатов исходную базу
+    const uniqueItems = [...new Map(sourceItems.map(i => [i.id, i])).values()];
     
-    // Перемешиваем ВСЮ твою реальную базу фильмов (все 200 штук)
+    // 2. Случайно перемешиваем всю твою базу из 200 фильмов
     const shuffled = uniqueItems.slice().sort(() => Math.random() - 0.5);
     
-    // Нам нужна лента из 60 карточек для долгого кручения
+    // 3. Строим ленту из 60 карточек
     const baseItems = [];
     const repeatCount = 60; 
     
     for (let i = 0; i < repeatCount; i++) {
-        // Берем каждый раз следующий уникальный фильм из твоей перемешанной базы
+        // Если твоих уникальных фильмов МЕНЬШЕ 60 (например, в Избранном), они повторятся.
+        // Но если фильмов 200 — первые 60 карточек на ленте будут АБСОЛЮТНО УНИКАЛЬНЫМИ!
         baseItems.push(shuffled[i % shuffled.length]);
     }
 
@@ -2844,7 +2846,7 @@ function spinFortuna(typeOrItems) {
     window.fortunaSpinning = true;
     overlay.classList.add('active', 'spinning');
 
-    // Нацеливаемся на 45-ю карточку в ленте (это будет абсолютно случайный фильм из твоих 200)
+    // Нацеливаемся строго на 45-ю карточку (она будет полностью уникальной)
     const targetCardIdx = 45; 
     window.fortunaResult = baseItems[targetCardIdx]; 
 
@@ -2857,7 +2859,6 @@ function spinFortuna(typeOrItems) {
         track.style.transform = `translateX(${finalShift}px)`;
     }, 50);
 
-    // Таймер авто-остановки: теперь он корректно вызывает финал без закрытия
     window.fortunaAnimId = setTimeout(() => {
         if (window.fortunaSpinning) {
             window.fortunaSpinning = false;
@@ -2865,6 +2866,7 @@ function spinFortuna(typeOrItems) {
         }
     }, duration * 1000 + 100);
 }
+
 // Функция принудительного или автоматического стопа
 function stopFortuna() {
     window.fortunaSpinning = false;
